@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 
@@ -25,6 +26,8 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import java.lang.Math;
+
 import frc.robot.DriveStyle;
 public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
@@ -32,6 +35,7 @@ public class Drivetrain extends SubsystemBase {
   private final TalonFX left2 = new TalonFX(C.CANid.driveLeft2);
   private final TalonFX right1 = new TalonFX(C.CANid.driveRight1);
   private final TalonFX right2 = new TalonFX(C.CANid.driveRight2);
+  private final ADIS16470_IMU imu = new ADIS16470_IMU();
   public DriveStyle drivestyle = new DriveStyle();
   public Drivetrain() {
     left1.configFactoryDefault();
@@ -103,8 +107,24 @@ public class Drivetrain extends SubsystemBase {
     public void resetQuickTurn(){
       drivestyle.resetQuickTurn();
     }
+  
+  public double GetRobotAngle(){
+    double xAccel = imu.getAccelX()/9.81;
+    double zAccel = imu.getAccelZ()/9.81;
+
+    double angleOne = Math.asin(zAccel);
+    double angleTwo = Math.acos(xAccel);
+
+    return ((angleOne+angleTwo)/2)*180/3.14159;
+  }
+  
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("ACCL_x", imu.getAccelX());///use this axis
+    SmartDashboard.putNumber("ACCL_y", imu.getAccelY());
+    SmartDashboard.putNumber("ACCL_z", imu.getAccelZ());/// use this axis
+    SmartDashboard.putNumber("Robot level", GetRobotAngle()-90);
+    // SmartDashboard.putNumber("TEEHEE", imu.getAccelX());
     // This method will be called once per scheduler run
   }
 }
