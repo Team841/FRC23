@@ -109,21 +109,26 @@ public class Drivetrain extends SubsystemBase {
     }
   
   public double GetRobotAngle(){
-    double xAccel = imu.getAccelX()/9.81;
+    double xAccel = Math.abs(imu.getAccelX()/9.81);
     double zAccel = imu.getAccelZ()/9.81;
 
     double angleOne = Math.asin(zAccel);
     double angleTwo = Math.acos(xAccel);
-
+ 
     return ((angleOne+angleTwo)/2)*180/3.14159;
   }
-  
+  public void setLeftRight(double _Leftpower, double _Rightpower){
+    left1.set(ControlMode.PercentOutput, _Leftpower);
+    right1.set(ControlMode.PercentOutput, _Rightpower);
+
+  } 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ACCL_x", imu.getAccelX());///use this axis
     SmartDashboard.putNumber("ACCL_y", imu.getAccelY());
     SmartDashboard.putNumber("ACCL_z", imu.getAccelZ());/// use this axis
-    SmartDashboard.putNumber("Robot level", GetRobotAngle()-90);
+    SmartDashboard.putNumber("Raw angle", GetRobotAngle());
+    SmartDashboard.putNumber("Robot Angle Error", GetRobotAngle()-90);
     // SmartDashboard.putNumber("TEEHEE", imu.getAccelX());
     // This method will be called once per scheduler run
 
