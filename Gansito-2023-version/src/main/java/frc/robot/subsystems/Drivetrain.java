@@ -132,14 +132,18 @@ right2.setSmartCurrentLimit(60);
 //    right1.set(ControlMode.PercentOutput,drivestyle.getRightPower());
     //REV syntax
     left1.set(drivestyle.getLeftPower());
+    SmartDashboard.putNumber("left1", drivestyle.getLeftPower());
     right1.set(drivestyle.getRightPower());
+    SmartDashboard.putNumber("right1", drivestyle.getRightPower());
   }
-    public void setQuickTurn(){
+
+
+  public void setQuickTurn(){
       drivestyle.setQuickTurn();
-    }
-    public void resetQuickTurn(){
+  }
+  public void resetQuickTurn(){
       drivestyle.resetQuickTurn();
-    }
+  }
   
   public double GetRobotAngle(){
    
@@ -156,7 +160,7 @@ right2.setSmartCurrentLimit(60);
   } 
    public void setDrivetrainBrakeMode(boolean _BrakeMode){ //TODO: Re-enable braking
    if (_BrakeMode){
-     //CTRE syntax
+     //CTRE syntax  
 /*    left1.setNeutralMode(NeutralMode.Brake);
     left2.setNeutralMode(NeutralMode.Brake);
     right1.setNeutralMode(NeutralMode.Brake);
@@ -178,8 +182,11 @@ right2.setSmartCurrentLimit(60);
     SmartDashboard.putNumber("ACCL_x", imu.getAccelX());///use this axis
     SmartDashboard.putNumber("ACCL_y", imu.getAccelY());
     SmartDashboard.putNumber("ACCL_z", imu.getAccelZ());/// use this axis
-    SmartDashboard.putNumber("Raw angle", GetRobotAngle());
-    SmartDashboard.putNumber("Robot Angle Error", GetRobotAngle());
+    SmartDashboard.putNumber("Robot Angle", GetRobotAngle());
+    // SmartDashboard.putNumber("left power", drivestyle.getLeftPower());
+    // SmartDashboard.putNumber("Right Power", drivestyle.getRightPower());
+
+
     // SmartDashboard.putNumber("TEEHEE", imu.getAccelX());
     // This method will be called once per scheduler run
 

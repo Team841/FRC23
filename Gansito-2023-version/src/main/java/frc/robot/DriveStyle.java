@@ -224,7 +224,7 @@ public class DriveStyle {//These variables are used in ChezyDrive, the Halo-type
           double rightY =  handleDeadband(getThrottle(stickRight),0.02);
     
     
-     if (isHighGear) {
+    if (isHighGear) {
         axisNonLinearity = 0.5;
         // Smooth the controls on Left side
         leftY = Math.sin(Math.PI / 2.0 * axisNonLinearity * leftY) /
