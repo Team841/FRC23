@@ -151,7 +151,7 @@ right2.setSmartCurrentLimit(60);
 //    right1.set(ControlMode.PercentOutput,- _Rightpower);
     //REV syntax
     left1.set(_Leftpower);
-    right1.set(_Rightpower);
+    right1.set(-_Rightpower);
 
   } 
    public void setDrivetrainBrakeMode(boolean _BrakeMode){ //TODO: Re-enable braking
