@@ -97,6 +97,7 @@ public class Drivetrain extends SubsystemBase {
       right2.follow(right1);
   }
   public void Drive(Joystick stickLeft, Joystick stickRight) {
+    setDrivetrainBrakeMode(false);
     drivestyle.cheesyDrive(stickLeft);
     left1.set(ControlMode.PercentOutput,drivestyle.getLeftPower());
     right1.set(ControlMode.PercentOutput,drivestyle.getRightPower());
@@ -109,26 +110,38 @@ public class Drivetrain extends SubsystemBase {
     }
   
   public double GetRobotAngle(){
-    double xAccel = Math.abs(imu.getAccelX()/9.81);
-    double zAccel = imu.getAccelZ()/9.81;
-
-    double angleOne = Math.asin(zAccel);
-    double angleTwo = Math.acos(xAccel);
- 
-    return ((angleOne+angleTwo)/2)*180/3.14159;
+   
+    return imu.getXComplementaryAngle(); 
   }
   public void setLeftRight(double _Leftpower, double _Rightpower){
     left1.set(ControlMode.PercentOutput, _Leftpower);
-    right1.set(ControlMode.PercentOutput, _Rightpower);
+    right1.set(ControlMode.PercentOutput,- _Rightpower);
 
   } 
+   public void setDrivetrainBrakeMode(boolean _BrakeMode){
+   if (_BrakeMode){
+    left1.setNeutralMode(NeutralMode.Brake);
+    left2.setNeutralMode(NeutralMode.Brake);
+    right1.setNeutralMode(NeutralMode.Brake);
+    right2.setNeutralMode(NeutralMode.Brake);
+
+   }else
+   {
+    left1.setNeutralMode(NeutralMode.Coast);
+    left2.setNeutralMode(NeutralMode.Coast);
+    right1.setNeutralMode(NeutralMode.Coast);
+    right2.setNeutralMode(NeutralMode.Coast);
+   }
+
+   
+   }
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ACCL_x", imu.getAccelX());///use this axis
     SmartDashboard.putNumber("ACCL_y", imu.getAccelY());
     SmartDashboard.putNumber("ACCL_z", imu.getAccelZ());/// use this axis
     SmartDashboard.putNumber("Raw angle", GetRobotAngle());
-    SmartDashboard.putNumber("Robot Angle Error", GetRobotAngle()-90);
+    SmartDashboard.putNumber("Robot Angle Error", GetRobotAngle());
     // SmartDashboard.putNumber("TEEHEE", imu.getAccelX());
     // This method will be called once per scheduler run
 

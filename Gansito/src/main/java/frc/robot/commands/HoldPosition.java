@@ -5,15 +5,11 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Drivetrain;
 
-public class AutoBalance extends CommandBase {
-  /** Creates a new AutoBalance. */
-  private Drivetrain m_subsystem ;
-  public AutoBalance(Drivetrain subsytem) {
+public class HoldPosition extends CommandBase {
+  /** Creates a new HoldPosition. */
+  public HoldPosition() {
     // Use addRequirements() here to declare subsystem dependencies.
- m_subsystem = subsytem ; 
- addRequirements(m_subsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -22,15 +18,7 @@ public class AutoBalance extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    double SensorData ; 
-    m_subsystem.setDrivetrainBrakeMode(true);
-    SensorData = m_subsystem.GetRobotAngle() ;
-    double kp = 0.0110; 
-    double ref = 0 ; 
-    double error = ref - SensorData ; 
-    m_subsystem.setLeftRight (error*kp,error*kp) ; 
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -39,6 +27,6 @@ public class AutoBalance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }
