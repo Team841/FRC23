@@ -10,6 +10,7 @@ public class HoldPosition extends CommandBase {
   /** Creates a new HoldPosition. */
   public HoldPosition() {
     // Use addRequirements() here to declare subsystem dependencies.
+    
   }
 
   // Called when the command is initially scheduled.

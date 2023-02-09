@@ -45,10 +45,14 @@ public final class C {
             //Tuning the Chezy Drive - deadband, sensitivity & tolerancing values on raw joystick inputs
             public static final double throttleDeadband = 0.02; 
             public static final double wheelDeadband = 0.02;	
-             public static final double sensitivityHigh = 0.5;	
+            public static final double sensitivityHigh = 0.5;	
             public static final double sensitivityLow = 0.5;
         
-            
+            public static final double turn_kp = 0.0025;
+            public static final double turn_ki = 0;
+            public static final double turn_kd = 0;
+
+            public static final double turn_tolerance = 1;
         }
 
 }

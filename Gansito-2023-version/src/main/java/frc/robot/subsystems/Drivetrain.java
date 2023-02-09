@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.motorcontrol.Talon;
 
 
 import frc.robot.C;
+import edu.wpi.first.math.controller.PIDController;
 
 /*
 import com.ctre.phoenix.motorcontrol.can.*;
@@ -49,7 +50,7 @@ public class Drivetrain extends SubsystemBase {
   private final CANSparkMax right1 = new CANSparkMax(C.CANid.driveRight1, MotorType.kBrushless);
   private final CANSparkMax right2 = new CANSparkMax(C.CANid.driveRight2, MotorType.kBrushless);
 
-
+  public PIDController turnpid = new PIDController(C.Drive.turn_kd, C.Drive.turn_ki, C.Drive.turn_kp);
   private final ADIS16470_IMU imu = new ADIS16470_IMU();
   public DriveStyle drivestyle = new DriveStyle();
   public Drivetrain() {
@@ -183,13 +184,16 @@ right2.setSmartCurrentLimit(60);
     SmartDashboard.putNumber("ACCL_y", imu.getAccelY());
     SmartDashboard.putNumber("ACCL_z", imu.getAccelZ());/// use this axis
     SmartDashboard.putNumber("Robot Angle", GetRobotAngle());
+    SmartDashboard.putNumber("Robot Yaw", getYaw());
     // SmartDashboard.putNumber("left power", drivestyle.getLeftPower());
     // SmartDashboard.putNumber("Right Power", drivestyle.getRightPower());
 
 
     // SmartDashboard.putNumber("TEEHEE", imu.getAccelX());
     // This method will be called once per scheduler run
+  }
 
-    
+  public double getYaw() {
+    return imu.getAngle();
   }
 }
