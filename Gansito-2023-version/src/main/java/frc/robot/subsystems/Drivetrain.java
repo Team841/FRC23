@@ -178,6 +178,9 @@ right2.setSmartCurrentLimit(60);
 
    
    }
+  public void resetIMU() {
+    imu.reset();
+  }
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ACCL_x", imu.getAccelX());///use this axis
@@ -194,6 +197,6 @@ right2.setSmartCurrentLimit(60);
   }
 
   public double getYaw() {
-    return imu.getAngle();
+    return -imu.getAngle();
   }
 }

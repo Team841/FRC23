@@ -48,9 +48,9 @@ public final class C {
             public static final double sensitivityHigh = 0.5;	
             public static final double sensitivityLow = 0.5;
         
-            public static final double turn_kp = 0.0025;
+            public static final double turn_kp = 0.019; 
             public static final double turn_ki = 0;
-            public static final double turn_kd = 0;
+            public static final double turn_kd = 0.001;
 
             public static final double turn_tolerance = 1;
         }

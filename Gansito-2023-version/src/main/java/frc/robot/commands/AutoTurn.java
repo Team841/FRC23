@@ -14,7 +14,6 @@ public class AutoTurn extends CommandBase {
     private Drivetrain m_subsystem ;
     private double m_intial_angle = 0;
     private double m_sub_goal_angle = 0;
-    private boolean polarity = true; // True is right, False is left
     private double m_goal_angle = 0;
     public AutoTurn(Drivetrain subsytem, double goal_angle) {
       m_subsystem = subsytem; 
@@ -27,15 +26,22 @@ public class AutoTurn extends CommandBase {
   @Override
   public void initialize() {
     if(m_sub_goal_angle <= 180){
-      m_goal_angle = m_sub_goal_angle; // to the right, to the right, to the right
-      polarity = true;
+      if(m_sub_goal_angle <= -180){
+        m_goal_angle = m_goal_angle - 360;
+      }
+      else{
+        m_goal_angle = m_sub_goal_angle; // to the right, to the right, to the right
+      }
     }
     else{
-      m_goal_angle = 360 - m_sub_goal_angle;  // to the left, to the left, to the left
-      polarity = false;
+      m_goal_angle = m_sub_goal_angle - 360;  // to the left, to the left, to the left
     }
     m_subsystem.turnpid.reset(); // reset any pid variables from last time used
     m_intial_angle = m_subsystem.getYaw();  // get the current starting angle
+    m_subsystem.turnpid.setP(C.Drive.turn_kp);
+    m_subsystem.turnpid.setI(C.Drive.turn_ki);
+    m_subsystem.turnpid.setD(C.Drive.turn_kd);
+    m_subsystem.resetIMU();
     m_subsystem.turnpid.setSetpoint(m_intial_angle+m_goal_angle); // set the goal of the angle
     SmartDashboard.putNumber("goal angle", m_intial_angle+m_goal_angle);
     m_subsystem.turnpid.setTolerance(C.Drive.turn_tolerance); // set the goal tolerance to know when you're finished
@@ -47,13 +53,8 @@ public class AutoTurn extends CommandBase {
     double c_angle = m_subsystem.getYaw();  // Get the current sample, changed becuase the robot has turned
     double output_PID = m_subsystem.turnpid.calculate(c_angle); // computes the motor power
     SmartDashboard.putNumber("pid output", output_PID);
-
-    if(polarity){
+    SmartDashboard.putNumber("error", m_subsystem.turnpid.getPositionError()); 
       m_subsystem.setLeftRight(-output_PID, output_PID); // to the right, to the right, to the right
-    }
-    else{
-      m_subsystem.setLeftRight(output_PID, -output_PID); // to the left, to the left, to the left
-    }
 
   }
 
@@ -67,6 +68,6 @@ public class AutoTurn extends CommandBase {
   @Override
   public boolean isFinished() {
     return m_subsystem.turnpid.atSetpoint(); // Are we there yet???? if so end, or else run execute again!
-    //return false;
+   // return false;
   }
 }
