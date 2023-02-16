@@ -21,10 +21,10 @@ public final class C {
     }
 
     public static final class CANid{
-        public static final int driveRight1 = 3;
-        public static final int driveRight2 = 4; 
-        public static final int driveLeft1 = 1;
-        public static final int driveLeft2 = 2;
+        public static final int driveRight1 = 1;
+        public static final int driveRight2 = 2; 
+        public static final int driveLeft1 = 3;
+        public static final int driveLeft2 = 4;
     }
         public static final class Drive{
 
@@ -52,7 +52,7 @@ public final class C {
             public static final double turn_ki = 0;
             public static final double turn_kd = 0.001;
 
-            public static final double turn_tolerance = 1;
+            public static final double turn_tolerance = 2;
         }
 
 }

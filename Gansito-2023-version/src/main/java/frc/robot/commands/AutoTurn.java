@@ -54,7 +54,7 @@ public class AutoTurn extends CommandBase {
     double output_PID = m_subsystem.turnpid.calculate(c_angle); // computes the motor power
     SmartDashboard.putNumber("pid output", output_PID);
     SmartDashboard.putNumber("error", m_subsystem.turnpid.getPositionError()); 
-      m_subsystem.setLeftRight(-output_PID, output_PID); // to the right, to the right, to the right
+      m_subsystem.setLeftRight(output_PID, -output_PID); // to the right, to the right, to the right
 
   }
 
