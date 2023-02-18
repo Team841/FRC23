@@ -34,6 +34,8 @@ import java.lang.Math;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.RelativeEncoder;
 
 import frc.robot.DriveStyle;
 
@@ -51,6 +53,12 @@ public class Drivetrain extends SubsystemBase {
   private final CANSparkMax right2 = new CANSparkMax(C.CANid.driveRight2, MotorType.kBrushless);
 
   public PIDController turnpid = new PIDController(C.Drive.turn_kd, C.Drive.turn_ki, C.Drive.turn_kp);
+  public SparkMaxPIDController left_veloctiy_pid = left1.getPIDController();
+  public SparkMaxPIDController right_velocity_pid = right1.getPIDController();
+
+  public RelativeEncoder left_encoder = left1.getEncoder();
+  public RelativeEncoder right_encoder = right1.getEncoder(); 
+
   private final ADIS16470_IMU imu = new ADIS16470_IMU();
   public DriveStyle drivestyle = new DriveStyle();
   public Drivetrain() {
@@ -124,6 +132,17 @@ right2.setSmartCurrentLimit(60);
       //Syntax is shared for REV/CTRE
       left2.follow(left1);
       right2.follow(right1);
+
+      left_veloctiy_pid.setP(C.Drive.velocity_kp);
+      left_veloctiy_pid.setI(C.Drive.velocity_ki);
+      left_veloctiy_pid.setD(C.Drive.velocity_kd);
+      left_veloctiy_pid.setFF(C.Drive.velocity_kff);
+
+      right_velocity_pid.setP(C.Drive.velocity_kp);
+      right_velocity_pid.setI(C.Drive.velocity_ki);
+      right_velocity_pid.setD(C.Drive.velocity_kd);
+      right_velocity_pid.setFF(C.Drive.velocity_kff);
+
   }
   public void Drive(Joystick stickLeft, Joystick stickRight) {
     setDrivetrainBrakeMode(false);
@@ -188,12 +207,17 @@ right2.setSmartCurrentLimit(60);
     SmartDashboard.putNumber("ACCL_z", imu.getAccelZ());/// use this axis
     SmartDashboard.putNumber("Robot Angle", GetRobotAngle());
     SmartDashboard.putNumber("Robot Yaw", getYaw());
+    SmartDashboard.putNumber("Left Distance", right_encoder.getPosition() * C.Drive.gearRatio * (C.Drive.wheelDiameter * Math.PI));
+    SmartDashboard.putNumber("Right Distance", left_encoder.getPosition() * C.Drive.gearRatio * (C.Drive.wheelDiameter * Math.PI));
     // SmartDashboard.putNumber("left power", drivestyle.getLeftPower());
     // SmartDashboard.putNumber("Right Power", drivestyle.getRightPower());
 
 
     // SmartDashboard.putNumber("TEEHEE", imu.getAccelX());
     // This method will be called once per scheduler run
+
+
+
   }
 
   public double getYaw() {

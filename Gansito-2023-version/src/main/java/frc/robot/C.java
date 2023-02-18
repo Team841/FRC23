@@ -40,7 +40,9 @@ public final class C {
     
             
             //Physical setup of the drive
-    
+            public static double gearRatio = 1/7.23;
+            public static double wheelDiameter = 6.06;
+            public static double countsPerRev = 42; // this is the neo brushless
     
             //Tuning the Chezy Drive - deadband, sensitivity & tolerancing values on raw joystick inputs
             public static final double throttleDeadband = 0.02; 
@@ -53,6 +55,12 @@ public final class C {
             public static final double turn_kd = 0.001;
 
             public static final double turn_tolerance = 2;
+
+            public static final double velocity_kp = 0;
+            public static final double velocity_ki = 0;
+            public static final double velocity_kd = 0;
+
+            public static final double velocity_kff = 0;
         }
 
 }
