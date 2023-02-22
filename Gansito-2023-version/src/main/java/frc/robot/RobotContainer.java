@@ -6,16 +6,16 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.AutoBalance;
-import frc.robot.commands.AutoTurn;
-import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.*;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,6 +30,7 @@ public class RobotContainer {
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final Drivetrain m_Drivetrain = new Drivetrain();
   private final Joystick m_driverCtrlLeft = new Joystick(C.OI.driverPortLeft);
+  // private final PS4Controller m_driverCtrlLeft = new PS4Controller(C.OI.driverPortLeft);
  
   private final Joystick m_driverCtrlRight = new Joystick(C.OI.driverPortRight);
   private final Joystick m_codriverCtrl = new Joystick(C.OI.codriverPort);
@@ -58,6 +59,8 @@ public class RobotContainer {
      AutoBalance.whileHeld(new AutoBalance(m_Drivetrain));
      final JoystickButton AutoTurn = new JoystickButton(m_driverCtrlLeft, C.OI.kX);
      AutoTurn.whenPressed(new AutoTurn(m_Drivetrain, 45));
+     final JoystickButton AutoDistance = new JoystickButton(m_driverCtrlLeft, C.OI.kB);
+      AutoDistance.whenPressed(new AutoDriveToDistance(m_Drivetrain, 48));
   }
 
   /**
