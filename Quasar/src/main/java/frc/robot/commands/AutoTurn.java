@@ -10,15 +10,16 @@ import frc.robot.C;
 import frc.robot.subsystems.Drivetrain;
 
 public class AutoTurn extends CommandBase {
+  
   /** Creates a new AutoTurn. */
-    private Drivetrain m_subsystem ;
-    private double m_intial_angle = 0;
-    private double m_sub_goal_angle = 0;
-    private double m_goal_angle = 0;
-    public AutoTurn(Drivetrain subsytem, double goal_angle) {
-      m_subsystem = subsytem; 
-      m_sub_goal_angle = goal_angle % 360;
-    
+  private Drivetrain m_subsystem ;
+  private double m_intial_angle = 0;
+  private double m_sub_goal_angle = 0;
+  private double m_goal_angle = 0;
+
+  public AutoTurn(Drivetrain subsytem, double goal_angle) {
+    m_subsystem = subsytem; 
+    m_sub_goal_angle = goal_angle % 360;
     addRequirements(m_subsystem);
   }
 
@@ -68,6 +69,5 @@ public class AutoTurn extends CommandBase {
   @Override
   public boolean isFinished() {
     return m_subsystem.turnpid.atSetpoint(); // Are we there yet???? if so end, or else run execute again!
-   // return false;
   }
 }

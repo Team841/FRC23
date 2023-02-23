@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 
 public class AutoBalance extends CommandBase {
+  
   /** Creates a new AutoBalance. */
   private Drivetrain m_subsystem ;
   public AutoBalance(Drivetrain subsytem) {
-    // Use addRequirements() here to declare subsystem dependencies.
- m_subsystem = subsytem ; 
- addRequirements(m_subsystem);
+    m_subsystem = subsytem ; 
+    addRequirements(m_subsystem);
   }
 
   // Called when the command is initially scheduled.
