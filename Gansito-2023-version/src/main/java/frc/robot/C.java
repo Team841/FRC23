@@ -56,13 +56,15 @@ public final class C {
 
             public static final double turn_tolerance = 2;
 
-            public static final double distance_kp = 0.007;   
-            public static final double distance_ki = 0; 
-            public static final double distance_kd = 0;     
+            public static final double distance_kp = 0.040;   
+            public static final double distance_ki = 0.0001; 
+            public static final double distance_kd = 1;     
 
             public static final double distance_kff = 0;
 
-            public static final double distance_kIz = 12; // In inches
+            public static final double distance_tolerance = 2; // in revolutions
+
+            public static final double distance_kIz = 2; // in revolutions
         }
 
 }

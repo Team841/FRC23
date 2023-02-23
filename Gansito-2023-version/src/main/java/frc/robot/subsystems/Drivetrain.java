@@ -217,9 +217,14 @@ right2.setSmartCurrentLimit(60);
     SmartDashboard.putNumber("Left Distance", right_encoder.getPosition() * C.Drive.gearRatio * (C.Drive.wheelDiameter * Math.PI));
     SmartDashboard.putNumber("Right Distance", left_encoder.getPosition() * C.Drive.gearRatio * (C.Drive.wheelDiameter * Math.PI));
 
+    SmartDashboard.putNumber("PID Distance", PIDdistance);
+    SmartDashboard.putNumber("output", left1.getAppliedOutput());
+
     if (isDistancePIDenabled){
+      // reset the pid distances
       left_distance_pid.setReference(PIDdistance, CANSparkMax.ControlType.kPosition);
       right_distance_pid.setReference(-PIDdistance, CANSparkMax.ControlType.kPosition);
+
     }
   }
   public void setDistancePID(double _distance){
@@ -228,6 +233,14 @@ right2.setSmartCurrentLimit(60);
 
   public void enableDistancePID(boolean _enable){
     isDistancePIDenabled = _enable;
+  }
+
+  public void resetEncoders(){
+    left_encoder.setPosition(0); right_encoder.setPosition(0);
+  }
+
+  public double getPIDdistanceError(){
+    return PIDdistance - right_encoder.getPosition();
   }
 
   public double getYaw() {

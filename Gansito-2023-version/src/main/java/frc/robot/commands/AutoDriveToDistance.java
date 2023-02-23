@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.lang.Math;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.C;
@@ -24,6 +26,7 @@ public class AutoDriveToDistance extends CommandBase {
   @Override
   public void initialize() {
     m_subsystem.setDistancePID(m_goal_distance);
+    m_subsystem.resetEncoders();
     m_subsystem.enableDistancePID(true);
   }
 
@@ -40,6 +43,8 @@ public class AutoDriveToDistance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+  
+    return Math.abs(m_subsystem.getPIDdistanceError()) <= C.Drive.distance_tolerance;
+
   }
 }
