@@ -6,7 +6,7 @@ package frc.robot;
 
 /** Add your docs here. */
 public final class C {
-    
+
     public static final class OI{
         public static final int driverPortLeft = 0; //controller USB port 0
         public static final int driverPortRight = 1; //controller USB port 1
@@ -51,9 +51,9 @@ public final class C {
         public static final double sensitivityHigh = 0.5;	
         public static final double sensitivityLow = 0.5;
     
-        public static final double turn_kp = 0.019; 
+        public static final double turn_kp = 0.014; 
         public static final double turn_ki = 0;
-        public static final double turn_kd = 0.001;
+        public static final double turn_kd = 0;
 
         public static final double turn_tolerance = 2;
 

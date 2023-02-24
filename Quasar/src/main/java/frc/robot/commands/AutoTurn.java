@@ -26,23 +26,20 @@ public class AutoTurn extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(m_sub_goal_angle <= 180){
-      if(m_sub_goal_angle <= -180){
-        m_goal_angle = m_goal_angle - 360;
-      }
-      else{
-        m_goal_angle = m_sub_goal_angle; // to the right, to the right, to the right
-      }
+    if(m_sub_goal_angle >= 180){
+      m_goal_angle = 360 - m_goal_angle;
+    } else if(m_goal_angle <= -180){
+      m_goal_angle += 360 - Math.abs(m_goal_angle);
     }
-    else{
-      m_goal_angle = m_sub_goal_angle - 360;  // to the left, to the left, to the left
+    else {
+      m_goal_angle = m_sub_goal_angle;
     }
     m_subsystem.turnpid.reset(); // reset any pid variables from last time used
+    m_subsystem.resetIMU();
     m_intial_angle = m_subsystem.getYaw();  // get the current starting angle
     m_subsystem.turnpid.setP(C.Drive.turn_kp);
     m_subsystem.turnpid.setI(C.Drive.turn_ki);
     m_subsystem.turnpid.setD(C.Drive.turn_kd);
-    m_subsystem.resetIMU();
     m_subsystem.turnpid.setSetpoint(m_intial_angle+m_goal_angle); // set the goal of the angle
     SmartDashboard.putNumber("goal angle", m_intial_angle+m_goal_angle);
     m_subsystem.turnpid.setTolerance(C.Drive.turn_tolerance); // set the goal tolerance to know when you're finished
@@ -55,8 +52,7 @@ public class AutoTurn extends CommandBase {
     double output_PID = m_subsystem.turnpid.calculate(c_angle); // computes the motor power
     SmartDashboard.putNumber("pid output", output_PID);
     SmartDashboard.putNumber("error", m_subsystem.turnpid.getPositionError()); 
-      m_subsystem.setLeftRight(output_PID, -output_PID); // to the right, to the right, to the right
-
+    m_subsystem.setLeftRight(output_PID, -output_PID); // to the right, to the right, to the right
   }
 
   // Called once the command ends or is interrupted.
@@ -68,6 +64,7 @@ public class AutoTurn extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    SmartDashboard.putNumber("crobot angle", m_subsystem.getYaw());
     return m_subsystem.turnpid.atSetpoint(); // Are we there yet???? if so end, or else run execute again!
   }
 }

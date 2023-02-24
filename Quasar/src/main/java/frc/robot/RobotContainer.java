@@ -10,12 +10,11 @@ import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
+// import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -25,22 +24,20 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final Drivetrain m_Drivetrain = new Drivetrain();
   private final Joystick m_driverCtrlLeft = new Joystick(C.OI.driverPortLeft);
   // private final PS4Controller m_driverCtrlLeft = new PS4Controller(C.OI.driverPortLeft);
  
   private final Joystick m_driverCtrlRight = new Joystick(C.OI.driverPortRight);
   private final Joystick m_codriverCtrl = new Joystick(C.OI.codriverPort);
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
     m_Drivetrain.setDefaultCommand(
       new RunCommand(() -> m_Drivetrain.Drive(m_driverCtrlLeft,m_driverCtrlRight),m_Drivetrain)
-      // new RunCommand(() -> m_Drivetrain.Drive(m_driverCtrlLeft),m_Drivetrain)
       );
   }
 
@@ -58,7 +55,7 @@ public class RobotContainer {
      final JoystickButton AutoBalance = new JoystickButton(m_driverCtrlLeft, C.OI.kA);
      AutoBalance.whileHeld(new AutoBalance(m_Drivetrain));
      final JoystickButton AutoTurn = new JoystickButton(m_driverCtrlLeft, C.OI.kX);
-     AutoTurn.whenPressed(new AutoTurn(m_Drivetrain, 45));
+     AutoTurn.whenPressed(new AutoTurn(m_Drivetrain, 90));
      final JoystickButton AutoDistance = new JoystickButton(m_driverCtrlLeft, C.OI.kB);
       AutoDistance.whenPressed(new AutoDriveToDistance(m_Drivetrain, 48));
   }
@@ -69,7 +66,6 @@ public class RobotContainer {
    * @return the command to run in autonomous 
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    
+    return new driveOffAutoBalance();
   }
 }

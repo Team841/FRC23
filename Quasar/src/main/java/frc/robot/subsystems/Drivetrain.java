@@ -158,7 +158,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getPIDdistanceError(){
-    return PIDdistance - right_encoder.getPosition();
+    return Math.abs(PIDdistance) - Math.abs(right_encoder.getPosition());
   }
 
   public double getYaw() {
