@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.Autonomous.PIDControllers;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -19,7 +19,10 @@ public class AutoTurn extends CommandBase {
 
   public AutoTurn(Drivetrain subsytem, double goal_angle) {
     m_subsystem = subsytem; 
-    m_sub_goal_angle = goal_angle % 360;
+    m_sub_goal_angle = goal_angle % 360; 
+    if(goal_angle <= 0){
+      m_sub_goal_angle *= -1;
+    }
     addRequirements(m_subsystem);
   }
 
@@ -27,13 +30,14 @@ public class AutoTurn extends CommandBase {
   @Override
   public void initialize() {
     if(m_sub_goal_angle >= 180){
-      m_goal_angle = 360 - m_goal_angle;
+      m_goal_angle = -1*(360 - m_sub_goal_angle);
     } else if(m_goal_angle <= -180){
-      m_goal_angle += 360 - Math.abs(m_goal_angle);
+      m_goal_angle =  360 - Math.abs(m_sub_goal_angle);
     }
     else {
       m_goal_angle = m_sub_goal_angle;
     }
+    m_subsystem.setLeftRight(0, 0);
     m_subsystem.turnpid.reset(); // reset any pid variables from last time used
     m_subsystem.resetIMU();
     m_intial_angle = m_subsystem.getYaw();  // get the current starting angle

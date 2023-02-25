@@ -23,6 +23,7 @@ import java.lang.Math;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.RelativeEncoder;
 
 import frc.robot.DriveStyle;
@@ -113,12 +114,30 @@ public class Drivetrain extends SubsystemBase {
 
   } 
 
-  public void setDrivetrainBrakeMode(boolean _BrakeMode){ //TODO: Re-enable braking
+  public void setDrivetrainBrakeMode(boolean _BrakeMode){
     if (_BrakeMode){
+      left1.setIdleMode(IdleMode.kBrake);
+      left2.setIdleMode(IdleMode.kBrake);
+      right1.setIdleMode(IdleMode.kBrake);
+      right2.setIdleMode(IdleMode.kBrake);
     }
     else{
+      left1.setIdleMode(IdleMode.kCoast);
+      left2.setIdleMode(IdleMode.kCoast);
+      right1.setIdleMode(IdleMode.kCoast);
+      right2.setIdleMode(IdleMode.kCoast);
     }
   }
+
+  public boolean isBrakeMode(){
+    if (left1.getIdleMode() == IdleMode.kBrake){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
 
   public void resetIMU() {
     imu.reset();
@@ -136,6 +155,8 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putNumber("PID Distance", PIDdistance);
     SmartDashboard.putNumber("output", left1.getAppliedOutput());
+
+    SmartDashboard.putBoolean("brake mode", isBrakeMode());
 
     if (isDistancePIDenabled){
       // reset the pid distances

@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.*;
+import frc.robot.commands.Autonomous.PIDControllers.*;
+import frc.robot.commands.Autonomous.Paths.*;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -49,14 +50,14 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
      //Quick turn
-     final JoystickButton qT = new JoystickButton(m_driverCtrlLeft, C.OI.kRB);
-     qT.whenPressed(new InstantCommand(m_Drivetrain::setQuickTurn, m_Drivetrain));
-     qT.whenReleased(new InstantCommand(m_Drivetrain::resetQuickTurn, m_Drivetrain));
-     final JoystickButton AutoBalance = new JoystickButton(m_driverCtrlLeft, C.OI.kA);
-     AutoBalance.whileHeld(new AutoBalance(m_Drivetrain));
-     final JoystickButton AutoTurn = new JoystickButton(m_driverCtrlLeft, C.OI.kX);
-     AutoTurn.whenPressed(new AutoTurn(m_Drivetrain, 90));
-     final JoystickButton AutoDistance = new JoystickButton(m_driverCtrlLeft, C.OI.kB);
+    final JoystickButton qT = new JoystickButton(m_driverCtrlLeft, C.OI.kRB);
+      qT.whenPressed(new InstantCommand(m_Drivetrain::setQuickTurn, m_Drivetrain));
+      qT.whenReleased(new InstantCommand(m_Drivetrain::resetQuickTurn, m_Drivetrain));
+    final JoystickButton AutoBalance = new JoystickButton(m_driverCtrlLeft, C.OI.kA);
+      AutoBalance.whileHeld(new AutoBalance(m_Drivetrain));
+    final JoystickButton AutoTurn = new JoystickButton(m_driverCtrlLeft, C.OI.kX);
+      AutoTurn.whenPressed(new AutoTurn(m_Drivetrain, 270));
+    final JoystickButton AutoDistance = new JoystickButton(m_driverCtrlLeft, C.OI.kB);
       AutoDistance.whenPressed(new AutoDriveToDistance(m_Drivetrain, 48));
   }
 
@@ -66,6 +67,8 @@ public class RobotContainer {
    * @return the command to run in autonomous 
    */
   public Command getAutonomousCommand() {
-    return new driveOffAutoBalance();
+    // An ExampleCommand will run in autonomous
+    return new driveOffAutoBalance(m_Drivetrain);
   }
+
 }
