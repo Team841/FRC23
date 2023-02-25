@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 // import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.Autonomous.PIDControllers.*;
-import frc.robot.commands.Autonomous.Paths.*;
+import frc.robot.commands.autonomous.PIDControllers.*;
+import frc.robot.commands.autonomous.Paths.*;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -27,10 +27,11 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   private final Drivetrain m_Drivetrain = new Drivetrain();
+  
   private final Joystick m_driverCtrlLeft = new Joystick(C.OI.driverPortLeft);
   // private final PS4Controller m_driverCtrlLeft = new PS4Controller(C.OI.driverPortLeft);
- 
   private final Joystick m_driverCtrlRight = new Joystick(C.OI.driverPortRight);
+
   private final Joystick m_codriverCtrl = new Joystick(C.OI.codriverPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -60,6 +61,7 @@ public class RobotContainer {
     final JoystickButton AutoDistance = new JoystickButton(m_driverCtrlLeft, C.OI.kB);
       AutoDistance.whenPressed(new AutoDriveToDistance(m_Drivetrain, 48));
   }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
