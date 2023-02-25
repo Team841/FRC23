@@ -12,7 +12,7 @@ public class DriveStyle {//These variables are used in ChezyDrive, the Halo-type
     private double oldWheel = 0.0; //accumulator to handle inertia
     private double quickStopAccumulator = 0; 
     private boolean isQuickTurn = false;
-    private boolean slowMode = false; 
+    // private boolean slowMode = false; 
     private double leftpower = 0;
     private double rightpower = 0;
         public void setQuickTurn() {

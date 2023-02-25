@@ -39,7 +39,9 @@ public final class C {
 
         public static double slowModeScaleFactor = 0.25;
 
-        
+        // Rev motor set current limit at the number of amps
+        public static int currentLimit = 60;
+
         //Physical setup of the drive
         public static double gearRatio = 1/7.23;
         public static double wheelDiameter = 6.06;

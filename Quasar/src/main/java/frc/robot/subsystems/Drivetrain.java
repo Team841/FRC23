@@ -7,15 +7,15 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
-
 
 import frc.robot.C;
 import edu.wpi.first.math.controller.PIDController;
 
+/*
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableInstance; */
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.lang.Math;
@@ -56,12 +56,11 @@ public class Drivetrain extends SubsystemBase {
     right1.restoreFactoryDefaults();
     right2.restoreFactoryDefaults();
 
-    //REV syntax
-    //TODO: turn current limit into a Constant
-    left1.setSmartCurrentLimit(60); //Current limit at number of amps 
-    left2.setSmartCurrentLimit(60);
-    right1.setSmartCurrentLimit(60);
-    right2.setSmartCurrentLimit(60);
+
+    left1.setSmartCurrentLimit(C.Drive.currentLimit); //Current limit at number of amps 
+    left2.setSmartCurrentLimit(C.Drive.currentLimit);
+    right1.setSmartCurrentLimit(C.Drive.currentLimit);
+    right2.setSmartCurrentLimit(C.Drive.currentLimit);
 
     //Set #2 controllers to follow #1 in both drives
     //Syntax is shared for REV/CTRE
