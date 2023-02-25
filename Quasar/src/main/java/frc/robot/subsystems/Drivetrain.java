@@ -89,9 +89,9 @@ public class Drivetrain extends SubsystemBase {
     drivestyle.cheesyDrive(stickLeft);
     //REV syntax
     left1.set(drivestyle.getLeftPower());
-    SmartDashboard.putNumber("left1", drivestyle.getLeftPower());
+    
     right1.set(drivestyle.getRightPower());
-    SmartDashboard.putNumber("right1", drivestyle.getRightPower());
+    
   }
 
   public void setQuickTurn(){
@@ -156,6 +156,10 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("output", left1.getAppliedOutput());
 
     SmartDashboard.putBoolean("brake mode", isBrakeMode());
+
+    SmartDashboard.putNumber("left1", drivestyle.getLeftPower());
+    SmartDashboard.putNumber("right1", drivestyle.getRightPower());
+
 
     if (isDistancePIDenabled){
       // reset the pid distances
