@@ -40,6 +40,7 @@ public class Drivetrain extends SubsystemBase {
   public PIDController turnpid = new PIDController(C.Drive.turn_kd, C.Drive.turn_ki, C.Drive.turn_kp);
   public SparkMaxPIDController left_distance_pid = left1.getPIDController();
   public SparkMaxPIDController right_distance_pid = right1.getPIDController();
+  public PIDController balance_pid = new PIDController(0, 0, 0);
 
   public RelativeEncoder left_encoder = left1.getEncoder();
   public RelativeEncoder right_encoder = right1.getEncoder(); 

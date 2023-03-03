@@ -46,7 +46,7 @@ public class AutoTurn extends CommandBase {
     m_subsystem.turnpid.setD(C.Drive.turn_kd);
     m_subsystem.turnpid.setSetpoint(m_intial_angle+m_goal_angle); // set the goal of the angle
     SmartDashboard.putNumber("goal angle", m_intial_angle+m_goal_angle);
-    m_subsystem.turnpid.setTolerance(C.Drive.turn_tolerance); // set the goal tolerance to know when you're finished
+    m_subsystem.turnpid.setTolerance(C.Drive.turn_tolerance, C.Drive.turn_velocity_tolerance); // set the goal tolerance to know when you're finished
   }
 
   // Called every time the scheduler runs while the command is scheduled.

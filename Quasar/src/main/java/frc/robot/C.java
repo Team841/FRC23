@@ -53,21 +53,28 @@ public final class C {
         public static final double sensitivityHigh = 0.5;	
         public static final double sensitivityLow = 0.5;
     
+        //PID constants for turning, specifically for AutoTurn command//
         public static final double turn_kp = 0.019; 
         public static final double turn_ki = 0.001;
         public static final double turn_kd = 0.001;
-
         public static final double turn_tolerance = 1;
+        public static final double turn_velocity_tolerance = 0.05; 
  
+        //PID constants for AutoDriveToDistance command
         public static final double distance_kp = 0.040;   
         public static final double distance_ki = 0.0001; 
         public static final double distance_kd = 1;     
-
         public static final double distance_kff = 0;
-
         public static final double distance_tolerance = 2; // in revolutions
-
         public static final double distance_kIz = 2; // in revolutions
+        
+        //PID constants for AutoBalance command
+        public static final double balance_kp = 0.011;
+        public static final double balance_ki = 0;
+        public static final double balance_kd = 0; 
+
+        public static final double balance_point = 0; //0 degrees
+
 
     }
             
