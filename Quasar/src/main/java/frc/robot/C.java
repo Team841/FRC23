@@ -26,6 +26,9 @@ public final class C {
         public static final int driveRight2 = 2; 
         public static final int driveLeft1 = 3;
         public static final int driveLeft2 = 4;
+
+        public static final int shoulderMotor = 5;
+        public static final int elbowMotor = 6;
     }
 
     public static final class Drive{
@@ -70,13 +73,34 @@ public final class C {
         
         //PID constants for AutoBalance command
         public static final double balance_kp = 0.011;
-        public static final double balance_ki = 0;
+        public static final double balance_ki = 0.01;
         public static final double balance_kd = 0; 
 
         public static final double balance_point = 0; //0 degrees
-
-
     }
-            
+    
+    public static final class Arm{
+        public static final double shoulder_kp = 0;
+        public static final double shoulder_ki = 0;
+        public static final double shoulder_kd = 0;
+        public static final double shoulder_kff = 0;
+        public static final double shoulder_kIz = 0;
+        public static final double shoulder_tolerance = 0;
+        public static final double shoulder_maxOutput = 1;
+        public static final double shoulder_minOutput = -1;
+
+        public static final double elbow_kp = 0;
+        public static final double elbow_ki = 0;
+        public static final double elbow_kd = 0;
+        public static final double elbow_kff = 0;
+        public static final double elbow_kIz = 0;
+        public static final double elbow_tolerance = 0;
+        public static final double elbow_maxOutput = 1;
+        public static final double elbow_minOutput = -1;
+
+        public static final int kPIDLoopIdx = 0;
+        public static final int kTimeoutMs = 30;
+        public static final boolean kSensorPhase = true;
+    }
 
 }
