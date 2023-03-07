@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.autonomous.PIDControllers.*;
 import frc.robot.commands.autonomous.Paths.*;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -27,6 +27,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   private final Drivetrain m_Drivetrain = new Drivetrain();
+
+  private final Arm m_Arm = new Arm();
+  
+  private final Claw m_Claw = new Claw();
   
   private final Joystick m_driverCtrlLeft = new Joystick(C.OI.driverPortLeft);
   // private final PS4Controller m_driverCtrlLeft = new PS4Controller(C.OI.driverPortLeft);

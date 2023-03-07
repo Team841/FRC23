@@ -20,36 +20,34 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 
 public class Arm extends SubsystemBase {
-  /** Creates a new Arm. */
+  /** Creates a new Arm.  */
 
-  private final TalonFX shoulderMotor = new TalonFX(C.CANid.shoulderMotor);
+  private final TalonFX shoulderMotor_starboard = new TalonFX(C.CANid.shoulderMotor_Starboard);
+  private final TalonFX shoulderMotor_port = new TalonFX(C.CANid.shoulderMotor_Port);
   private final TalonFX elbowMotor = new TalonFX(C.CANid.elbowMotor);
+  public final DigitalInput shoulderHallSensor = new DigitalInput(C.Arm.shoulderHallChannel);
 
   public Arm() {
 
-    shoulderMotor.configFactoryDefault();
+    shoulderMotor_starboard.configFactoryDefault();
+    shoulderMotor_port.configFactoryDefault();
     elbowMotor.configFactoryDefault();
 
-    shoulderMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 0, 0));
+    shoulderMotor_starboard.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 0, 0));
+    shoulderMotor_port.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 0, 0));
     elbowMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 0, 0));
 
-    bandWithLimitMotorCAN(shoulderMotor);
+    bandWithLimitMotorCAN(shoulderMotor_starboard);
+    bandWithLimitMotorCAN(shoulderMotor_port);
     bandWithLimitMotorCAN(elbowMotor);
 
     armSetBrakeMode(true);
-
-    /* Config the sensor used for Primary PID and sensor direction */
-    shoulderMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, C.Arm.kPIDLoopIdx, C.Arm.kTimeoutMs);
-    elbowMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, C.Arm.kPIDLoopIdx, C.Arm.kTimeoutMs);
-
-    /* Ensure sensor is positive when output is positive */
-    shoulderMotor.setSensorPhase(C.Arm.kSensorPhase);
-    elbowMotor.setSensorPhase(C.Arm.kSensorPhase);
 
     /* Config the peak and nominal outputs */
     elbowMotor.configNominalOutputForward(C.Arm.elbow_maxOutput, C.Arm.kTimeoutMs);
@@ -57,23 +55,40 @@ public class Arm extends SubsystemBase {
     elbowMotor.configPeakOutputForward(C.Arm.elbow_maxOutput,C.Arm.kTimeoutMs);
     elbowMotor.configPeakOutputReverse(C.Arm.elbow_minOutput,C.Arm.kTimeoutMs);
 
-    shoulderMotor.configNominalOutputForward(C.Arm.shoulder_maxOutput, C.Arm.kTimeoutMs);
-    shoulderMotor.configNominalOutputReverse(C.Arm.shoulder_minOutput,C.Arm.kTimeoutMs);
-    shoulderMotor.configPeakOutputForward(C.Arm.shoulder_maxOutput,C.Arm.kTimeoutMs);
-    shoulderMotor.configPeakOutputReverse(C.Arm.shoulder_minOutput,C.Arm.kTimeoutMs);
+    shoulderMotor_starboard.configNominalOutputForward(C.Arm.shoulder_maxOutput, C.Arm.kTimeoutMs);
+    shoulderMotor_starboard.configNominalOutputReverse(C.Arm.shoulder_minOutput,C.Arm.kTimeoutMs);
+    shoulderMotor_starboard.configPeakOutputForward(C.Arm.shoulder_maxOutput,C.Arm.kTimeoutMs);
+    shoulderMotor_starboard.configPeakOutputReverse(C.Arm.shoulder_minOutput,C.Arm.kTimeoutMs);
+
+    shoulderMotor_port.configNominalOutputForward(C.Arm.shoulder_maxOutput, C.Arm.kTimeoutMs);
+    shoulderMotor_port.configNominalOutputReverse(C.Arm.shoulder_minOutput,C.Arm.kTimeoutMs);
+    shoulderMotor_port.configPeakOutputForward(C.Arm.shoulder_maxOutput,C.Arm.kTimeoutMs);
+    shoulderMotor_port.configPeakOutputReverse(C.Arm.shoulder_minOutput,C.Arm.kTimeoutMs);
+
+    
+    /* Config the sensor used for Primary PID and sensor direction */
+    shoulderMotor_starboard.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, C.Arm.kPIDLoopIdx, C.Arm.kTimeoutMs);
+    elbowMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, C.Arm.kPIDLoopIdx, C.Arm.kTimeoutMs);
+
+    /* Ensure sensor is positive when output is positive */
+    shoulderMotor_starboard.setSensorPhase(C.Arm.kSensorPhase);
+    elbowMotor.setSensorPhase(C.Arm.kSensorPhase);
 
     /* Config the Positon closed loop Gains in slotX */
-    shoulderMotor.config_kF(C.Arm.kPIDLoopIdx, C.Arm.shoulder_kff, C.Arm.kTimeoutMs);
-    shoulderMotor.config_kP(C.Arm.kPIDLoopIdx, C.Arm.shoulder_kp, C.Arm.kTimeoutMs);
-    shoulderMotor.config_kI(C.Arm.kPIDLoopIdx, C.Arm.shoulder_ki, C.Arm.kTimeoutMs);
-    shoulderMotor.config_kD(C.Arm.kPIDLoopIdx, C.Arm.shoulder_kd, C.Arm.kTimeoutMs);
-    shoulderMotor.config_IntegralZone(C.Arm.kPIDLoopIdx, C.Arm.shoulder_kIz, C.Arm.kTimeoutMs);
+    shoulderMotor_starboard.config_kF(C.Arm.kPIDLoopIdx, C.Arm.shoulder_kff, C.Arm.kTimeoutMs);
+    shoulderMotor_starboard.config_kP(C.Arm.kPIDLoopIdx, C.Arm.shoulder_kp, C.Arm.kTimeoutMs);
+    shoulderMotor_starboard.config_kI(C.Arm.kPIDLoopIdx, C.Arm.shoulder_ki, C.Arm.kTimeoutMs);
+    shoulderMotor_starboard.config_kD(C.Arm.kPIDLoopIdx, C.Arm.shoulder_kd, C.Arm.kTimeoutMs);
+    shoulderMotor_starboard.config_IntegralZone(C.Arm.kPIDLoopIdx, C.Arm.shoulder_kIz, C.Arm.kTimeoutMs);
 
     elbowMotor.config_kF(C.Arm.kPIDLoopIdx, C.Arm.elbow_kff, C.Arm.kTimeoutMs);
     elbowMotor.config_kP(C.Arm.kPIDLoopIdx, C.Arm.elbow_kp, C.Arm.kTimeoutMs);
     elbowMotor.config_kI(C.Arm.kPIDLoopIdx, C.Arm.elbow_ki, C.Arm.kTimeoutMs);
     elbowMotor.config_kD(C.Arm.kPIDLoopIdx, C.Arm.elbow_kd, C.Arm.kTimeoutMs);
     elbowMotor.config_IntegralZone(C.Arm.kPIDLoopIdx, C.Arm.elbow_kIz, C.Arm.kTimeoutMs);
+
+    shoulderMotor_port.follow(shoulderMotor_starboard);
+    shoulderMotor_port.setInverted(true);
 
   }
 
@@ -93,17 +108,23 @@ public class Arm extends SubsystemBase {
 
   public void armSetBrakeMode(boolean brakeMode) {
     if (brakeMode) {
-      shoulderMotor.setNeutralMode(NeutralMode.Brake);
+      shoulderMotor_starboard.setNeutralMode(NeutralMode.Brake);
+      shoulderMotor_port.setNeutralMode(NeutralMode.Brake);
       elbowMotor.setNeutralMode(NeutralMode.Brake);
     } else {
-      shoulderMotor.setNeutralMode(NeutralMode.Coast);
+      shoulderMotor_starboard.setNeutralMode(NeutralMode.Coast);
+      shoulderMotor_port.setNeutralMode(NeutralMode.Coast);
       elbowMotor.setNeutralMode(NeutralMode.Coast);
     }
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Shouldmotor", shoulderMotor_starboard.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Elbowmotor", elbowMotor.getSelectedSensorPosition());
+    SmartDashboard.putNumber("ShoulderMotorOutput", shoulderMotor_starboard.getMotorOutputPercent());
+    SmartDashboard.putNumber("ElbowMotorOutput", elbowMotor.getMotorOutputPercent());
+    SmartDashboard.putBoolean("Hall Sensor", shoulderHallSensor.get());
   }
 
 

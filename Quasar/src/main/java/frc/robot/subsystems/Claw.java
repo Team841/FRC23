@@ -4,11 +4,29 @@
 
 package frc.robot.subsystems;
 
+import frc.robot.C;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Claw extends SubsystemBase {
   /** Creates a new Claw. */
+
+  private final Solenoid clawSolenoid = new Solenoid(PneumaticsModuleType.REVPH,C.Claw.kSolenoidPort);
+
   public Claw() {}
+
+  public void clawOpen() {
+    clawSolenoid.set(true);
+  }
+
+  public void clawClose() {
+    clawSolenoid.set(false);
+  }
+
+  public boolean isClawOpen() {
+    return clawSolenoid.get();
+  }
 
   @Override
   public void periodic() {
