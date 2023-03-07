@@ -27,8 +27,9 @@ public final class C {
         public static final int driveLeft1 = 3;
         public static final int driveLeft2 = 4;
 
-        public static final int shoulderMotor = 5;
-        public static final int elbowMotor = 6;
+        public static final int shoulderMotor_Starboard = 9;
+        public static final int shoulderMotor_Port = 10;
+        public static final int elbowMotor = 11;
     }
 
     public static final class Drive{
@@ -101,6 +102,11 @@ public final class C {
         public static final int kPIDLoopIdx = 0;
         public static final int kTimeoutMs = 30;
         public static final boolean kSensorPhase = true;
+
+        public static final int shoulderHallChannel = 0;
     }
 
+    public static final class Claw{
+        public static final int kSolenoidPort = 0;
+    }
 }
