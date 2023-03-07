@@ -104,6 +104,8 @@ public final class C {
         public static final boolean kSensorPhase = true;
 
         public static final int shoulderHallChannel = 0;
+
+        public static final double testMove = 0.03;
     }
 
     public static final class Claw{

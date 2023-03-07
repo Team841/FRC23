@@ -9,17 +9,17 @@ import frc.robot.C;
 
 import com.ctre.phoenix.motorcontrol.can.*;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX; 
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced; 
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 
-import edu.wpi.first.networktables.NetworkTable;
+/* import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableInstance; */
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -116,6 +116,35 @@ public class Arm extends SubsystemBase {
       shoulderMotor_port.setNeutralMode(NeutralMode.Coast);
       elbowMotor.setNeutralMode(NeutralMode.Coast);
     }
+  }
+
+  public void moveShoulder(double speed) {
+    shoulderMotor_starboard.set(ControlMode.PercentOutput, speed);
+  }
+
+  public void moveShoulderSlowUp() {
+    shoulderMotor_starboard.set(ControlMode.PercentOutput, C.Arm.testMove);
+  }
+
+  public void moveShoulderSlowDown() {
+    shoulderMotor_starboard.set(ControlMode.PercentOutput, -C.Arm.testMove);
+  }
+  
+  public void moveElbowSlowUp() {
+    elbowMotor.set(ControlMode.PercentOutput, C.Arm.testMove);
+  }
+
+  public void moveElbowSlowDown() {
+    elbowMotor.set(ControlMode.PercentOutput, -C.Arm.testMove);
+  }
+
+  public void moveElbow(double speed) {
+    elbowMotor.set(ControlMode.PercentOutput, speed);
+  }
+
+  public void stopAllMotors() {
+    shoulderMotor_starboard.set(ControlMode.PercentOutput, 0);
+    elbowMotor.set(ControlMode.PercentOutput, 0);
   }
 
   @Override

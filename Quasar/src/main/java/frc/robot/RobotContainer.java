@@ -64,13 +64,25 @@ public class RobotContainer {
       AutoTurn.whenPressed(new AutoTurn(m_Drivetrain, 270));
     final JoystickButton AutoDistance = new JoystickButton(m_driverCtrlLeft, C.OI.kB);
       AutoDistance.whenPressed(new AutoDriveToDistance(m_Drivetrain, 48));
+
+    final JoystickButton upShoulder = new JoystickButton(m_codriverCtrl, C.OI.kRB);
+      upShoulder.whileHeld(new InstantCommand(m_Arm::moveShoulderSlowUp, m_Arm));
+    final JoystickButton downShoulder = new JoystickButton(m_codriverCtrl, C.OI.kRT);
+      downShoulder.whileHeld(new InstantCommand(m_Arm::moveShoulderSlowDown, m_Arm));
+    final JoystickButton upElbow = new JoystickButton(m_codriverCtrl, C.OI.kLB);
+      upElbow.whileHeld(new InstantCommand(m_Arm::moveElbowSlowUp, m_Arm));
+    final JoystickButton downElbow = new JoystickButton(m_codriverCtrl, C.OI.kLT);
+      downElbow.whileHeld(new InstantCommand(m_Arm::moveElbowSlowDown, m_Arm));
+    final JoystickButton stopArmMotors = new JoystickButton(m_codriverCtrl, C.OI.kA);
+      stopArmMotors.whenPressed(new InstantCommand(m_Arm::stopAllMotors, m_Arm));
+
   }
 
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
-   * @return the command to run in autonomous 
+   * @return the command to run in autonomous    
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
