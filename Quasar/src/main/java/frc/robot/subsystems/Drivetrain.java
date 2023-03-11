@@ -145,6 +145,7 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
+    /*
     SmartDashboard.putNumber("ACCL_x", imu.getAccelX());///use this axis
     SmartDashboard.putNumber("ACCL_y", imu.getAccelY());
     SmartDashboard.putNumber("ACCL_z", imu.getAccelZ());/// use this axis
@@ -159,7 +160,7 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putBoolean("brake mode", isBrakeMode());
 
     SmartDashboard.putNumber("left1", drivestyle.getLeftPower());
-    SmartDashboard.putNumber("right1", drivestyle.getRightPower());
+    SmartDashboard.putNumber("right1", drivestyle.getRightPower()); */
 
 
     if (isDistancePIDenabled){

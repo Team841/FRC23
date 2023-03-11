@@ -129,6 +129,10 @@ public class Arm extends SubsystemBase {
   public void moveShoulderSlowDown() {
     shoulderMotor_starboard.set(ControlMode.PercentOutput, -C.Arm.testMove);
   }
+
+  public void stopShoulder() {
+    shoulderMotor_starboard.set(ControlMode.PercentOutput, 0);
+  }
   
   public void moveElbowSlowUp() {
     elbowMotor.set(ControlMode.PercentOutput, C.Arm.testMove);
@@ -136,6 +140,10 @@ public class Arm extends SubsystemBase {
 
   public void moveElbowSlowDown() {
     elbowMotor.set(ControlMode.PercentOutput, -C.Arm.testMove);
+  }
+
+  public void stopElbow() {
+    elbowMotor.set(ControlMode.PercentOutput, 0);
   }
 
   public void moveElbow(double speed) {
