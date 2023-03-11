@@ -30,6 +30,8 @@ public final class C {
         public static final int shoulderMotor_Starboard = 9;
         public static final int shoulderMotor_Port = 10;
         public static final int elbowMotor = 11;
+
+        public static final int clawNeo = 6;
     }
 
     public static final class Drive{
@@ -104,9 +106,15 @@ public final class C {
         public static final boolean kSensorPhase = true;
 
         public static final int shoulderHallChannel = 0;
+
+        public static final double testMove = 0.03;
     }
 
     public static final class Claw{
-        public static final int kSolenoidPort = 0;
+        
+        public static final int kSolenoidPortForward = 6; // the higher side
+        public static final int kSolenoidPortBackward = 7; // the backward side
+
+        public static final int pneumaticCompresser = 0;
     }
 }
