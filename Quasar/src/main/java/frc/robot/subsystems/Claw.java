@@ -78,7 +78,7 @@ public class Claw extends SubsystemBase {
     return clawSolenoid_1.get();
   }
 
-  public void toggleIntake(){
+  public void toggleIntakeIn(){
     /* 
     if(clawNeo.get() == 0){
       clawNeo.set(C.Claw.clawNeoPercentPower);
@@ -93,6 +93,14 @@ public class Claw extends SubsystemBase {
     }
   }
 
+  public void toggleIntakeOut(){
+    if(clawTalon.get()==0){
+      clawTalon.set(-C.Claw.clawTalonPercentPower);
+    } else {
+      clawTalon.set(0);
+    }
+  }
+x
   @Override
   public void periodic() {
     

@@ -37,7 +37,8 @@ public class Drivetrain extends SubsystemBase {
   private final CANSparkMax right1 = new CANSparkMax(C.CANid.driveRight1, MotorType.kBrushless);
   private final CANSparkMax right2 = new CANSparkMax(C.CANid.driveRight2, MotorType.kBrushless);
 
-  public PIDController turnpid = new PIDController(C.Drive.turn_kd, C.Drive.turn_ki, C.Drive.turn_kp);
+  public PIDController turnpid = new PIDController(C.Drive.turn_kp, C.Drive.turn_ki, C.Drive.turn_kd);
+
   public SparkMaxPIDController left_distance_pid = left1.getPIDController();
   public SparkMaxPIDController right_distance_pid = right1.getPIDController();
   public PIDController balance_pid = new PIDController(0, 0, 0);

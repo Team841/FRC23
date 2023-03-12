@@ -77,8 +77,6 @@ public class RobotContainer {
     final JoystickButton downElbow = new JoystickButton(m_codriverCtrl, C.OI.kLT);
       downElbow.whileHeld(new InstantCommand(m_Arm::moveElbowSlowDown, m_Arm));
       downElbow.whenReleased(new InstantCommand(m_Arm::stopElbow, m_Arm));
-    final JoystickButton stopArmMotors = new JoystickButton(m_codriverCtrl, C.OI.kA);
-      stopArmMotors.whenPressed(new InstantCommand(m_Arm::stopAllMotors, m_Arm));
 
     final JoystickButton openClaw = new JoystickButton(m_codriverCtrl, C.OI.kX);
       openClaw.whenPressed(new InstantCommand(m_Claw::setClawOpen, m_Claw));
@@ -86,7 +84,10 @@ public class RobotContainer {
       closeClaw.whenPressed(new InstantCommand(m_Claw::setClawClose, m_Claw));
 
     final JoystickButton toggleIntake = new JoystickButton(m_codriverCtrl, C.OI.kY);
-      toggleIntake.whenPressed(new InstantCommand(m_Claw::toggleIntake, m_Claw));
+      toggleIntake.whenPressed(new InstantCommand(m_Claw::toggleIntakeIn, m_Claw));
+    final JoystickButton toggleIntakeOut = new JoystickButton(m_codriverCtrl, C.OI.kA);
+      toggleIntakeOut.whenPressed(new InstantCommand(m_Claw::toggleIntakeOut, m_Claw));
+    
   }
 
 

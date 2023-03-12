@@ -61,11 +61,12 @@ public final class C {
         public static final double sensitivityLow = 0.5;
     
         //PID constants for turning, specifically for AutoTurn command//
-        public static final double turn_kp = 0.019; 
-        public static final double turn_ki = 0.001;
-        public static final double turn_kd = 0.001;
-        public static final double turn_tolerance = 1;
-        public static final double turn_velocity_tolerance = 0.05; 
+        public static final double turn_kp = 0.018275; 
+        public static final double turn_ki = 0;
+        public static final double turn_kd = 0.00175;
+        public static final double turn_tolerance = 0.4;
+        public static final double turn_velocity_tolerance = 0.025; 
+        public static final double antiWindUp = 0.1;
  
         //PID constants for AutoDriveToDistance command
         public static final double distance_kp = 0.040;   
@@ -122,6 +123,6 @@ public final class C {
         public static final int pneumaticCompresser = 0;
 
         public static final double clawNeoPercentPower = 0.5;
-        public static final double clawTalonPercentPower = 0.2;
+        public static final double clawTalonPercentPower = 0.4;
     }
 }
