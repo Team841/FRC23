@@ -32,6 +32,7 @@ public final class C {
         public static final int elbowMotor = 11;
 
         public static final int clawNeo = 6;
+        public static final int clawTalon = 4;
     }
 
     public static final class Drive{
@@ -107,6 +108,9 @@ public final class C {
 
         public static final int shoulderHallChannel = 0;
 
+        public static final double shoulderGearRatio = 1/120;
+        public static final double countsPerRev = 2048;
+
         public static final double testMove = 0.03;
     }
 
@@ -116,5 +120,8 @@ public final class C {
         public static final int kSolenoidPortBackward = 7; // the backward side
 
         public static final int pneumaticCompresser = 0;
+
+        public static final double clawNeoPercentPower = 0.5;
+        public static final double clawTalonPercentPower = 0.2;
     }
 }
