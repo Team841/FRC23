@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.*;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX; 
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
@@ -121,38 +122,55 @@ public class Arm extends SubsystemBase {
   public void moveShoulder(double speed) {
     shoulderMotor_starboard.set(ControlMode.PercentOutput, speed);
   }
-
-  public void moveShoulderSlowUp() {
-    shoulderMotor_starboard.set(ControlMode.PercentOutput, C.Arm.testMove);
-  }
-
-  public void moveShoulderSlowDown() {
-    shoulderMotor_starboard.set(ControlMode.PercentOutput, -C.Arm.testMove);
-  }
-
-  public void stopShoulder() {
-    shoulderMotor_starboard.set(ControlMode.PercentOutput, 0);
-  }
   
-  public void moveElbowSlowUp() {
-    elbowMotor.set(ControlMode.PercentOutput, C.Arm.testMove);
-  }
-
-  public void moveElbowSlowDown() {
-    elbowMotor.set(ControlMode.PercentOutput, -C.Arm.testMove);
-  }
-
-  public void stopElbow() {
-    elbowMotor.set(ControlMode.PercentOutput, 0);
-  }
-
   public void moveElbow(double speed) {
     elbowMotor.set(ControlMode.PercentOutput, speed);
   }
 
+  /*  */
+
+                public void moveShoulderSlowUp() {
+                  shoulderMotor_starboard.set(ControlMode.PercentOutput, C.Arm.testMove);
+                }
+
+                public void moveShoulderSlowDown() {
+                  shoulderMotor_starboard.set(ControlMode.PercentOutput, -C.Arm.testMove);
+                }
+
+                public void stopShoulder() {
+                  shoulderMotor_starboard.set(ControlMode.PercentOutput, 0);
+                }
+                
+                public void moveElbowSlowUp() {
+                  elbowMotor.set(ControlMode.PercentOutput, C.Arm.testMove);
+                }
+
+                public void moveElbowSlowDown() {
+                  elbowMotor.set(ControlMode.PercentOutput, -C.Arm.testMove);
+                }
+
+                public void stopElbow() {
+                  elbowMotor.set(ControlMode.PercentOutput, 0);
+                }
+
+  /*  */
+
   public void stopAllMotors() {
     shoulderMotor_starboard.set(ControlMode.PercentOutput, 0);
     elbowMotor.set(ControlMode.PercentOutput, 0);
+  }
+
+  public double angleToCounts(double angle) {
+    return (angle / 360 * C.Arm.countsPerRev) / C.Arm.shoulderGearRatio;
+  }
+
+  public double countsToAngle(double counts) {
+    return counts * C.Arm.shoulderGearRatio / C.Arm.countsPerRev * 360; // flipped from angletocounts
+  }
+  
+  public void setJointAngles(double shoulder_angle, double elbow_angle){
+    shoulderMotor_starboard.set(TalonFXControlMode.Position, angleToCounts(shoulder_angle));
+    elbowMotor.set(TalonFXControlMode.Position, angleToCounts(elbow_angle));
   }
 
   @Override
@@ -162,7 +180,23 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("ShoulderMotorOutput", shoulderMotor_starboard.getMotorOutputPercent());
     SmartDashboard.putNumber("ElbowMotorOutput", elbowMotor.getMotorOutputPercent());
     SmartDashboard.putBoolean("Hall Sensor", shoulderHallSensor.get());
+
+    SmartDashboard.putNumber("shoulder Postion", countsToAngle(shoulderMotor_starboard.getSelectedSensorPosition()));
+    SmartDashboard.putNumber("elbow Postion", countsToAngle(elbowMotor.getSelectedSensorPosition()));
   }
 
 
 }
+
+
+/*
+ *  Pick from pickstation
+ *  Pick up from ground
+ *  scrore low and mid
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
