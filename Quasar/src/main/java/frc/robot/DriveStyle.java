@@ -34,12 +34,12 @@ public class DriveStyle {//These variables are used in ChezyDrive, the Halo-type
     
     
             double wheelNonLinearity;
-            double wheel = handleDeadband(wheelInput, C.Drivestyle.wheelDeadband); // double
+            double wheel = handleDeadband(wheelInput, C.Drive.wheelDeadband); // double
                                                                              // wheel
                                                                              // =
                                                                              // handleDeadband(controlBoard.rightStick.getX(),
                                                                              // wheelDeadband);
-            double throttle = -handleDeadband(throttleInput, C.Drivestyle.throttleDeadband);
+            double throttle = -handleDeadband(throttleInput, C.Drive.throttleDeadband);
             double negInertia = wheel - oldWheel;
             /*
              * if(getAverageSpeed()> 2000){ SetHighGear(); } else if (getAverageSpeed() <
