@@ -19,6 +19,7 @@ public final class C {
         public static final int kLB = 5;
         public static final int kX = 1;
         public static final int kY = 4;
+        public static final int kStart = 10;
     }
 
     public static final class CANid{
@@ -35,7 +36,7 @@ public final class C {
         public static final int clawTalon = 4;
     }
 
-    public static final class Drive{
+    public static final class Drivestyle{
         //Drive Style definition, loop up. Don't change this! This is needed for the subsystem.
         public static final int tankdrive = 1;
         public static final int chezydrive = 2;
@@ -46,6 +47,23 @@ public final class C {
 
         public static double slowModeScaleFactor = 0.25;
 
+        //Tuning the Chezy Drive - deadband, sensitivity & tolerancing values on raw joystick inputs
+        public static final double throttleDeadband = 0.02; 
+        public static final double wheelDeadband = 0.02;	
+        public static final double sensitivityHigh = 0.5;	
+        public static final double sensitivityLow = 0.5; // (**deafult uses low gear**)
+
+
+        public static final double wheelNonLinearityHighGear = 0.5; //Chezy Drive non-linearity
+        public static final double wheelNonLinearityLowGear = 0.6; //Chezy Drive non-linearity  (**deafult uses low gear**)
+
+        public static final double QuickTurnSensitivityHigh = 0.005; //Chezy Drive quick turn sensitivity
+        public static final double QuickTurnSensitivityLow = 0.005; //Chezy Drive quick turn sensitivity  (**deafult uses low gear**)
+
+    }
+
+    public static final class Drive{
+        
         // Rev motor set current limit at the number of amps
         public static int currentLimit = 60;
 
@@ -53,12 +71,6 @@ public final class C {
         public static double gearRatio = 1/7.23;
         public static double wheelDiameter = 6.06;
         public static double countsPerRev = 42; // this is the neo brushless
-
-        //Tuning the Chezy Drive - deadband, sensitivity & tolerancing values on raw joystick inputs
-        public static final double throttleDeadband = 0.02; 
-        public static final double wheelDeadband = 0.02;	
-        public static final double sensitivityHigh = 0.5;	
-        public static final double sensitivityLow = 0.5;
     
         //PID constants for turning, specifically for AutoTurn command//
         public static final double turn_kp = 0.018275; 
@@ -85,7 +97,7 @@ public final class C {
     }
     
     public static final class Arm{
-        public static final double shoulder_kp = 0;
+        public static final double shoulder_kp = 0.0002;
         public static final double shoulder_ki = 0;
         public static final double shoulder_kd = 0;
         public static final double shoulder_kff = 0;
@@ -109,7 +121,8 @@ public final class C {
 
         public static final int shoulderHallChannel = 0;
 
-        public static final double shoulderGearRatio = 1/120;
+        public static final double shoulderGearRatio = 0.00687500000000000000; // 1/120;
+        public static final double elbowGearRatio = 1;
         public static final double countsPerRev = 2048;
 
         public static final double testMove = 0.03;

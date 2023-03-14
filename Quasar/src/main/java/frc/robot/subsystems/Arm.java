@@ -160,29 +160,33 @@ public class Arm extends SubsystemBase {
     elbowMotor.set(ControlMode.PercentOutput, 0);
   }
 
-  public double angleToCounts(double angle) {
-    return (angle / 360 * C.Arm.countsPerRev) / C.Arm.shoulderGearRatio;
+  public double angleToCounts(double angle, double gearRatio) {
+    return (angle / 360.0 * C.Arm.countsPerRev) / gearRatio;
   }
 
-  public double countsToAngle(double counts) {
-    return counts * C.Arm.shoulderGearRatio / C.Arm.countsPerRev * 360; // flipped from angletocounts
+  public double countsToAngle(double counts, double gearRatio) {
+    /* test */
+    return counts * gearRatio / C.Arm.countsPerRev * 360.0; // flipped from angletocounts
   }
   
   public void setJointAngles(double shoulder_angle, double elbow_angle){
-    shoulderMotor_starboard.set(TalonFXControlMode.Position, angleToCounts(shoulder_angle));
-    elbowMotor.set(TalonFXControlMode.Position, angleToCounts(elbow_angle));
+    shoulderMotor_starboard.set(TalonFXControlMode.Position, angleToCounts(shoulder_angle, C.Arm.shoulderGearRatio));
+    elbowMotor.set(TalonFXControlMode.Position, angleToCounts(elbow_angle, C.Arm.elbowGearRatio));
+  }
+  public void testjoint(){
+    setJointAngles(90, 0);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Shouldmotor", shoulderMotor_starboard.getSelectedSensorPosition());
-    SmartDashboard.putNumber("Elbowmotor", elbowMotor.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Shouldmotor.DNG", shoulderMotor_starboard.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Elbowmotor.DNG", elbowMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("ShoulderMotorOutput", shoulderMotor_starboard.getMotorOutputPercent());
     SmartDashboard.putNumber("ElbowMotorOutput", elbowMotor.getMotorOutputPercent());
     SmartDashboard.putBoolean("Hall Sensor", shoulderHallSensor.get());
 
-    SmartDashboard.putNumber("shoulder Postion", countsToAngle(shoulderMotor_starboard.getSelectedSensorPosition()));
-    SmartDashboard.putNumber("elbow Postion", countsToAngle(elbowMotor.getSelectedSensorPosition()));
+    SmartDashboard.putNumber("shoulder Postion", countsToAngle(shoulderMotor_starboard.getSelectedSensorPosition(), C.Arm.shoulderGearRatio));
+    SmartDashboard.putNumber("elbow Postion", countsToAngle(elbowMotor.getSelectedSensorPosition(), C.Arm.elbowGearRatio));
   }
 
 

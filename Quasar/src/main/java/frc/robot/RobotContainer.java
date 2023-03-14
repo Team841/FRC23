@@ -87,6 +87,9 @@ public class RobotContainer {
       toggleIntake.whenPressed(new InstantCommand(m_Claw::toggleIntakeIn, m_Claw));
     final JoystickButton toggleIntakeOut = new JoystickButton(m_codriverCtrl, C.OI.kA);
       toggleIntakeOut.whenPressed(new InstantCommand(m_Claw::toggleIntakeOut, m_Claw));
+
+    final JoystickButton SetArm = new JoystickButton(m_codriverCtrl, C.OI.kStart);
+      SetArm.whenPressed(new InstantCommand(m_Arm::testjoint, m_Arm));
     
   }
 
