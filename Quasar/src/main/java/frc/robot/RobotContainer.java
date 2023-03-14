@@ -27,18 +27,17 @@ public class RobotContainer {
   /* Create subsystems */
   private final Drivetrain m_Drivetrain = new Drivetrain();
   private final Arm m_Arm = new Arm();
-  private final Claw m_Claw = new Claw();
+  // private final Claw m_Claw = new Claw();
   
   private final CommandXboxController m_codriverCtrl = new CommandXboxController(C.OI.codriverPort);
-  private final CommandPS4Controller m_driverCtrlLeft = new CommandPS4Controller(C.OI.driverPortLeft);
-  private final CommandPS4Controller m_driverCtrlRight = new CommandPS4Controller(C.OI.driverPortRight);
+  private final CommandPS4Controller m_driverCtrl = new CommandPS4Controller(C.OI.driverPortLeft);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
     m_Drivetrain.setDefaultCommand(
-      new RunCommand(() -> m_Drivetrain.Drive(m_driverCtrlLeft,m_driverCtrlRight),m_Drivetrain));
+      new RunCommand(() -> m_Drivetrain.Drive(m_driverCtrl.getLeftX(), m_driverCtrl.getLeftY()),m_Drivetrain));
   }
 
   
@@ -54,14 +53,14 @@ public class RobotContainer {
     /* https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/button/Button.html */
 
      //Quick turn
-    final Trigger qT = m_driverCtrlLeft.R1();
+    final Trigger qT = m_driverCtrl.R1();
       qT.onTrue(new InstantCommand(m_Drivetrain::setQuickTurn, m_Drivetrain));
       qT.onFalse(new InstantCommand(m_Drivetrain::resetQuickTurn, m_Drivetrain));
-    final Trigger AutoBalance = m_driverCtrlLeft.cross();
+    final Trigger AutoBalance = m_driverCtrl.cross();
       AutoBalance.whileTrue(new AutoBalance(m_Drivetrain));
-    final Trigger AutoTurn = m_driverCtrlLeft.square();
+    final Trigger AutoTurn = m_driverCtrl.square();
       AutoTurn.onTrue(new AutoTurn(m_Drivetrain, 270));
-    final Trigger AutoDistance = m_driverCtrlLeft.circle();
+    final Trigger AutoDistance = m_driverCtrl.circle();
       AutoDistance.onTrue(new AutoDriveToDistance(m_Drivetrain, 48));
 
     final Trigger upShoulder = m_codriverCtrl.rightBumper();

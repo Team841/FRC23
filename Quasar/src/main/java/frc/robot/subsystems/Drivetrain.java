@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 
 import frc.robot.C;
@@ -85,9 +87,9 @@ public class Drivetrain extends SubsystemBase {
 
   }
 
-  public void Drive(Joystick stickLeft, Joystick stickRight) {
+  public void Drive(double wheel, double throttle) {
     setDrivetrainBrakeMode(false);
-    drivestyle.cheesyDrive(stickLeft);
+    drivestyle.cheesyDrive(wheel, throttle );
     //REV syntax
     left1.set(drivestyle.getLeftPower());
     

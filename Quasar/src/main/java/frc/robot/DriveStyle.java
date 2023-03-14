@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+// import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 
 /** Add your docs here. */
 public class DriveStyle {//These variables are used in ChezyDrive, the Halo-type (similar to Arcade) drive we borrow from team 254 (Uses an additional control term that compensates for robot momentum)
@@ -29,16 +30,16 @@ public class DriveStyle {//These variables are used in ChezyDrive, the Halo-type
          * 
          * @param stick
          */
-        public void cheesyDrive(Joystick stick) {
+        public void cheesyDrive(double wheelInput, double throttleInput) {
     
     
             double wheelNonLinearity;
-            double wheel = handleDeadband(getWheel(stick), C.Drive.wheelDeadband); // double
+            double wheel = handleDeadband(wheelInput, C.Drive.wheelDeadband); // double
                                                                              // wheel
                                                                              // =
                                                                              // handleDeadband(controlBoard.rightStick.getX(),
                                                                              // wheelDeadband);
-            double throttle = -handleDeadband(getThrottle(stick), C.Drive.throttleDeadband);
+            double throttle = -handleDeadband(throttleInput, C.Drive.throttleDeadband);
             double negInertia = wheel - oldWheel;
             /*
              * if(getAverageSpeed()> 2000){ SetHighGear(); } else if (getAverageSpeed() <
@@ -193,7 +194,8 @@ public class DriveStyle {//These variables are used in ChezyDrive, the Halo-type
             return (Math.abs(v) < limit) ? v : limit * (v < 0 ? -1 : 1);
         }
     
-        /**
+        
+         /**
          * This method takes in object joystick and returns the yaxis value of the left
          * most side of the gamepad.
          * 
@@ -214,6 +216,7 @@ public class DriveStyle {//These variables are used in ChezyDrive, the Halo-type
         public double getWheel(Joystick stick) {
             return stick.getZ();
         }
+         
   
         //Tank drive style code
           public void tankDrive(Joystick stickLeft, Joystick stickRight){
