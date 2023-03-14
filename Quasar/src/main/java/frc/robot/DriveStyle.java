@@ -33,12 +33,12 @@ public class DriveStyle {//These variables are used in ChezyDrive, the Halo-type
     
     
             double wheelNonLinearity;
-            double wheel = handleDeadband(getWheel(stick), C.Drive.wheelDeadband); // double
+            double wheel = handleDeadband(getWheel(stick), C.Drivestyle.wheelDeadband); // double
                                                                              // wheel
                                                                              // =
                                                                              // handleDeadband(controlBoard.rightStick.getX(),
                                                                              // wheelDeadband);
-            double throttle = -handleDeadband(getThrottle(stick), C.Drive.throttleDeadband);
+            double throttle = -handleDeadband(getThrottle(stick), C.Drivestyle.throttleDeadband);
             double negInertia = wheel - oldWheel;
             /*
              * if(getAverageSpeed()> 2000){ SetHighGear(); } else if (getAverageSpeed() <
@@ -47,12 +47,12 @@ public class DriveStyle {//These variables are used in ChezyDrive, the Halo-type
     
             oldWheel = wheel;
             if (isHighGear) {
-                wheelNonLinearity = 0.6;
+                wheelNonLinearity = C.Drivestyle.wheelNonLinearityHighGear;
                 // Apply a sin function that's scaled to make it feel better. WPILib does similar thing by squaring inputs.
                 wheel = Math.sin(Math.PI / 2.0 * wheelNonLinearity * wheel) / Math.sin(Math.PI / 2.0 * wheelNonLinearity);
                 wheel = Math.sin(Math.PI / 2.0 * wheelNonLinearity * wheel) / Math.sin(Math.PI / 2.0 * wheelNonLinearity);
             } else {
-                wheelNonLinearity = 0.5;
+                wheelNonLinearity = C.Drivestyle.wheelNonLinearityLowGear;
                 // Apply a sin function that's scaled to make it feel better. WPILib does a similar thing by squaring inputs.
                 wheel = Math.sin(Math.PI / 2.0 * wheelNonLinearity * wheel) / Math.sin(Math.PI / 2.0 * wheelNonLinearity);
                 wheel = Math.sin(Math.PI / 2.0 * wheelNonLinearity * wheel) / Math.sin(Math.PI / 2.0 * wheelNonLinearity);
@@ -60,7 +60,7 @@ public class DriveStyle {//These variables are used in ChezyDrive, the Halo-type
             }
     
             double leftPwm, rightPwm, overPower;
-            double sensitivity = 1.7;
+            double sensitivity;
             double angularPower;
             double linearPower;
             // Negative inertia!
@@ -69,7 +69,7 @@ public class DriveStyle {//These variables are used in ChezyDrive, the Halo-type
     
             if (isHighGear) {
                 negInertiaScalar = 5.0;
-                sensitivity = C.Drive.sensitivityHigh; // sensitivity =
+                sensitivity = C.Drivestyle.sensitivityHigh; // sensitivity =
                                                  // C.sensitivityHigh.getDouble();
             } else {
                 if (wheel * negInertia > 0) {
@@ -81,7 +81,7 @@ public class DriveStyle {//These variables are used in ChezyDrive, the Halo-type
                         negInertiaScalar = 3.0;
                     }
                 }
-                sensitivity = C.Drive.sensitivityLow; // sensitivity =
+                sensitivity = C.Drivestyle.sensitivityLow; // sensitivity =
                                                 // C.sensitivityLow.getDouble();
                 if (Math.abs(throttle) > 0.1) {
                     // sensitivity = 1.0 - (1.0 - sensitivity) / Math.abs(throttle);
@@ -107,9 +107,9 @@ public class DriveStyle {//These variables are used in ChezyDrive, the Halo-type
                 }
                 overPower = 1.0;
                 if (isHighGear) {
-                    sensitivity = .005;
+                    sensitivity = C.Drivestyle.QuickTurnSensitivityHigh; 
                 } else {
-                    sensitivity = 0.005;
+                    sensitivity = C.Drivestyle.QuickTurnSensitivityLow;
     
                 }
                 angularPower = wheel;
