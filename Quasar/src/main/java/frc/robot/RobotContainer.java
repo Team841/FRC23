@@ -4,18 +4,16 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
-// import edu.wpi.first.wpilibj.PS4Controller;
-import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.autonomous.PIDControllers.*;
 import frc.robot.commands.autonomous.Paths.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-// import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -26,26 +24,23 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
+  /* Create subsystems */
   private final Drivetrain m_Drivetrain = new Drivetrain();
-
   private final Arm m_Arm = new Arm();
+  // private final Claw m_Claw = new Claw();
   
-  private final Claw m_Claw = new Claw();
-  
-  private final Joystick m_driverCtrlLeft = new Joystick(C.OI.driverPortLeft);
-  // private final PS4Controller m_driverCtrlLeft = new PS4Controller(C.OI.driverPortLeft);
-  private final Joystick m_driverCtrlRight = new Joystick(C.OI.driverPortRight);
-
-  private final Joystick m_codriverCtrl = new Joystick(C.OI.codriverPort);
+  private final CommandXboxController m_codriverCtrl = new CommandXboxController(C.OI.codriverPort);
+  private final CommandPS4Controller m_driverCtrl = new CommandPS4Controller(C.OI.driverPortLeft);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
     m_Drivetrain.setDefaultCommand(
-      new RunCommand(() -> m_Drivetrain.Drive(m_driverCtrlLeft,m_driverCtrlRight),m_Drivetrain)
-      );
+      new RunCommand(() -> m_Drivetrain.Drive(m_driverCtrl.getLeftX(), m_driverCtrl.getLeftY()),m_Drivetrain));
   }
+
+  
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -54,42 +49,41 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
+    /* https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/button/Button.html */
+
      //Quick turn
-    final JoystickButton qT = new JoystickButton(m_driverCtrlLeft, C.OI.kRB);
-      qT.whenPressed(new InstantCommand(m_Drivetrain::setQuickTurn, m_Drivetrain));
-      qT.whenReleased(new InstantCommand(m_Drivetrain::resetQuickTurn, m_Drivetrain));
-    final JoystickButton AutoBalance = new JoystickButton(m_driverCtrlLeft, C.OI.kA);
-      AutoBalance.whileHeld(new AutoBalance(m_Drivetrain));
-    final JoystickButton AutoTurn = new JoystickButton(m_driverCtrlLeft, C.OI.kX);
-      AutoTurn.whenPressed(new AutoTurn(m_Drivetrain, 270));
-    final JoystickButton AutoDistance = new JoystickButton(m_driverCtrlLeft, C.OI.kB);
-      AutoDistance.whenPressed(new AutoDriveToDistance(m_Drivetrain, 48));
+    final Trigger qT = m_driverCtrl.R1();
+      qT.onTrue(new InstantCommand(m_Drivetrain::setQuickTurn, m_Drivetrain));
+      qT.onFalse(new InstantCommand(m_Drivetrain::resetQuickTurn, m_Drivetrain));
+    final Trigger AutoBalance = m_driverCtrl.cross();
+      AutoBalance.whileTrue(new AutoBalance(m_Drivetrain));
+    final Trigger AutoTurn = m_driverCtrl.square();
+      AutoTurn.onTrue(new AutoTurn(m_Drivetrain, 270));
+    final Trigger AutoDistance = m_driverCtrl.circle();
+      AutoDistance.onTrue(new AutoDriveToDistance(m_Drivetrain, 48));
 
-    final JoystickButton upShoulder = new JoystickButton(m_codriverCtrl, C.OI.kRB);
-      upShoulder.whileHeld(new InstantCommand(m_Arm::moveShoulderSlowUp, m_Arm));
-      upShoulder.whenReleased(new InstantCommand(m_Arm::stopShoulder, m_Arm));
-    final JoystickButton downShoulder = new JoystickButton(m_codriverCtrl, C.OI.kRT);
-      downShoulder.whileHeld(new InstantCommand(m_Arm::moveShoulderSlowDown, m_Arm));
-      downShoulder.whenReleased(new InstantCommand(m_Arm::stopShoulder, m_Arm));
-    final JoystickButton upElbow = new JoystickButton(m_codriverCtrl, C.OI.kLB);
-      upElbow.whileHeld(new InstantCommand(m_Arm::moveElbowSlowUp, m_Arm));
-      upElbow.whenReleased(new InstantCommand(m_Arm::stopElbow, m_Arm));
-    final JoystickButton downElbow = new JoystickButton(m_codriverCtrl, C.OI.kLT);
-      downElbow.whileHeld(new InstantCommand(m_Arm::moveElbowSlowDown, m_Arm));
-      downElbow.whenReleased(new InstantCommand(m_Arm::stopElbow, m_Arm));
+    final Trigger upShoulder = m_codriverCtrl.rightBumper();
+      upShoulder.whileTrue(new InstantCommand(m_Arm::moveShoulderSlowUp, m_Arm));
+      upShoulder.onFalse(new InstantCommand(m_Arm::stopShoulder, m_Arm));
+    final Trigger downShoulder = m_codriverCtrl.rightTrigger();
+      downShoulder.whileTrue(new InstantCommand(m_Arm::moveShoulderSlowDown, m_Arm));
+      downShoulder.onFalse(new InstantCommand(m_Arm::stopShoulder, m_Arm));
+    final Trigger upElbow = m_codriverCtrl.leftBumper(); 
+      upElbow.whileTrue(new InstantCommand(m_Arm::moveElbowSlowUp, m_Arm));
+      upElbow.onFalse(new InstantCommand(m_Arm::stopElbow, m_Arm));
+    final Trigger downElbow = m_codriverCtrl.leftTrigger();
+      downElbow.whileTrue(new InstantCommand(m_Arm::moveElbowSlowDown, m_Arm));
+      downElbow.onFalse(new InstantCommand(m_Arm::stopElbow, m_Arm));
+    final Trigger stopArmMotors = m_codriverCtrl.a(); 
+      stopArmMotors.onTrue(new InstantCommand(m_Arm::stopAllMotors, m_Arm));
+    final Trigger toggleIntake = m_codriverCtrl.y();
+      toggleIntake.onTrue(new InstantCommand(m_Claw::toggleIntakeIn, m_Claw));
+    final Trigger toggleIntakeOut = m_codriverCtrl.a();
+      toggleIntakeOut.onTrue(new InstantCommand(m_Claw::toggleIntakeOut, m_Claw));
 
-    final JoystickButton openClaw = new JoystickButton(m_codriverCtrl, C.OI.kX);
-      openClaw.whenPressed(new InstantCommand(m_Claw::setClawOpen, m_Claw));
-    final JoystickButton closeClaw = new JoystickButton(m_codriverCtrl, C.OI.kB);
-      closeClaw.whenPressed(new InstantCommand(m_Claw::setClawClose, m_Claw));
-
-    final JoystickButton toggleIntake = new JoystickButton(m_codriverCtrl, C.OI.kY);
-      toggleIntake.whenPressed(new InstantCommand(m_Claw::toggleIntakeIn, m_Claw));
-    final JoystickButton toggleIntakeOut = new JoystickButton(m_codriverCtrl, C.OI.kA);
-      toggleIntakeOut.whenPressed(new InstantCommand(m_Claw::toggleIntakeOut, m_Claw));
-
-    final JoystickButton SetArm = new JoystickButton(m_codriverCtrl, C.OI.kStart);
-      SetArm.whenPressed(new InstantCommand(m_Arm::testjoint, m_Arm));
+    final Trigger SetArm = m_codriverCtrl.start();
+      SetArm.onTrue(new InstantCommand(m_Arm::testjoint, m_Arm));
     
   }
 

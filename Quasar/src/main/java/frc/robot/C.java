@@ -11,15 +11,6 @@ public final class C {
         public static final int driverPortLeft = 0; //controller USB port 0
         public static final int driverPortRight = 1; //controller USB port 1
         public static final int codriverPort = 2; //controller USB port 2
-        public static final int kRB = 6; //button map
-        public static final int kLT = 7;//button map
-        public static final int kRT = 8;
-        public static final int kB = 3;
-        public static final int kA = 2;
-        public static final int kLB = 5;
-        public static final int kX = 1;
-        public static final int kY = 4;
-        public static final int kStart = 10;
     }
 
     public static final class CANid{
