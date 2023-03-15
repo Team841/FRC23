@@ -49,7 +49,7 @@ public class Superstructure extends SubsystemBase {
     Substationpickup,
   }
 
-  private static ArmState armState = ArmState.Home;
+  private ArmState armState = ArmState.Home;
 
   enum IntakeState{
     Cone,
@@ -57,7 +57,7 @@ public class Superstructure extends SubsystemBase {
     Empty,
   }
 
-  private static IntakeCargo intakeState = IntakeState.Empty;
+  private IntakeState intakeState = IntakeState.Empty;
 
   public Superstructure() {
 
