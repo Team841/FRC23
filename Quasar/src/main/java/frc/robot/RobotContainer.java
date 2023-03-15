@@ -27,7 +27,7 @@ public class RobotContainer {
   /* Create subsystems */
   private final Drivetrain m_Drivetrain = new Drivetrain();
   private final Arm m_Arm = new Arm();
-  // private final Claw m_Claw = new Claw();
+  private final Claw m_Claw = new Claw();
   
   private final CommandXboxController m_codriverCtrl = new CommandXboxController(C.OI.codriverPort);
   private final CommandPS4Controller m_driverCtrl = new CommandPS4Controller(C.OI.driverPortLeft);
