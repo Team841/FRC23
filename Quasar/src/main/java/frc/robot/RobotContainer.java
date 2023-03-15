@@ -26,8 +26,7 @@ public class RobotContainer {
 
   /* Create subsystems */
   private final Drivetrain m_Drivetrain = new Drivetrain();
-  private final Arm m_Arm = new Arm();
-  private final Claw m_Claw = new Claw();
+  private final Superstructure m_Superstructure = new Superstructure();
   
   private final CommandXboxController m_codriverCtrl = new CommandXboxController(C.OI.codriverPort);
   private final CommandPS4Controller m_driverCtrl = new CommandPS4Controller(C.OI.driverPortLeft);
@@ -64,26 +63,27 @@ public class RobotContainer {
       AutoDistance.onTrue(new AutoDriveToDistance(m_Drivetrain, 48));
 
     final Trigger upShoulder = m_codriverCtrl.rightBumper();
-      upShoulder.whileTrue(new InstantCommand(m_Arm::moveShoulderSlowUp, m_Arm));
-      upShoulder.onFalse(new InstantCommand(m_Arm::stopShoulder, m_Arm));
+      upShoulder.whileTrue(new InstantCommand(m_Superstructure::moveShoulderSlowUp, m_Superstructure));
+      upShoulder.onFalse(new InstantCommand(m_Superstructure::stopShoulder, m_Superstructure));
     final Trigger downShoulder = m_codriverCtrl.rightTrigger();
-      downShoulder.whileTrue(new InstantCommand(m_Arm::moveShoulderSlowDown, m_Arm));
-      downShoulder.onFalse(new InstantCommand(m_Arm::stopShoulder, m_Arm));
+      downShoulder.whileTrue(new InstantCommand(m_Superstructure::moveShoulderSlowDown, m_Superstructure));
+      downShoulder.onFalse(new InstantCommand(m_Superstructure::stopShoulder, m_Superstructure));
     final Trigger upElbow = m_codriverCtrl.leftBumper(); 
-      upElbow.whileTrue(new InstantCommand(m_Arm::moveElbowSlowUp, m_Arm));
-      upElbow.onFalse(new InstantCommand(m_Arm::stopElbow, m_Arm));
+      upElbow.whileTrue(new InstantCommand(m_Superstructure::moveElbowSlowUp, m_Superstructure));
+      upElbow.onFalse(new InstantCommand(m_Superstructure::stopElbow, m_Superstructure));
     final Trigger downElbow = m_codriverCtrl.leftTrigger();
-      downElbow.whileTrue(new InstantCommand(m_Arm::moveElbowSlowDown, m_Arm));
-      downElbow.onFalse(new InstantCommand(m_Arm::stopElbow, m_Arm));
+      downElbow.whileTrue(new InstantCommand(m_Superstructure::moveElbowSlowDown, m_Superstructure));
+      downElbow.onFalse(new InstantCommand(m_Superstructure::stopElbow, m_Superstructure));
     final Trigger stopArmMotors = m_codriverCtrl.a(); 
-      stopArmMotors.onTrue(new InstantCommand(m_Arm::stopAllMotors, m_Arm));
-    final Trigger toggleIntake = m_codriverCtrl.y();
-      toggleIntake.onTrue(new InstantCommand(m_Claw::toggleIntakeIn, m_Claw));
+      stopArmMotors.onTrue(new InstantCommand(m_Superstructure::stopAllMotors, m_Superstructure));
+    
+      final Trigger toggleIntake = m_codriverCtrl.y();
+      toggleIntake.onTrue(new InstantCommand(m_Superstructure::toggleIntakeIn, m_Superstructure));
     final Trigger toggleIntakeOut = m_codriverCtrl.a();
-      toggleIntakeOut.onTrue(new InstantCommand(m_Claw::toggleIntakeOut, m_Claw));
+      toggleIntakeOut.onTrue(new InstantCommand(m_Superstructure::toggleIntakeOut, m_Superstructure));
 
     final Trigger SetArm = m_codriverCtrl.start();
-      SetArm.onTrue(new InstantCommand(m_Arm::testjoint, m_Arm));
+      SetArm.onTrue(new InstantCommand(m_Superstructure::testjoint, m_Superstructure));
     
   }
 

@@ -23,8 +23,8 @@ public final class C {
         public static final int shoulderMotor_Port = 10;
         public static final int elbowMotor = 11;
 
-        public static final int clawNeo = 6;
-        public static final int clawTalon = 4;
+        public static final int IntakeNeo = 6;
+        public static final int IntakeTalon = 4;
     }
 
     public static final class Drivestyle{
@@ -87,7 +87,7 @@ public final class C {
         public static final double balance_point = 0; //0 degrees
     }
     
-    public static final class Arm{
+    public static final class Superstructure{
         public static final double shoulder_kp = 0.0002;
         public static final double shoulder_ki = 0;
         public static final double shoulder_kd = 0;
@@ -117,16 +117,7 @@ public final class C {
         public static final double countsPerRev = 2048;
 
         public static final double testMove = 0.03;
-    }
 
-    public static final class Claw{
-        
-        public static final int kSolenoidPortForward = 6; // the higher side
-        public static final int kSolenoidPortBackward = 7; // the backward side
-
-        public static final int pneumaticCompresser = 0;
-
-        public static final double clawNeoPercentPower = 0.5;
         public static final double clawTalonPercentPower = 0.4;
     }
 }
