@@ -9,8 +9,6 @@ import frc.robot.C;
 
 import com.ctre.phoenix.motorcontrol.can.*;
 
-import java.util.ResourceBundle.Control;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX; 
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
@@ -21,6 +19,7 @@ import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced; 
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 
+import edu.wpi.first.math.trajectory.constraint.RectangularRegionConstraint;
 /* import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance; */
@@ -39,6 +38,9 @@ public class Superstructure extends SubsystemBase {
   private final TalonSRX IntakeMotor = new TalonSRX(C.CANid.IntakeTalon); 
 
   public final DigitalInput shoulderHallSensor = new DigitalInput(C.Superstructure.shoulderHallChannel);
+  
+  private int TimerCounter = 0; 
+  private boolean expired = true; 
 
   enum ArmState{
     Home,
@@ -51,20 +53,18 @@ public class Superstructure extends SubsystemBase {
     pickup,
   }
 
-  enum IntakeState{
+  enum GamePiece{
     Cone,
     Cube,
     Empty,
 }
 
-  enum PieceToPickup{
-    Cone,
-    Cube, 
-  }
+  public ArmState coDrivCommand = ArmState.Home;
 
   private ArmState armState = ArmState.Home;
-  private IntakeState intakeState = IntakeState.Empty;
-  private PieceToPickup pieceToPickup = PieceToPickup.Cone;
+  private GamePiece intakeState = GamePiece.Empty;
+  private GamePiece toggle = GamePiece.Cone;
+
 
   public Superstructure() {
 
@@ -213,12 +213,20 @@ public class Superstructure extends SubsystemBase {
     return counts * gearRatio / C.Superstructure.countsPerRev * 360.0; // flipped from angletocounts
   }
   
-  public void setJointAngles(double shoulder_angle, double elbow_angle){
-    shoulderMotor_starboard.set(TalonFXControlMode.Position, angleToCounts(shoulder_angle, C.Superstructure.shoulderGearRatio));
-    elbowMotor.set(TalonFXControlMode.Position, angleToCounts(elbow_angle, C.Superstructure.elbowGearRatio));
+  public void setJointAngles(double[] angles){
+    shoulderMotor_starboard.set(TalonFXControlMode.Position, angleToCounts(angles[0], C.Superstructure.shoulderGearRatio));
+    elbowMotor.set(TalonFXControlMode.Position, angleToCounts(angles[1], C.Superstructure.elbowGearRatio));
   }
   public void testjoint(){
     setJointAngles(90, 0);
+  }
+
+  public void setPiece(){
+    if (toggle == GamePiece.Cone){
+      toggle = GamePiece.Cube;
+      return;
+    }
+    toggle = GamePiece.Cone;
   }
 
   @Override
@@ -227,12 +235,50 @@ public class Superstructure extends SubsystemBase {
     switch (armState){
         case Home:
           setJointAngles(0, 0);
+          if (coDrivCommand == ArmState.Lowscore){
+            armState = ArmState.Lowscore;
+            setTimeOut(5000);
+          }
+          else if (coDrivCommand == ArmState.Midscore){
+            armState = ArmState.Midscore;
+            setTimeOut(5000);
+
+          }
+          else if (coDrivCommand == ArmState.Highscore){
+            armState = ArmState.Highscore;
+            setTimeOut(5000);
+
+          }
+          else if (coDrivCommand == ArmState.ground){
+            armState = ArmState.ground;
+            setTimeOut(2000);
+          }
+          else if (coDrivCommand == ArmState.lowPortal){
+            armState = ArmState.lowPortal;
+            setTimeOut(2000);
+          }
+          else if (coDrivCommand == ArmState.highPortal){
+            armState = ArmState.highPortal;
+            setTimeOut(2000);
+          }
           break;
         case Lowscore:
+          setJointAngles(TimerCounter, TimerCounter);
           break;
         case Midscore:
           break;
         case Highscore:
+          break;
+        case ground:
+          break;
+        case highPortal:
+          break;
+        case lowPortal:
+          break;
+        case pickup:
+          break;
+        default:
+          armState = ArmState.Home;        
           break;
          
     }
@@ -246,6 +292,24 @@ public class Superstructure extends SubsystemBase {
     SmartDashboard.putNumber("shoulder Postion", countsToAngle(shoulderMotor_starboard.getSelectedSensorPosition(), C.Superstructure.shoulderGearRatio));
     SmartDashboard.putNumber("elbow Postion", countsToAngle(elbowMotor.getSelectedSensorPosition(), C.Superstructure.elbowGearRatio));
   }
+
+  public void setTimeOut(double ms){
+    TimerCounter = (int) ms/20; 
+  }
+  public void countDown(){
+    if (TimerCounter != 0){
+      TimerCounter -= 1;
+      expired = false;
+    }
+    else{
+      expired = true;
+    }
+  }
+
+  public boolean isTimedOut(){
+    return expired;
+  }
+
 
 /* funky manual code */
   public void moveShoulderSlowUp() {

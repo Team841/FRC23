@@ -119,5 +119,9 @@ public final class C {
         public static final double testMove = 0.03;
 
         public static final double clawTalonPercentPower = 0.4;
+
+        public static class StateMachinePositions{
+            public static final touple
+        }
     }
 }
