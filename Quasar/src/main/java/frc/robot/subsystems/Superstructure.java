@@ -45,19 +45,26 @@ public class Superstructure extends SubsystemBase {
     Lowscore,
     Midscore,
     Highscore,
-    Groundpickup,
-    Substationpickup,
+    lowPortal,
+    highPortal,
+    ground,
+    pickup,
   }
-
-  private ArmState armState = ArmState.Home;
 
   enum IntakeState{
     Cone,
     Cube,
     Empty,
+}
+
+  enum PieceToPickup{
+    Cone,
+    Cube, 
   }
 
+  private ArmState armState = ArmState.Home;
   private IntakeState intakeState = IntakeState.Empty;
+  private PieceToPickup pieceToPickup = PieceToPickup.Cone;
 
   public Superstructure() {
 
@@ -217,7 +224,18 @@ public class Superstructure extends SubsystemBase {
   @Override
   public void periodic() {
 
-
+    switch (armState){
+        case Home:
+          setJointAngles(0, 0);
+          break;
+        case Lowscore:
+          break;
+        case Midscore:
+          break;
+        case Highscore:
+          break;
+         
+    }
 
     SmartDashboard.putNumber("Shouldmotor.DNG", shoulderMotor_starboard.getSelectedSensorPosition());
     SmartDashboard.putNumber("Elbowmotor.DNG", elbowMotor.getSelectedSensorPosition());

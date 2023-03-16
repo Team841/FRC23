@@ -9,9 +9,12 @@ import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-
 import frc.robot.C;
 import edu.wpi.first.math.controller.PIDController;
+
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+
 
 /*
 import edu.wpi.first.networktables.NetworkTable;
@@ -50,6 +53,8 @@ public class Drivetrain extends SubsystemBase {
   private double PIDdistance = 0;
   private boolean isDistancePIDenabled = false;
 
+  Compressor phCompressor = new Compressor(1, PneumaticsModuleType.REVPH);
+
   private final ADIS16470_IMU imu = new ADIS16470_IMU();
   public DriveStyle drivestyle = new DriveStyle();
   public Drivetrain() {
@@ -85,6 +90,8 @@ public class Drivetrain extends SubsystemBase {
     right_distance_pid.setIZone(C.Drive.distance_kIz / (C.Drive.gearRatio * (C.Drive.wheelDiameter * Math.PI)));
 
     left_distance_pid.setOutputRange(-1,1);
+
+    phCompressor.enableAnalog(100, 115);
 
   }
 
