@@ -121,7 +121,15 @@ public final class C {
         public static final double clawTalonPercentPower = 0.4;
 
         public static class StateMachinePositions{
-            public static final touple
+            /* {Should_angle, Elbow_angle} */
+            public static final double[] Home = {0.0,0.0};
+            public static final double[] Lowscore = {0.0,0.0};  
+            public static final double[] Midscore = {0.0,0.0};  
+            public static final double[] Highscore = {0.0,0.0};  
+            public static final double[] LowPortal = {0.0,0.0};  
+            public static final double[] HighPortal = {0.0,0.0};  
+            public static final double[] Ground = {0.0,0.0};  
+            public static final double[] Pickup = {0.0,0.0};  
         }
     }
 }
