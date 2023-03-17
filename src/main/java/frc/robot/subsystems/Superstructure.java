@@ -178,11 +178,6 @@ public class Superstructure extends SubsystemBase {
     elbowMotor.set(ControlMode.PercentOutput, speed);
   }
 
-  public void stopAllMotors() {
-    shoulderMotor_starboard.set(ControlMode.PercentOutput, 0);
-    elbowMotor.set(ControlMode.PercentOutput, 0);
-  }
-
   public void toggleIntakeIn(){ // pickup cone
     /* 
     if(clawNeo.get() == 0){
@@ -226,6 +221,43 @@ public class Superstructure extends SubsystemBase {
     elbowMotor.set(TalonFXControlMode.Position, angleToCounts(angles[1], C.Superstructure.elbowGearRatio));
   }
 
+  /**
+   * Calculates if an angle is at the input angle
+   * @param angle
+   * @return if shoulder motor is at the angle specified
+   */
+  public boolean isShoulderAtPosition(double angle){
+    return (Math.abs(countsToAngle(shoulderMotor_starboard.getSelectedSensorPosition(), C.Superstructure.shoulderGearRatio) - angle) <= C.Superstructure.shoulder_tolerance);
+  }
+
+  /**
+   * Calculates if an angle is at the input angle
+   * @param angle
+   * @return if shoulder motor is at the angle specified
+   */
+  public boolean isElbowAtPosition(double angle){
+    return (Math.abs(countsToAngle(elbowMotor.getSelectedSensorPosition(), C.Superstructure.shoulderGearRatio) - angle) <= C.Superstructure.elbow_tolerance);
+  }
+
+  /**
+   * Calculates if the current Joint Position is at inputs pair of angles. 
+   * @param angles
+   * @return If the joints are at the angle
+   */
+  public boolean isAtPostion(double[] angles){
+    if (isShoulderAtPosition(angles[0]) && isShoulderAtPosition(angles[1])){
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Stops all the joints
+   */
+  public void stopJoints(){
+    shoulderMotor_starboard.set(TalonFXControlMode.PercentOutput, 0);
+    elbowMotor.set(TalonFXControlMode.PercentOutput, 0);
+  }
 
   /**
    * If the current draw on the motor exceed the threshold, then there is a game piece
