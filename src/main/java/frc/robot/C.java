@@ -97,6 +97,8 @@ public final class C {
         public static final double shoulder_maxOutput = 1;
         public static final double shoulder_minOutput = -1;
 
+                                                                        public static final double testMove = 0.03;
+
         public static final double elbow_kp = 0;
         public static final double elbow_ki = 0;
         public static final double elbow_kd = 0;
@@ -116,16 +118,15 @@ public final class C {
         public static final double elbowGearRatio = 1;
         public static final double countsPerRev = 2048;
 
-        public static final double testMove = 0.03;
-
-        public static final double clawTalonPercentPower = 0.4;
+        public static final double IntakeMotorTalonPercentPower = 0.4;
+        public static final double IntakeMotorTalonCurrentThreshold = 5;
 
         public static class StateMachinePositions{
             /* {Should_angle, Elbow_angle} */
             public static final double[] Home = {0.0,0.0};
-            public static final double[] Lowscore = {0.0,0.0};  
-            public static final double[] Midscore = {0.0,0.0};  
-            public static final double[] Highscore = {0.0,0.0};  
+            public static final double[] LowScore = {0.0,0.0};  
+            public static final double[] MidScore = {0.0,0.0};  
+            public static final double[] HighScore = {0.0,0.0};  
             public static final double[] LowPortal = {0.0,0.0};  
             public static final double[] HighPortal = {0.0,0.0};  
             public static final double[] Ground = {0.0,0.0};  

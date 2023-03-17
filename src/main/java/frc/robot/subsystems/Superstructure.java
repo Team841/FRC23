@@ -9,6 +9,8 @@ import frc.robot.C;
 
 import com.ctre.phoenix.motorcontrol.can.*;
 
+import java.lang.module.ResolutionException;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX; 
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
@@ -42,26 +44,26 @@ public class Superstructure extends SubsystemBase {
   private int TimerCounter = 0; 
   private boolean expired = true; 
 
-  enum ArmState{
+  enum States{
     Home,
-    Lowscore,
-    Midscore,
-    Highscore,
-    lowPortal,
-    highPortal,
-    ground,
-    pickup,
+    LowScore,
+    MidScore,
+    HighScore,
+    LowPortal,
+    HighPortal,
+    Ground,
+    Pickup
   }
 
   enum GamePiece{
     Cone,
     Cube,
-    Empty,
-}
+    Empty
+  }
 
-  public ArmState coDrivCommand = ArmState.Home;
+  public States coDrivCommand = States.Home;
 
-  private ArmState armState = ArmState.Home;
+  private States armState = States.Home;
   private GamePiece intakeState = GamePiece.Empty;
   private GamePiece toggle = GamePiece.Cone;
 
@@ -181,7 +183,7 @@ public class Superstructure extends SubsystemBase {
     elbowMotor.set(ControlMode.PercentOutput, 0);
   }
 
-  public void toggleIntakeIn(){
+  public void toggleIntakeIn(){ // pickup cone
     /* 
     if(clawNeo.get() == 0){
       clawNeo.set(C.Claw.clawNeoPercentPower);
@@ -190,7 +192,7 @@ public class Superstructure extends SubsystemBase {
     } */
 
     if(IntakeMotor.getMotorOutputPercent()==0){
-      IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.clawTalonPercentPower);
+      IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.IntakeMotorTalonPercentPower);
     } else {
       IntakeMotor.set(ControlMode.PercentOutput, 0);
     }
@@ -198,7 +200,7 @@ public class Superstructure extends SubsystemBase {
 
   public void toggleIntakeOut(){
     if(IntakeMotor.getMotorOutputPercent()==0){
-      IntakeMotor.set(ControlMode.PercentOutput, -C.Superstructure.clawTalonPercentPower);
+      IntakeMotor.set(ControlMode.PercentOutput, -C.Superstructure.IntakeMotorTalonPercentPower);
     } else {
       IntakeMotor.set(ControlMode.PercentOutput, 0);
     }
@@ -213,12 +215,40 @@ public class Superstructure extends SubsystemBase {
     return counts * gearRatio / C.Superstructure.countsPerRev * 360.0; // flipped from angletocounts
   }
   
+  /**
+   * Index 0 : Shoulder Angle, <p>
+   * Index 1 : Elbow Angle, <p>
+   * Sets the angle for the joints on the superstructure
+   * @param angles
+   */
   public void setJointAngles(double[] angles){
     shoulderMotor_starboard.set(TalonFXControlMode.Position, angleToCounts(angles[0], C.Superstructure.shoulderGearRatio));
     elbowMotor.set(TalonFXControlMode.Position, angleToCounts(angles[1], C.Superstructure.elbowGearRatio));
   }
+
+
+  /**
+   * If the current draw on the motor exceed the threshold, then there is a game piece
+   * It returns what game piece is in the intake based on toggle. Toggle will be updated by the driver. 
+   * @return GamePiece.Cone or GamePiece.Cube
+   */
+  public GamePiece GetIntakeSensor(){
+    if (IntakeMotor.getSupplyCurrent() < C.Superstructure.IntakeMotorTalonCurrentThreshold){
+      return GamePiece.Empty;
+    }
+    else{
+      if (toggle == GamePiece.Cone){
+        return GamePiece.Cone;
+      }
+      else{
+        return GamePiece.Cube;
+      }
+    } 
+  }
+
   public void testjoint(){
-    setJointAngles(90, 0);
+    double[] test  = {90,0};
+    setJointAngles(test);
   }
 
   public void setPiece(){
@@ -234,54 +264,108 @@ public class Superstructure extends SubsystemBase {
 
     switch (armState){
         case Home:
-          setJointAngles(0, 0);
-          if (coDrivCommand == ArmState.Lowscore){
-            armState = ArmState.Lowscore;
-            setTimeOut(5000);
+          if(coDrivCommand == States.Home){
+            setJointAngles(C.Superstructure.StateMachinePositions.Home);
           }
-          else if (coDrivCommand == ArmState.Midscore){
-            armState = ArmState.Midscore;
-            setTimeOut(5000);
 
-          }
-          else if (coDrivCommand == ArmState.Highscore){
-            armState = ArmState.Highscore;
+          if (coDrivCommand == States.LowScore && armState == States.LowScore){
+            armState = States.LowScore;
             setTimeOut(5000);
-
           }
-          else if (coDrivCommand == ArmState.ground){
-            armState = ArmState.ground;
-            setTimeOut(2000);
+          else if (coDrivCommand == States.MidScore && armState == States.LowScore){
+            armState = States.MidScore;
+            setTimeOut(5000);
           }
-          else if (coDrivCommand == ArmState.lowPortal){
-            armState = ArmState.lowPortal;
-            setTimeOut(2000);
+          else if (coDrivCommand == States.HighScore && armState == States.LowScore){
+            armState = States.HighScore;
+            setTimeOut(5000);
           }
-          else if (coDrivCommand == ArmState.highPortal){
-            armState = ArmState.highPortal;
-            setTimeOut(2000);
+          else if (coDrivCommand == States.Ground && armState == States.LowScore){
+            armState = States.Ground;
+          }
+          else if (coDrivCommand == States.LowPortal && armState == States.LowScore){
+            armState = States.LowPortal;
+          }
+          else if (coDrivCommand == States.HighPortal && armState == States.LowScore){
+            armState = States.HighPortal;
+          }
+          else if (coDrivCommand != armState){
+            ;
           }
           break;
-        case Lowscore:
-          setJointAngles(TimerCounter, TimerCounter);
+        case LowScore:
+          setJointAngles(C.Superstructure.StateMachinePositions.LowScore);
+          if (GetIntakeSensor() != GamePiece.Empty){
+            armState = coDrivCommand = States.Home;
+          }
+          else if (coDrivCommand != States.LowScore){
+            armState = States.Home;
+          }
+          else if (isTimedOut()){
+            armState = coDrivCommand = States.Home;
+          }
           break;
-        case Midscore:
+        case MidScore:
+          setJointAngles(C.Superstructure.StateMachinePositions.MidScore);
+          if (GetIntakeSensor() != GamePiece.Empty){
+            armState = coDrivCommand = States.Home;
+          }
+          else if (coDrivCommand != States.MidScore){
+            armState = States.Home;
+          }
+          else if (isTimedOut()){
+            armState = coDrivCommand = States.Home;
+          }
           break;
-        case Highscore:
+        case HighScore:
+          setJointAngles(C.Superstructure.StateMachinePositions.HighScore);
+          if (GetIntakeSensor() != GamePiece.Empty){
+            armState = coDrivCommand = States.Home;
+          }
+          else if (coDrivCommand != States.HighScore){
+            armState = States.Home;
+          }
+          else if (isTimedOut()){
+            armState = coDrivCommand = States.Home;
+          }
           break;
-        case ground:
+        case Ground:
+          setJointAngles(C.Superstructure.StateMachinePositions.Ground);
+          armState = States.Pickup;
+          setTimeOut(10000);
           break;
-        case highPortal:
+        case HighPortal:
+          setJointAngles(C.Superstructure.StateMachinePositions.HighPortal);
+          armState = States.Pickup;
+          setTimeOut(8000);
           break;
-        case lowPortal:
+        case LowPortal:
+          setJointAngles(C.Superstructure.StateMachinePositions.LowPortal);
+          armState = States.Pickup;
+          setTimeOut(8000);
           break;
-        case pickup:
+        case Pickup:
+          if (toggle == GamePiece.Cone){
+            IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.IntakeMotorTalonPercentPower);
+          } else if (toggle == GamePiece.Cube){
+            IntakeMotor.set(ControlMode.PercentOutput, - C.Superstructure.IntakeMotorTalonPercentPower);
+          }
+          if (GetIntakeSensor() != GamePiece.Empty){
+            IntakeMotor.set(ControlMode.PercentOutput, 0);
+            armState = coDrivCommand = States.Home;
+          } else if (coDrivCommand != States.HighScore){
+            armState = States.Home;
+          } else if (isTimedOut()){
+            IntakeMotor.set(ControlMode.PercentOutput, 0);
+            armState = coDrivCommand = States.Home;
+          }
           break;
         default:
-          armState = ArmState.Home;        
+          armState = States.Home;        
           break;
-         
     }
+    
+    countDown();
 
     SmartDashboard.putNumber("Shouldmotor.DNG", shoulderMotor_starboard.getSelectedSensorPosition());
     SmartDashboard.putNumber("Elbowmotor.DNG", elbowMotor.getSelectedSensorPosition());
@@ -342,7 +426,7 @@ public class Superstructure extends SubsystemBase {
 
 /*
  *  Pick from pickstation
- *  Pick up from ground
+ *  Pick up from Ground
  *  scrore low and mid
  *  storage inside robot
  */
