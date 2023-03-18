@@ -35,7 +35,8 @@ public class Superstructure extends SubsystemBase {
 
   private final TalonSRX IntakeMotor = new TalonSRX(C.CANid.IntakeTalon); 
 
-  public final DigitalInput shoulderHallSensor = new DigitalInput(C.Superstructure.shoulderHallChannel);
+  DigitalInput ElbowIndexSensor = new DigitalInput(C.Superstructure.Elbow_Index_Channel);
+  DigitalInput ShoulderIndexSensor = new DigitalInput(C.Superstructure.Shoulder_Index_Channel);
   
   private int TimerCounter = 0; 
   private boolean expired = true; 
@@ -58,9 +59,9 @@ public class Superstructure extends SubsystemBase {
     Empty
   }
 
-  public States coDriveCommand = States.Home;
+  public States coDriveCommand = States.Manual;
   private States pickup = States.Home;
-  private States armState = States.Home;
+  private States armState = States.Manual;
   private GamePiece intakeState = GamePiece.Empty;
   private GamePiece toggle = GamePiece.Cone;
 
@@ -125,6 +126,7 @@ public class Superstructure extends SubsystemBase {
 
     shoulderMotor_port.follow(shoulderMotor_starboard);
     shoulderMotor_port.setInverted(true);
+
 
   }
 
@@ -207,6 +209,10 @@ public class Superstructure extends SubsystemBase {
     } else {
       IntakeMotor.set(ControlMode.PercentOutput, 0);
     }
+  }
+
+  public void setIntakeMotor(double speed){
+    IntakeMotor.set(ControlMode.PercentOutput, speed);
   }
 
   public void toggleIntakeOut(){
@@ -303,6 +309,11 @@ public class Superstructure extends SubsystemBase {
     setJointAngles(test);
   }
 
+  public void undoTestJoin(){
+    double[] test = {-5,0};
+    setJointAngles(test);
+  }
+
   public void setPiece(){
     if (toggle == GamePiece.Cone){
       toggle = GamePiece.Cube;
@@ -311,9 +322,23 @@ public class Superstructure extends SubsystemBase {
     toggle = GamePiece.Cone;
   }
 
+  public boolean getElbowIndexSensor(){
+    return !ElbowIndexSensor.get();
+  }
+  public boolean getShoulderIndexSensor(){
+    return !ShoulderIndexSensor.get();
+  }
+
   @Override
   public void periodic() {
-
+    if(getElbowIndexSensor()){
+      //reset Elbow Motor Position to 0;
+      shoulderMotor_starboard.setSelectedSensorPosition(0);
+    }
+    if(getShoulderIndexSensor()){
+      //reset Shoulder Motor Position to 0;
+      elbowMotor.setSelectedSensorPosition(0);
+    }
     switch (armState) {
       case Manual -> {
         if (coDriveCommand != States.Manual){
@@ -427,7 +452,6 @@ public class Superstructure extends SubsystemBase {
     SmartDashboard.putNumber("Elbowmotor.DNG", elbowMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("ShoulderMotorOutput", shoulderMotor_starboard.getMotorOutputPercent());
     SmartDashboard.putNumber("ElbowMotorOutput", elbowMotor.getMotorOutputPercent());
-    SmartDashboard.putBoolean("Hall Sensor", shoulderHallSensor.get());
 
     SmartDashboard.putNumber("shoulder Postion", countsToAngle(shoulderMotor_starboard.getSelectedSensorPosition(), C.Superstructure.shoulderGearRatio));
     SmartDashboard.putNumber("elbow Postion", countsToAngle(elbowMotor.getSelectedSensorPosition(), C.Superstructure.elbowGearRatio));

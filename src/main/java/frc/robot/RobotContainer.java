@@ -36,7 +36,7 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     m_Drivetrain.setDefaultCommand(
-      new RunCommand(() -> m_Drivetrain.Drive(m_driverCtrl.getLeftX(), m_driverCtrl.getLeftY()),m_Drivetrain));
+      new RunCommand(() -> m_Drivetrain.Drive(m_driverCtrl.getRightX(), m_driverCtrl.getLeftY()),m_Drivetrain));
   }
 
   
@@ -64,6 +64,13 @@ public class RobotContainer {
       AutoDistance.onTrue(new AutoDriveToDistance(m_Drivetrain, 48));
 
     /* Co driver commands */
+    final Trigger cub = m_codriverCtrl.a();
+      cub.whileTrue(new InstantCommand(m_Superstructure::toggleIntakeIn));
+
+    final Trigger e = m_codriverCtrl.b();
+    e.whileTrue(new InstantCommand(m_Superstructure::testjoint, m_Superstructure));
+    final Trigger b = m_codriverCtrl.x();
+    b.whileTrue(new InstantCommand(m_Superstructure::undoTestJoin, m_Superstructure));
   }
 
 
@@ -74,6 +81,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
+    // return new scoreDriveOff(m_Drivetrain);
     return new driveOffAutoBalance(m_Drivetrain);
   }
 

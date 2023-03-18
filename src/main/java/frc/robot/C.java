@@ -115,11 +115,14 @@ public final class C {
         public static final int shoulderHallChannel = 0;
 
         public static final double shoulderGearRatio = 0.00687500000000000000; // 1/120;
-        public static final double elbowGearRatio = 1;
+        public static final double elbowGearRatio = 0.25;
         public static final double countsPerRev = 2048;
 
         public static final double IntakeMotorTalonPercentPower = 0.4;
         public static final double IntakeMotorTalonCurrentThreshold = 5;
+
+        public static final int Elbow_Index_Channel = 0;
+        public static final int Shoulder_Index_Channel = 1;
 
         public static class StateMachinePositions{
             /* {Should_angle, Elbow_angle} */
