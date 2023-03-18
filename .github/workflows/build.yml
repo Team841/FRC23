@@ -15,11 +15,6 @@ jobs:
 
     # This grabs the WPILib docker container
     container: wpilib/roborio-cross-ubuntu:2023-22.04
-    
-    # go into directory
-    defaults:
-      run:
-        working-directory: ./Quasar
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:

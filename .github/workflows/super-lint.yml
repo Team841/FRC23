@@ -11,12 +11,7 @@ on: [push, pull_request]
 jobs:
   run-lint:
     runs-on: ubuntu-latest
-    
-    # go into directory
-    defaults:
-      run:
-        working-directory: ./Quasar
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
