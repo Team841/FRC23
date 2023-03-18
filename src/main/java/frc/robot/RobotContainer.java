@@ -51,7 +51,8 @@ public class RobotContainer {
 
     /* https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/button/Button.html */
 
-     //Quick turn
+    /* Driver Commands */
+    //Quick turn
     final Trigger qT = m_driverCtrl.R1();
       qT.onTrue(new InstantCommand(m_Drivetrain::setQuickTurn, m_Drivetrain));
       qT.onFalse(new InstantCommand(m_Drivetrain::resetQuickTurn, m_Drivetrain));
@@ -62,29 +63,7 @@ public class RobotContainer {
     final Trigger AutoDistance = m_driverCtrl.circle();
       AutoDistance.onTrue(new AutoDriveToDistance(m_Drivetrain, 48));
 
-    final Trigger upShoulder = m_codriverCtrl.rightBumper();
-      upShoulder.whileTrue(new InstantCommand(m_Superstructure::moveShoulderSlowUp, m_Superstructure));
-      upShoulder.onFalse(new InstantCommand(m_Superstructure::stopShoulder, m_Superstructure));
-    final Trigger downShoulder = m_codriverCtrl.rightTrigger();
-      downShoulder.whileTrue(new InstantCommand(m_Superstructure::moveShoulderSlowDown, m_Superstructure));
-      downShoulder.onFalse(new InstantCommand(m_Superstructure::stopShoulder, m_Superstructure));
-    final Trigger upElbow = m_codriverCtrl.leftBumper(); 
-      upElbow.whileTrue(new InstantCommand(m_Superstructure::moveElbowSlowUp, m_Superstructure));
-      upElbow.onFalse(new InstantCommand(m_Superstructure::stopElbow, m_Superstructure));
-    final Trigger downElbow = m_codriverCtrl.leftTrigger();
-      downElbow.whileTrue(new InstantCommand(m_Superstructure::moveElbowSlowDown, m_Superstructure));
-      downElbow.onFalse(new InstantCommand(m_Superstructure::stopElbow, m_Superstructure));
-    final Trigger stopArmMotors = m_codriverCtrl.a(); 
-      stopArmMotors.onTrue(new InstantCommand(m_Superstructure::stopAllMotors, m_Superstructure));
-    
-      final Trigger toggleIntake = m_codriverCtrl.y();
-      toggleIntake.onTrue(new InstantCommand(m_Superstructure::toggleIntakeIn, m_Superstructure));
-    final Trigger toggleIntakeOut = m_codriverCtrl.a();
-      toggleIntakeOut.onTrue(new InstantCommand(m_Superstructure::toggleIntakeOut, m_Superstructure));
-
-    final Trigger SetArm = m_codriverCtrl.start();
-      SetArm.onTrue(new InstantCommand(m_Superstructure::testjoint, m_Superstructure));
-    
+    /* Co driver commands */
   }
 
 

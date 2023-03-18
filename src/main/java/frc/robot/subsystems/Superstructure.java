@@ -9,10 +9,7 @@ import frc.robot.C;
 
 import com.ctre.phoenix.motorcontrol.can.*;
 
-import java.lang.module.ResolutionException;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX; 
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -21,7 +18,6 @@ import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced; 
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 
-import edu.wpi.first.math.trajectory.constraint.RectangularRegionConstraint;
 /* import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance; */
@@ -52,7 +48,8 @@ public class Superstructure extends SubsystemBase {
     LowPortal,
     HighPortal,
     Ground,
-    Pickup
+    Pickup,
+    Manual
   }
 
   enum GamePiece{
@@ -61,12 +58,11 @@ public class Superstructure extends SubsystemBase {
     Empty
   }
 
-  public States coDrivCommand = States.Home;
-
+  public States coDriveCommand = States.Home;
+  private States pickup = States.Home;
   private States armState = States.Home;
   private GamePiece intakeState = GamePiece.Empty;
   private GamePiece toggle = GamePiece.Cone;
-
 
   public Superstructure() {
 
@@ -132,6 +128,10 @@ public class Superstructure extends SubsystemBase {
 
   }
 
+  /**
+   * Bandwith config motor CAN for TalonFX Motor
+   * @param motor
+   */
   private void bandWithLimitMotorCAN(TalonFX motor) {
     
     motor.setStatusFramePeriod(StatusFrame.Status_10_MotionMagic,255);
@@ -146,6 +146,10 @@ public class Superstructure extends SubsystemBase {
 
   }
 
+  /**
+   * Bandwith config motor CAN for TalonSRX Motor
+   * @param motor
+   */
   private void bandWithLimitMotorCAN(TalonSRX motor) {
     motor.setStatusFramePeriod(StatusFrame.Status_10_MotionMagic,255);
     motor.setStatusFramePeriod(StatusFrame.Status_1_General,40);
@@ -158,6 +162,10 @@ public class Superstructure extends SubsystemBase {
     motor.setStatusFramePeriod(StatusFrame.Status_15_FirmwareApiStatus,255);
   }
 
+  /**
+   * Toggles break mode for the three superstucture motors
+   * @param brakeMode
+   */
   public void armSetBrakeMode(boolean brakeMode) {
     if (brakeMode) {
       shoulderMotor_starboard.setNeutralMode(NeutralMode.Brake);
@@ -170,10 +178,18 @@ public class Superstructure extends SubsystemBase {
     }
   }
 
+  /**
+   * Moves the shoulder at input speed
+   * @param speed
+   */
   public void moveShoulder(double speed) {
     shoulderMotor_starboard.set(ControlMode.PercentOutput, speed);
   }
   
+  /**
+   * Moves the elbow at input speed
+   * @param speed
+   */
   public void moveElbow(double speed) {
     elbowMotor.set(ControlMode.PercentOutput, speed);
   }
@@ -201,10 +217,22 @@ public class Superstructure extends SubsystemBase {
     }
   }
 
+  /**
+   * Converts from angle to counts
+   * @param angle
+   * @param gearRatio
+   * @return Falcon motor counts
+   */
   public double angleToCounts(double angle, double gearRatio) {
     return (angle / 360.0 * C.Superstructure.countsPerRev) / gearRatio;
   }
 
+  /**
+   * Converts from counts to angle
+   * @param counts
+   * @param gearRatio
+   * @return Angle of Falcon Motor
+   */
   public double countsToAngle(double counts, double gearRatio) {
     /* test */
     return counts * gearRatio / C.Superstructure.countsPerRev * 360.0; // flipped from angletocounts
@@ -244,19 +272,11 @@ public class Superstructure extends SubsystemBase {
    * @param angles
    * @return If the joints are at the angle
    */
-  public boolean isAtPostion(double[] angles){
+  public boolean isAtPosition(double[] angles){
     if (isShoulderAtPosition(angles[0]) && isShoulderAtPosition(angles[1])){
       return true;
     }
     return false;
-  }
-
-  /**
-   * Stops all the joints
-   */
-  public void stopJoints(){
-    shoulderMotor_starboard.set(TalonFXControlMode.PercentOutput, 0);
-    elbowMotor.set(TalonFXControlMode.PercentOutput, 0);
   }
 
   /**
@@ -294,109 +314,113 @@ public class Superstructure extends SubsystemBase {
   @Override
   public void periodic() {
 
-    switch (armState){
-        case Home:
-          if(coDrivCommand == States.Home){
+    switch (armState) {
+      case Manual -> {
+        if (coDriveCommand != States.Manual){
+          armState = States.Home;
+        }
+      }
+      case Home -> {
+        pickup = States.Home;
+          /*
+          if (coDriveCommand == armState) {
             setJointAngles(C.Superstructure.StateMachinePositions.Home);
-          }
+          } */
 
-          if (coDrivCommand == States.LowScore && armState == States.LowScore){
+        setJointAngles(C.Superstructure.StateMachinePositions.Home);
+
+        if (isAtPosition(C.Superstructure.StateMachinePositions.Home)) {
+          if (coDriveCommand == States.LowScore) {
             armState = States.LowScore;
             setTimeOut(5000);
-          }
-          else if (coDrivCommand == States.MidScore && armState == States.LowScore){
+          } else if (coDriveCommand == States.MidScore) {
             armState = States.MidScore;
             setTimeOut(5000);
-          }
-          else if (coDrivCommand == States.HighScore && armState == States.LowScore){
+          } else if (coDriveCommand == States.HighScore) {
             armState = States.HighScore;
             setTimeOut(5000);
-          }
-          else if (coDrivCommand == States.Ground && armState == States.LowScore){
+          } else if (coDriveCommand == States.Ground) {
             armState = States.Ground;
-          }
-          else if (coDrivCommand == States.LowPortal && armState == States.LowScore){
+          } else if (coDriveCommand == States.LowPortal) {
             armState = States.LowPortal;
-          }
-          else if (coDrivCommand == States.HighPortal && armState == States.LowScore){
+          } else if (coDriveCommand == States.HighPortal) {
             armState = States.HighPortal;
           }
-          else if (coDrivCommand != armState){
-            ;
-          }
-          break;
-        case LowScore:
-          setJointAngles(C.Superstructure.StateMachinePositions.LowScore);
-          if (GetIntakeSensor() != GamePiece.Empty){
-            armState = coDrivCommand = States.Home;
-          }
-          else if (coDrivCommand != States.LowScore){
-            armState = States.Home;
-          }
-          else if (isTimedOut()){
-            armState = coDrivCommand = States.Home;
-          }
-          break;
-        case MidScore:
-          setJointAngles(C.Superstructure.StateMachinePositions.MidScore);
-          if (GetIntakeSensor() != GamePiece.Empty){
-            armState = coDrivCommand = States.Home;
-          }
-          else if (coDrivCommand != States.MidScore){
-            armState = States.Home;
-          }
-          else if (isTimedOut()){
-            armState = coDrivCommand = States.Home;
-          }
-          break;
-        case HighScore:
-          setJointAngles(C.Superstructure.StateMachinePositions.HighScore);
-          if (GetIntakeSensor() != GamePiece.Empty){
-            armState = coDrivCommand = States.Home;
-          }
-          else if (coDrivCommand != States.HighScore){
-            armState = States.Home;
-          }
-          else if (isTimedOut()){
-            armState = coDrivCommand = States.Home;
-          }
-          break;
-        case Ground:
-          setJointAngles(C.Superstructure.StateMachinePositions.Ground);
+        }
+      }
+      case LowScore -> {
+        setJointAngles(C.Superstructure.StateMachinePositions.LowScore);
+        if (GetIntakeSensor() != GamePiece.Empty) {
+          armState = coDriveCommand = States.Home;
+        } else if (coDriveCommand != States.LowScore && isAtPosition(C.Superstructure.StateMachinePositions.LowScore)) {
+          armState = States.Home;
+        } else if (isTimedOut()) {
+          armState = coDriveCommand = States.Home;
+        }
+      }
+      case MidScore -> {
+        setJointAngles(C.Superstructure.StateMachinePositions.MidScore);
+        if (GetIntakeSensor() != GamePiece.Empty) {
+          armState = coDriveCommand = States.Home;
+        } else if (coDriveCommand != States.MidScore && isAtPosition(C.Superstructure.StateMachinePositions.MidScore)) {
+          armState = States.Home;
+        } else if (isTimedOut()) {
+          armState = coDriveCommand = States.Home;
+        }
+      }
+      case HighScore -> {
+        setJointAngles(C.Superstructure.StateMachinePositions.HighScore);
+        if (GetIntakeSensor() != GamePiece.Empty) {
+          armState = coDriveCommand = States.Home;
+        } else if (coDriveCommand != States.HighScore && isAtPosition(C.Superstructure.StateMachinePositions.HighScore)) {
+          armState = States.Home;
+        } else if (isTimedOut()) {
+          armState = coDriveCommand = States.Home;
+        }
+      }
+      case Ground -> {
+        setJointAngles(C.Superstructure.StateMachinePositions.Ground);
+        if (isAtPosition(C.Superstructure.StateMachinePositions.Ground)) {
           armState = States.Pickup;
+          pickup = States.Ground;
           setTimeOut(10000);
-          break;
-        case HighPortal:
-          setJointAngles(C.Superstructure.StateMachinePositions.HighPortal);
+        }
+      }
+      case HighPortal -> {
+        setJointAngles(C.Superstructure.StateMachinePositions.HighPortal);
+        if (isAtPosition(C.Superstructure.StateMachinePositions.HighPortal)) {
           armState = States.Pickup;
+          pickup = States.HighPortal;
           setTimeOut(8000);
-          break;
-        case LowPortal:
-          setJointAngles(C.Superstructure.StateMachinePositions.LowPortal);
+        }
+      }
+      case LowPortal -> {
+        setJointAngles(C.Superstructure.StateMachinePositions.LowPortal);
+        if (isAtPosition(C.Superstructure.StateMachinePositions.LowPortal)) {
           armState = States.Pickup;
+          pickup = States.LowPortal;
           setTimeOut(8000);
-          break;
-        case Pickup:
-          if (toggle == GamePiece.Cone){
-            IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.IntakeMotorTalonPercentPower);
-          } else if (toggle == GamePiece.Cube){
-            IntakeMotor.set(ControlMode.PercentOutput, - C.Superstructure.IntakeMotorTalonPercentPower);
-          }
-          if (GetIntakeSensor() != GamePiece.Empty){
-            IntakeMotor.set(ControlMode.PercentOutput, 0);
-            armState = coDrivCommand = States.Home;
-          } else if (coDrivCommand != States.HighScore){
-            armState = States.Home;
-          } else if (isTimedOut()){
-            IntakeMotor.set(ControlMode.PercentOutput, 0);
-            armState = coDrivCommand = States.Home;
-          }
-          break;
-        default:
-          armState = States.Home;        
-          break;
+        }
+      }
+      case Pickup -> {
+        if (toggle == GamePiece.Cone) {
+          IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.IntakeMotorTalonPercentPower);
+        } else if (toggle == GamePiece.Cube) {
+          IntakeMotor.set(ControlMode.PercentOutput, -C.Superstructure.IntakeMotorTalonPercentPower);
+        }
+        if (GetIntakeSensor() != GamePiece.Empty) {
+          IntakeMotor.set(ControlMode.PercentOutput, 0);
+          armState = coDriveCommand = States.Home;
+        } else if (coDriveCommand != pickup) {
+          armState = States.Home;
+        } else if (isTimedOut()) {
+          IntakeMotor.set(ControlMode.PercentOutput, 0);
+          armState = coDriveCommand = States.Home;
+        }
+      }
+      default -> armState = States.Home;
     }
-    
+
     countDown();
 
     SmartDashboard.putNumber("Shouldmotor.DNG", shoulderMotor_starboard.getSelectedSensorPosition());
@@ -430,10 +454,12 @@ public class Superstructure extends SubsystemBase {
 /* funky manual code */
   public void moveShoulderSlowUp() {
     shoulderMotor_starboard.set(ControlMode.PercentOutput, C.Superstructure.testMove);
+    armState = States.Manual;
   }
 
   public void moveShoulderSlowDown() {
     shoulderMotor_starboard.set(ControlMode.PercentOutput, -C.Superstructure.testMove);
+    armState = States.Manual;
   }
 
   public void stopShoulder() {
@@ -450,6 +476,15 @@ public class Superstructure extends SubsystemBase {
 
   public void stopElbow() {
     elbowMotor.set(ControlMode.PercentOutput, 0);
+  }
+
+  /**
+   * Stops all the joints
+   */
+  public void stopJoints(){
+    shoulderMotor_starboard.set(TalonFXControlMode.PercentOutput, 0);
+    elbowMotor.set(TalonFXControlMode.PercentOutput, 0);
+    armState = States.Manual;
   }
 /*  */
 
