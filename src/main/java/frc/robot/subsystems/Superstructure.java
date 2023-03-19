@@ -205,7 +205,7 @@ public class Superstructure extends SubsystemBase {
     } */
 
     if(IntakeMotor.getMotorOutputPercent()==0){
-      IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.IntakeMotorTalonPercentPower);
+      IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.IntakeMotorTalonPercentPower + 0.2);
     } else {
       IntakeMotor.set(ControlMode.PercentOutput, 0);
     }
@@ -305,7 +305,8 @@ public class Superstructure extends SubsystemBase {
   }
 
   public void testjoint(){
-    double[] test  = {90,0};
+    // double[] test  = {27,-16.5};
+    double[] test = {40,-186};
     setJointAngles(test);
   }
 

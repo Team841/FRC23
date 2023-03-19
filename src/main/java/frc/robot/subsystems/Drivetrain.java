@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 
@@ -53,6 +54,9 @@ public class Drivetrain extends SubsystemBase {
 
   Compressor phCompressor = new Compressor(1, PneumaticsModuleType.REVPH);
 
+  Solenoid brake = new Solenoid(PneumaticsModuleType.REVPH, C.Drive.Brake);
+  Solenoid brake_b = new Solenoid(PneumaticsModuleType.REVPH, C.Drive.Brake_b);
+
   private final ADIS16470_IMU imu = new ADIS16470_IMU();
   public DriveStyle drivestyle = new DriveStyle();
   public Drivetrain() {
@@ -90,7 +94,8 @@ public class Drivetrain extends SubsystemBase {
     left_distance_pid.setOutputRange(-1,1);
 
     phCompressor.enableAnalog(100, 115);
-
+    brake.set(false);
+    brake_b.set(true);
   }
 
   public void Drive(double wheel, double throttle) {
@@ -146,9 +151,18 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
-
   public void resetIMU() {
     imu.reset();
+  }
+
+  public void toggleBrakes(){
+    if (brake.get()) {
+      brake.set(false);
+      brake_b.set(true);
+    } else{
+      brake.set(true);
+      brake_b.set(false);
+    }
   }
 
   @Override
@@ -169,6 +183,7 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putNumber("left1", drivestyle.getLeftPower());
     SmartDashboard.putNumber("right1", drivestyle.getRightPower()); */
+    SmartDashboard.putBoolean("brake", brake.get());
 
 
     if (isDistancePIDenabled){

@@ -85,6 +85,9 @@ public final class C {
         public static final double balance_kd = 0; 
 
         public static final double balance_point = 0; //0 degrees
+
+        public static final int Brake = 6;
+        public static final int Brake_b = 7;
     }
     
     public static final class Superstructure{
@@ -99,7 +102,7 @@ public final class C {
 
                                                                         public static final double testMove = 0.03;
 
-        public static final double elbow_kp = 0;
+        public static final double elbow_kp = 0.0005;
         public static final double elbow_ki = 0;
         public static final double elbow_kd = 0;
         public static final double elbow_kff = 0;
@@ -112,14 +115,12 @@ public final class C {
         public static final int kTimeoutMs = 30;
         public static final boolean kSensorPhase = true;
 
-        public static final int shoulderHallChannel = 0;
-
         public static final double shoulderGearRatio = 0.00687500000000000000; // 1/120;
-        public static final double elbowGearRatio = 0.25;
+        public static final double elbowGearRatio = 0.01;
         public static final double countsPerRev = 2048;
 
         public static final double IntakeMotorTalonPercentPower = 0.4;
-        public static final double IntakeMotorTalonCurrentThreshold = 5;
+        public static final double IntakeMotorTalonCurrentThreshold = 10;
 
         public static final int Elbow_Index_Channel = 0;
         public static final int Shoulder_Index_Channel = 1;
