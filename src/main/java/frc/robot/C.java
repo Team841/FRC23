@@ -99,8 +99,7 @@ public final class C {
         public static final double shoulder_tolerance = 0;
         public static final double shoulder_maxOutput = 1;
         public static final double shoulder_minOutput = -1;
-
-                                                                        public static final double testMove = 0.03;
+        // public static final double 
 
         public static final double elbow_kp = 0.0005;
         public static final double elbow_ki = 0;
@@ -124,6 +123,13 @@ public final class C {
 
         public static final int Elbow_Index_Channel = 0;
         public static final int Shoulder_Index_Channel = 1;
+
+
+
+
+
+        public static final double testMove = 0.03;
+
 
         public static class StateMachinePositions{
             /* {Should_angle, Elbow_angle} */

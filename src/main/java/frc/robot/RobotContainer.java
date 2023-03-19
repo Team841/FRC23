@@ -54,14 +54,16 @@ public class RobotContainer {
     final Trigger qT = m_driverCtrl.R1();
       qT.onTrue(new InstantCommand(m_Drivetrain::setQuickTurn, m_Drivetrain));
       qT.onFalse(new InstantCommand(m_Drivetrain::resetQuickTurn, m_Drivetrain));
-    final Trigger AutoBalance = m_driverCtrl.cross();
+    /* final Trigger AutoBalance = m_driverCtrl.cross();
       AutoBalance.whileTrue(new AutoBalance(m_Drivetrain));
     final Trigger AutoTurn = m_driverCtrl.square();
       AutoTurn.onTrue(new AutoTurn(m_Drivetrain, 270));
     final Trigger AutoDistance = m_driverCtrl.circle();
-      AutoDistance.onTrue(new AutoDriveToDistance(m_Drivetrain, 48));
-    final Trigger ToggleBrake = m_driverCtrl.triangle();
-    ToggleBrake.onTrue(new InstantCommand(m_Drivetrain::toggleBrakes, m_Drivetrain));
+      AutoDistance.onTrue(new AutoDriveToDistance(m_Drivetrain, 48)); */
+    final Trigger BrakeOn = m_driverCtrl.cross();
+    BrakeOn.onTrue(new InstantCommand(m_Drivetrain::BrakeOn, m_Drivetrain));
+    final Trigger BrakeOff = m_driverCtrl.square();
+    BrakeOff.onTrue(new InstantCommand(m_Drivetrain::BrakeOff, m_Drivetrain));
 
     /* Co driver commands */
 
@@ -100,7 +102,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     // return new scoreDriveOff(m_Drivetrain);
-    return new driveoff(m_Drivetrain);
+    return new driveoff(m_Drivetrain, m_Superstructure);
   }
 
 }

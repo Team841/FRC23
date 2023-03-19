@@ -94,6 +94,7 @@ public class Drivetrain extends SubsystemBase {
     left_distance_pid.setOutputRange(-1,1);
 
     phCompressor.enableAnalog(100, 115);
+
     brake.set(false);
     brake_b.set(true);
   }
@@ -163,6 +164,16 @@ public class Drivetrain extends SubsystemBase {
       brake.set(true);
       brake_b.set(false);
     }
+  }
+
+  public void BrakeOn(){
+    brake.set(true);
+    brake_b.set(false);
+  }
+
+  public void BrakeOff(){
+    brake.set(false);
+    brake_b.set(true);
   }
 
   @Override

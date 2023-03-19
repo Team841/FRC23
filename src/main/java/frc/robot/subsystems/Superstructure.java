@@ -86,6 +86,7 @@ public class Superstructure extends SubsystemBase {
     bandWithLimitMotorCAN(IntakeMotor);
 
     armSetBrakeMode(true);
+    IntakeMotor.setNeutralMode(NeutralMode.Brake);
 
     /* Config the peak and nominal outputs */
     elbowMotor.configNominalOutputForward(C.Superstructure.elbow_maxOutput, C.Superstructure.kTimeoutMs);
@@ -124,9 +125,16 @@ public class Superstructure extends SubsystemBase {
     elbowMotor.config_kD(C.Superstructure.kPIDLoopIdx, C.Superstructure.elbow_kd, C.Superstructure.kTimeoutMs);
     elbowMotor.config_IntegralZone(C.Superstructure.kPIDLoopIdx, C.Superstructure.elbow_kIz, C.Superstructure.kTimeoutMs);
 
+    
+    /* Set acceleration and vcruise velocity - see documentation */
+    /*shoulderMotor_starboard.configMotionCruiseVelocity(15000, Constants.kTimeoutMs);
+    shoulderMotor_port.configMotionAcceleration(6000, Constants.kTimeoutMs);
+
+    elbowMotor.configMotionCruiseVelocity(15000, c.ktimeouts);
+    elbowMotor.configMotionAcceleration(1005, alfkjdlsa); */
+
     shoulderMotor_port.follow(shoulderMotor_starboard);
     shoulderMotor_port.setInverted(true);
-
 
   }
 
@@ -145,8 +153,8 @@ public class Superstructure extends SubsystemBase {
     motor.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0,255);
     motor.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1,255);
     motor.setStatusFramePeriod(StatusFrame.Status_15_FirmwareApiStatus,255);
-
   }
+
 
   /**
    * Bandwith config motor CAN for TalonSRX Motor
@@ -305,8 +313,8 @@ public class Superstructure extends SubsystemBase {
   }
 
   public void testjoint(){
-    // double[] test  = {27,-16.5};
-    double[] test = {40,-186};
+    double[] test  = {27,-16.5};
+    // double[] test = {40,-186};
     setJointAngles(test);
   }
 
