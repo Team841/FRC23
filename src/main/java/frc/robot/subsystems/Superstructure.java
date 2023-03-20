@@ -77,7 +77,7 @@ public class Superstructure extends SubsystemBase {
     shoulderMotor_port.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 0, 0));
     elbowMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 0, 0));
 
-    IntakeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 0, 0));
+    IntakeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
 
     bandWithLimitMotorCAN(shoulderMotor_starboard);
     bandWithLimitMotorCAN(shoulderMotor_port);
@@ -86,6 +86,7 @@ public class Superstructure extends SubsystemBase {
     bandWithLimitMotorCAN(IntakeMotor);
 
     armSetBrakeMode(true);
+
     IntakeMotor.setNeutralMode(NeutralMode.Brake);
 
     /* Config the peak and nominal outputs */
