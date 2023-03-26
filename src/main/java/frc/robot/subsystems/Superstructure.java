@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import frc.lib.actuatuors.BioFalcon;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.C;
 
@@ -29,14 +31,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Superstructure extends SubsystemBase {
   /** Creates a new Superstructure.  */
 
-  private final TalonFX shoulderMotor_starboard = new TalonFX(C.CANid.shoulderMotor_Starboard);
-  private final TalonFX shoulderMotor_port = new TalonFX(C.CANid.shoulderMotor_Port);
-  private final TalonFX elbowMotor = new TalonFX(C.CANid.elbowMotor);
+  private final TalonSRX IntakeMotor = new TalonSRX(C.CANid.IntakeTalon);
 
-  private final TalonSRX IntakeMotor = new TalonSRX(C.CANid.IntakeTalon); 
+  private final BioFalcon shoulderMotor_starboard = new BioFalcon(C.CANid.shoulderMotor_Starboard, true, C.Superstructure.Shoulder.gearRatio,C.Superstructure.Shoulder.gains, C.Superstructure.Shoulder.maxOutput,
+          C.Superstructure.Shoulder.minOutput, C.Superstructure.kTimeoutMs, C.Superstructure.kPIDLoopIdx, C.Superstructure.Shoulder.cruiseUnitsPer100ms, C.Superstructure.Shoulder.accelerationUnitsPer100ms);
 
-  DigitalInput ElbowIndexSensor = new DigitalInput(C.Superstructure.Elbow_Index_Channel);
-  DigitalInput ShoulderIndexSensor = new DigitalInput(C.Superstructure.Shoulder_Index_Channel);
+  private final BioFalcon shoulderMotor_port = new BioFalcon(C.CANid.shoulderMotor_Port, true, C.Superstructure.Shoulder.gearRatio,C.Superstructure.Shoulder.gains, C.Superstructure.Shoulder.maxOutput,
+          C.Superstructure.Shoulder.minOutput, C.Superstructure.kTimeoutMs, C.Superstructure.kPIDLoopIdx, C.Superstructure.Shoulder.cruiseUnitsPer100ms, C.Superstructure.Shoulder.accelerationUnitsPer100ms);
+
+  private final BioFalcon elbowMotor = new BioFalcon(C.CANid.elbowMotor, true, C.Superstructure.Elbow.gearRatio,C.Superstructure.Elbow.gains, C.Superstructure.Elbow.maxOutput,
+          C.Superstructure.Elbow.minOutput, C.Superstructure.kTimeoutMs, C.Superstructure.kPIDLoopIdx, C.Superstructure.Elbow.cruiseUnitsPer100ms, C.Superstructure.Elbow.accelerationUnitsPer100ms);
+
+  DigitalInput ElbowIndexSensor = new DigitalInput(C.Superstructure.Elbow.SensorIndex);
+  DigitalInput ShoulderIndexSensor = new DigitalInput(C.Superstructure.Shoulder.sensorIndex);
   
   private int TimerCounter = 0; 
   private boolean expired = true; 
@@ -67,126 +74,12 @@ public class Superstructure extends SubsystemBase {
 
   public Superstructure() {
 
-    shoulderMotor_starboard.configFactoryDefault();
-    shoulderMotor_port.configFactoryDefault();
-    elbowMotor.configFactoryDefault();
-
-    IntakeMotor.configFactoryDefault();
-
-    shoulderMotor_starboard.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 0, 0));
-    shoulderMotor_port.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 0, 0));
-    elbowMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 0, 0));
-
-    IntakeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
-
-    bandWithLimitMotorCAN(shoulderMotor_starboard);
-    bandWithLimitMotorCAN(shoulderMotor_port);
-    bandWithLimitMotorCAN(elbowMotor);
-
-    bandWithLimitMotorCAN(IntakeMotor);
-
-    armSetBrakeMode(true);
-
-    IntakeMotor.setNeutralMode(NeutralMode.Brake);
-
-    /* Config the peak and nominal outputs */
-    elbowMotor.configNominalOutputForward(C.Superstructure.elbow_maxOutput, C.Superstructure.kTimeoutMs);
-    elbowMotor.configNominalOutputReverse(C.Superstructure.elbow_minOutput,C.Superstructure.kTimeoutMs);
-    elbowMotor.configPeakOutputForward(C.Superstructure.elbow_maxOutput,C.Superstructure.kTimeoutMs);
-    elbowMotor.configPeakOutputReverse(C.Superstructure.elbow_minOutput,C.Superstructure.kTimeoutMs);
-
-    shoulderMotor_starboard.configNominalOutputForward(C.Superstructure.shoulder_maxOutput, C.Superstructure.kTimeoutMs);
-    shoulderMotor_starboard.configNominalOutputReverse(C.Superstructure.shoulder_minOutput,C.Superstructure.kTimeoutMs);
-    shoulderMotor_starboard.configPeakOutputForward(C.Superstructure.shoulder_maxOutput,C.Superstructure.kTimeoutMs);
-    shoulderMotor_starboard.configPeakOutputReverse(C.Superstructure.shoulder_minOutput,C.Superstructure.kTimeoutMs);
-
-    shoulderMotor_port.configNominalOutputForward(C.Superstructure.shoulder_maxOutput, C.Superstructure.kTimeoutMs);
-    shoulderMotor_port.configNominalOutputReverse(C.Superstructure.shoulder_minOutput,C.Superstructure.kTimeoutMs);
-    shoulderMotor_port.configPeakOutputForward(C.Superstructure.shoulder_maxOutput,C.Superstructure.kTimeoutMs);
-    shoulderMotor_port.configPeakOutputReverse(C.Superstructure.shoulder_minOutput,C.Superstructure.kTimeoutMs);
-
-    /* Config the sensor used for Primary PID and sensor direction */
-    shoulderMotor_starboard.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, C.Superstructure.kPIDLoopIdx, C.Superstructure.kTimeoutMs);
-    elbowMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, C.Superstructure.kPIDLoopIdx, C.Superstructure.kTimeoutMs);
-
-    /* Ensure sensor is positive when output is positive */
-    shoulderMotor_starboard.setSensorPhase(C.Superstructure.kSensorPhase);
-    elbowMotor.setSensorPhase(C.Superstructure.kSensorPhase);
-
-    /* Config the Positon closed loop Gains in slotX */
-    shoulderMotor_starboard.config_kF(C.Superstructure.kPIDLoopIdx, C.Superstructure.shoulder_kff, C.Superstructure.kTimeoutMs);
-    shoulderMotor_starboard.config_kP(C.Superstructure.kPIDLoopIdx, C.Superstructure.shoulder_kp, C.Superstructure.kTimeoutMs);
-    shoulderMotor_starboard.config_kI(C.Superstructure.kPIDLoopIdx, C.Superstructure.shoulder_ki, C.Superstructure.kTimeoutMs);
-    shoulderMotor_starboard.config_kD(C.Superstructure.kPIDLoopIdx, C.Superstructure.shoulder_kd, C.Superstructure.kTimeoutMs);
-    shoulderMotor_starboard.config_IntegralZone(C.Superstructure.kPIDLoopIdx, C.Superstructure.shoulder_kIz, C.Superstructure.kTimeoutMs);
-
-    elbowMotor.config_kF(C.Superstructure.kPIDLoopIdx, C.Superstructure.elbow_kff, C.Superstructure.kTimeoutMs);
-    elbowMotor.config_kP(C.Superstructure.kPIDLoopIdx, C.Superstructure.elbow_kp, C.Superstructure.kTimeoutMs);
-    elbowMotor.config_kI(C.Superstructure.kPIDLoopIdx, C.Superstructure.elbow_ki, C.Superstructure.kTimeoutMs);
-    elbowMotor.config_kD(C.Superstructure.kPIDLoopIdx, C.Superstructure.elbow_kd, C.Superstructure.kTimeoutMs);
-    elbowMotor.config_IntegralZone(C.Superstructure.kPIDLoopIdx, C.Superstructure.elbow_kIz, C.Superstructure.kTimeoutMs);
-
-    
-    /* Set acceleration and vcruise velocity - see documentation */
-    /*shoulderMotor_starboard.configMotionCruiseVelocity(15000, Constants.kTimeoutMs);
-    shoulderMotor_port.configMotionAcceleration(6000, Constants.kTimeoutMs);
-
-    elbowMotor.configMotionCruiseVelocity(15000, c.ktimeouts);
-    elbowMotor.configMotionAcceleration(1005, alfkjdlsa); */
+    shoulderMotor_starboard.setUp2023SuperstructureSettings();
+    shoulderMotor_port.setUp2023SuperstructureSettings();
+    elbowMotor.setUp2023SuperstructureSettings();
 
     shoulderMotor_port.follow(shoulderMotor_starboard);
     shoulderMotor_port.setInverted(true);
-
-  }
-
-  /**
-   * Bandwith config motor CAN for TalonFX Motor
-   * @param motor
-   */
-  private void bandWithLimitMotorCAN(TalonFX motor) {
-    
-    motor.setStatusFramePeriod(StatusFrame.Status_10_MotionMagic,255);
-    motor.setStatusFramePeriod(StatusFrame.Status_1_General,40);
-    motor.setStatusFramePeriod(StatusFrame.Status_4_AinTempVbat, 255);
-    motor.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 255); 
-    motor.setStatusFramePeriod(StatusFrame.Status_9_MotProfBuffer,255);
-    motor.setStatusFramePeriod(StatusFrame.Status_12_Feedback1,255);
-    motor.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0,255);
-    motor.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1,255);
-    motor.setStatusFramePeriod(StatusFrame.Status_15_FirmwareApiStatus,255);
-  }
-
-
-  /**
-   * Bandwith config motor CAN for TalonSRX Motor
-   * @param motor
-   */
-  private void bandWithLimitMotorCAN(TalonSRX motor) {
-    motor.setStatusFramePeriod(StatusFrame.Status_10_MotionMagic,255);
-    motor.setStatusFramePeriod(StatusFrame.Status_1_General,40);
-    motor.setStatusFramePeriod(StatusFrame.Status_4_AinTempVbat, 255);
-    motor.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 255); 
-    motor.setStatusFramePeriod(StatusFrame.Status_9_MotProfBuffer,255);
-    motor.setStatusFramePeriod(StatusFrame.Status_12_Feedback1,255);
-    motor.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0,255);
-    motor.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1,255);
-    motor.setStatusFramePeriod(StatusFrame.Status_15_FirmwareApiStatus,255);
-  }
-
-  /**
-   * Toggles break mode for the three superstucture motors
-   * @param brakeMode
-   */
-  public void armSetBrakeMode(boolean brakeMode) {
-    if (brakeMode) {
-      shoulderMotor_starboard.setNeutralMode(NeutralMode.Brake);
-      shoulderMotor_port.setNeutralMode(NeutralMode.Brake);
-      elbowMotor.setNeutralMode(NeutralMode.Brake);
-    } else {
-      shoulderMotor_starboard.setNeutralMode(NeutralMode.Coast);
-      shoulderMotor_port.setNeutralMode(NeutralMode.Coast);
-      elbowMotor.setNeutralMode(NeutralMode.Coast);
-    }
   }
 
   /**
@@ -201,8 +94,9 @@ public class Superstructure extends SubsystemBase {
    * Moves the elbow at input speed
    * @param speed
    */
-  public void moveElbow(double speed) {
+  public int moveElbow(int speed) {
     elbowMotor.set(ControlMode.PercentOutput, speed);
+    return ~speed & 1;
   }
 
   public void toggleIntakeIn(){ // pickup cone
@@ -214,7 +108,7 @@ public class Superstructure extends SubsystemBase {
     } */
 
     if(IntakeMotor.getMotorOutputPercent()==0){
-      IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.IntakeMotorTalonPercentPower + 0.2);
+      IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.Intake.TalonPercentPower + 0.2);
     } else {
       IntakeMotor.set(ControlMode.PercentOutput, 0);
     }
@@ -226,7 +120,7 @@ public class Superstructure extends SubsystemBase {
 
   public void toggleIntakeOut(){
     if(IntakeMotor.getMotorOutputPercent()==0){
-      IntakeMotor.set(ControlMode.PercentOutput, -C.Superstructure.IntakeMotorTalonPercentPower);
+      IntakeMotor.set(ControlMode.PercentOutput, -C.Superstructure.Intake.TalonPercentPower);
     } else {
       IntakeMotor.set(ControlMode.PercentOutput, 0);
     }
@@ -260,8 +154,8 @@ public class Superstructure extends SubsystemBase {
    * @param angles
    */
   public void setJointAngles(double[] angles){
-    shoulderMotor_starboard.set(TalonFXControlMode.Position, angleToCounts(angles[0], C.Superstructure.shoulderGearRatio));
-    elbowMotor.set(TalonFXControlMode.Position, angleToCounts(angles[1], C.Superstructure.elbowGearRatio));
+    shoulderMotor_starboard.set(TalonFXControlMode.Position, angleToCounts(angles[0], C.Superstructure.Shoulder.gearRatio));
+    elbowMotor.set(TalonFXControlMode.Position, angleToCounts(angles[1], C.Superstructure.Elbow.gearRatio));
   }
 
   /**
@@ -270,7 +164,7 @@ public class Superstructure extends SubsystemBase {
    * @return if shoulder motor is at the angle specified
    */
   public boolean isShoulderAtPosition(double angle){
-    return (Math.abs(countsToAngle(shoulderMotor_starboard.getSelectedSensorPosition(), C.Superstructure.shoulderGearRatio) - angle) <= C.Superstructure.shoulder_tolerance);
+    return (Math.abs(countsToAngle(shoulderMotor_starboard.getSelectedSensorPosition(), C.Superstructure.Shoulder.gearRatio) - angle) <= C.Superstructure.Shoulder.tolerance);
   }
 
   /**
@@ -279,7 +173,7 @@ public class Superstructure extends SubsystemBase {
    * @return if shoulder motor is at the angle specified
    */
   public boolean isElbowAtPosition(double angle){
-    return (Math.abs(countsToAngle(elbowMotor.getSelectedSensorPosition(), C.Superstructure.shoulderGearRatio) - angle) <= C.Superstructure.elbow_tolerance);
+    return (Math.abs(countsToAngle(elbowMotor.getSelectedSensorPosition(), C.Superstructure.Elbow.gearRatio) - angle) <= C.Superstructure.Elbow.tolerance);
   }
 
   /**
@@ -288,10 +182,7 @@ public class Superstructure extends SubsystemBase {
    * @return If the joints are at the angle
    */
   public boolean isAtPosition(double[] angles){
-    if (isShoulderAtPosition(angles[0]) && isShoulderAtPosition(angles[1])){
-      return true;
-    }
-    return false;
+    return isShoulderAtPosition(angles[0]) && isShoulderAtPosition(angles[1]);
   }
 
   /**
@@ -300,7 +191,7 @@ public class Superstructure extends SubsystemBase {
    * @return GamePiece.Cone or GamePiece.Cube
    */
   public GamePiece GetIntakeSensor(){
-    if (IntakeMotor.getSupplyCurrent() < C.Superstructure.IntakeMotorTalonCurrentThreshold){
+    if (IntakeMotor.getSupplyCurrent() < C.Superstructure.Intake.TalonPercentPower){
       return GamePiece.Empty;
     }
     else{
@@ -439,9 +330,9 @@ public class Superstructure extends SubsystemBase {
       }
       case Pickup -> {
         if (toggle == GamePiece.Cone) {
-          IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.IntakeMotorTalonPercentPower);
+          IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.Intake.TalonPercentPower);
         } else if (toggle == GamePiece.Cube) {
-          IntakeMotor.set(ControlMode.PercentOutput, -C.Superstructure.IntakeMotorTalonPercentPower);
+          IntakeMotor.set(ControlMode.PercentOutput, -C.Superstructure.Intake.TalonPercentPower);
         }
         if (GetIntakeSensor() != GamePiece.Empty) {
           IntakeMotor.set(ControlMode.PercentOutput, 0);
@@ -463,8 +354,8 @@ public class Superstructure extends SubsystemBase {
     SmartDashboard.putNumber("ShoulderMotorOutput", shoulderMotor_starboard.getMotorOutputPercent());
     SmartDashboard.putNumber("ElbowMotorOutput", elbowMotor.getMotorOutputPercent());
 
-    SmartDashboard.putNumber("shoulder Postion", countsToAngle(shoulderMotor_starboard.getSelectedSensorPosition(), C.Superstructure.shoulderGearRatio));
-    SmartDashboard.putNumber("elbow Postion", countsToAngle(elbowMotor.getSelectedSensorPosition(), C.Superstructure.elbowGearRatio));
+    SmartDashboard.putNumber("shoulder Postion", countsToAngle(shoulderMotor_starboard.getSelectedSensorPosition(), C.Superstructure.Shoulder.gearRatio));
+    SmartDashboard.putNumber("elbow Postion", countsToAngle(elbowMotor.getSelectedSensorPosition(), C.Superstructure.Elbow.gearRatio));
   }
 
   public void setTimeOut(double ms){
@@ -487,12 +378,12 @@ public class Superstructure extends SubsystemBase {
 
 /* funky manual code */
   public void moveShoulderSlowUp() {
-    shoulderMotor_starboard.set(ControlMode.PercentOutput, C.Superstructure.testMove);
+    shoulderMotor_starboard.set(ControlMode.PercentOutput, 0.1);
     armState = States.Manual;
   }
 
   public void moveShoulderSlowDown() {
-    shoulderMotor_starboard.set(ControlMode.PercentOutput, -C.Superstructure.testMove);
+    shoulderMotor_starboard.set(ControlMode.PercentOutput, -0.1);
     armState = States.Manual;
   }
 
@@ -501,11 +392,11 @@ public class Superstructure extends SubsystemBase {
   }
     
   public void moveElbowSlowUp() {
-    elbowMotor.set(ControlMode.PercentOutput, C.Superstructure.testMove);
+    elbowMotor.set(ControlMode.PercentOutput, 0.1);
   }
 
   public void moveElbowSlowDown() {
-    elbowMotor.set(ControlMode.PercentOutput, -C.Superstructure.testMove);
+    elbowMotor.set(ControlMode.PercentOutput, -0.1);
   }
 
   public void stopElbow() {

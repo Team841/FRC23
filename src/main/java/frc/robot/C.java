@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import frc.lib.actuatuors.*;
+
 /** Add your docs here. */
 public final class C {
 
@@ -91,45 +93,47 @@ public final class C {
     }
     
     public static final class Superstructure{
-        public static final double shoulder_kp = 0.0002;
-        public static final double shoulder_ki = 0;
-        public static final double shoulder_kd = 0;
-        public static final double shoulder_kff = 0;
-        public static final double shoulder_kIz = 0;
-        public static final double shoulder_tolerance = 0;
-        public static final double shoulder_maxOutput = 1;
-        public static final double shoulder_minOutput = -1;
-        // public static final double 
+        public static final class Shoulder {
+            public static final Gains gains = new Gains(0.0002, 0, 0, 0, 0);
 
-        public static final double elbow_kp = 0.0005;
-        public static final double elbow_ki = 0;
-        public static final double elbow_kd = 0;
-        public static final double elbow_kff = 0;
-        public static final double elbow_kIz = 0;
-        public static final double elbow_tolerance = 0;
-        public static final double elbow_maxOutput = 1;
-        public static final double elbow_minOutput = -1;
+            public static final double tolerance = 0;
+            public static final double maxOutput = 1;
+            public static final double minOutput = -1;
+
+            public static final double gearRatio = 0.00687500000000000000; // 1/120;
+
+            public static final int sensorIndex = 1;
+
+            public static final int cruiseUnitsPer100ms = 0;
+
+            public static final int accelerationUnitsPer100ms = 0;
+        }
+
+        public static final class Elbow {
+            public static final Gains gains = new Gains(0.0005, 0, 0, 0, 0);
+            public static final double tolerance = 0;
+            public static final double maxOutput = 1;
+            public static final double minOutput = -1;
+
+
+            public static final double gearRatio = 0.01;
+
+            public static final int SensorIndex = 0;
+
+            public static final int cruiseUnitsPer100ms = 0;
+
+            public static final int accelerationUnitsPer100ms = 0;
+        }
+
+        public static final class Intake{
+            public static final double TalonPercentPower = 0.4;
+            public static final double TalonCurrentThreshold = 10;
+        }
 
         public static final int kPIDLoopIdx = 0;
         public static final int kTimeoutMs = 30;
         public static final boolean kSensorPhase = true;
-
-        public static final double shoulderGearRatio = 0.00687500000000000000; // 1/120;
-        public static final double elbowGearRatio = 0.01;
         public static final double countsPerRev = 2048;
-
-        public static final double IntakeMotorTalonPercentPower = 0.4;
-        public static final double IntakeMotorTalonCurrentThreshold = 10;
-
-        public static final int Elbow_Index_Channel = 0;
-        public static final int Shoulder_Index_Channel = 1;
-
-
-
-
-
-        public static final double testMove = 0.03;
-
 
         public static class StateMachinePositions{
             /* {Should_angle, Elbow_angle} */
