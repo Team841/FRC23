@@ -4,9 +4,9 @@
 
 package frc.robot;
 
-import frc.lib.actuatuors.*;
+import frc.lib.actuatuors.Gains;
+import com.ctre.phoenixpro.configs.*;;
 
-/** Add your docs here. */
 public final class C {
 
     public static final class OI{
@@ -94,7 +94,9 @@ public final class C {
     
     public static final class Superstructure{
         public static final class Shoulder {
-            public static final Gains gains = new Gains(0.0002, 0, 0, 0, 0);
+            public static final Gains gains = new Gains(0.0002, 0.0, 0.0, 0.0, 0.0);
+            public static final Slot0Configs SLOT0_CONFIGS = gains.getSlot0();
+             
 
             public static final double tolerance = 0;
             public static final double maxOutput = 1;

@@ -3,20 +3,70 @@
  */
 package frc.lib.actuatuors;
 
-public class Gains {
-    public final double kP;
-    public final double kI;
-    public final double kD;
-    public final double kF;
-    public final int kIzone;
-    // public final double kPeakOutput;
+import com.ctre.phoenixpro.configs.*;
 
-    public Gains(double _kP, double _kI, double _kD, double _kF, int _kIzone /* double _kPeakOutput */  ){
+public class Gains {
+
+    private double kP = 0;
+    private double kI = 0;
+    private double kD = 0;
+    private double kS = 0;
+    private double kV = 0;
+ 
+    public Gains(double _kP, double _kI, double _kD){
         kP = _kP;
         kI = _kI;
         kD = _kD;
-        kF = _kF;
-        kIzone = _kIzone;
-        // kPeakOutput = _kPeakOutput;
+    }
+
+    public Gains(double _kP, double _kI, double _kD, double _ks){
+        kP = _kP;
+        kI = _kI;
+        kD = _kD;
+        kS = _ks;
+    }
+
+    public Gains(double _kP, double _kI, double _kD, double _ks, double _kV){
+        kP = _kP;
+        kI = _kI;
+        kD = _kD;
+        kS = _ks;
+        kV = _kV;
+    }
+
+    public Slot0Configs getSlot0(){
+        Slot0Configs configs = new Slot0Configs();
+
+        configs.kP = kP;
+        configs.kI = kI;
+        configs.kD = kD;
+        configs.kS = kS;
+        configs.kV = kV;
+
+        return configs;
+    }
+
+    public Slot1Configs getSlot1(){
+        Slot1Configs configs = new Slot1Configs();
+
+        configs.kP = kP;
+        configs.kI = kI;
+        configs.kD = kD;
+        configs.kS = kS;
+        configs.kV = kV;
+
+        return configs;
+    } 
+
+    public Slot2Configs getSlot2(){
+        Slot2Configs configs = new Slot2Configs();
+
+        configs.kP = kP;
+        configs.kI = kI;
+        configs.kD = kD;
+        configs.kS = kS;
+        configs.kV = kV;
+
+        return configs;
     }
 }
