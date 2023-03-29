@@ -5,9 +5,15 @@
 package frc.robot;
 
 import frc.lib.actuatuors.Gains;
-import com.ctre.phoenixpro.configs.*;;
+import frc.lib.actuatuors.TalonConfig;
+
+import com.ctre.phoenixpro.configs.*;
+
+import java.io.ObjectInputFilter;
 
 public final class C {
+
+    private static final TalonConfig _talonConfig = new TalonConfig();
 
     public static final class OI{
         public static final int driverPortLeft = 0; //controller USB port 0
@@ -95,8 +101,17 @@ public final class C {
     public static final class Superstructure{
         public static final class Shoulder {
             public static final Gains gains = new Gains(0.0002, 0.0, 0.0, 0.0, 0.0);
+
             public static final Slot0Configs SLOT0_CONFIGS = gains.getSlot0();
-             
+
+            public static final CurrentLimitsConfigs CURRENT_OUTPUT_CONFIG = _talonConfig.configCurrentLimit(40, 40, 0);
+            public static final MotionMagicConfigs MOTION_MAGIC_CONFIG = _talonConfig.configMotionMagic(0, 0 , 0 );
+
+            public static final MotorOutputConfigs MOTOR_OUTPUT_CONFIG_STARBOARD = _talonConfig.configMotorOutput(true, false, 1, -1);
+            public static final MotorOutputConfigs MOTOR_OUTPUT_CONFIG_PORT = _talonConfig.configMotorOutput(true, true, 1, -1);
+
+            public static final TalonFXConfiguration Shoulder_starboard_config = _talonConfig.getConfiguraton(MOTOR_OUTPUT_CONFIG_STARBOARD, CURRENT_OUTPUT_CONFIG, MOTION_MAGIC_CONFIG, SLOT0_CONFIGS);
+            public static final TalonFXConfiguration Shoulder_port_config = _talonConfig.getConfiguraton(MOTOR_OUTPUT_CONFIG_PORT, CURRENT_OUTPUT_CONFIG, MOTION_MAGIC_CONFIG, SLOT0_CONFIGS);
 
             public static final double tolerance = 0;
             public static final double maxOutput = 1;
@@ -112,11 +127,16 @@ public final class C {
         }
 
         public static final class Elbow {
-            public static final Gains gains = new Gains(0.0005, 0, 0, 0, 0);
-            public static final double tolerance = 0;
-            public static final double maxOutput = 1;
-            public static final double minOutput = -1;
 
+            public static final Gains gains = new Gains(0.0005, 0, 0, 0, 0);
+
+            public static final Slot0Configs SLOT0_CONFIGS = gains.getSlot0();
+            public final CurrentLimitsConfigs CURRENT_OUTPUT_CONFIG = _talonConfig.configCurrentLimit(40, 40, 0);
+            public final MotorOutputConfigs MOTOR_OUTPUT_CONFIG = _talonConfig.configMotorOutput(true, false, 1, -1);
+            public final MotionMagicConfigs MOTION_MAGIC_CONFIG = _talonConfig.configMotionMagic(0, 0 , 0 );
+
+
+            public static final double tolerance = 0;
 
             public static final double gearRatio = 0.01;
 

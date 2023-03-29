@@ -7,9 +7,12 @@ import com.ctre.phoenixpro.configs.*;
 
 public class Gains {
 
+    private boolean sparkMax = false;
     private double kP = 0;
     private double kI = 0;
     private double kD = 0;
+    private double kf = 0;
+    private double kIzone = 0;
     private double kS = 0;
     private double kV = 0;
  
@@ -19,13 +22,17 @@ public class Gains {
         kD = _kD;
     }
 
-    public Gains(double _kP, double _kI, double _kD, double _ks){
+    // rev
+    public Gains(boolean _sparkMax, double _kP, double _kI, double _kD, double _kf, double _kIzone){
+        sparkMax = _sparkMax;
         kP = _kP;
         kI = _kI;
         kD = _kD;
-        kS = _ks;
+        kf = _kf;
+        kIzone = _kIzone;
     }
 
+    // Falcon Pro Gains
     public Gains(double _kP, double _kI, double _kD, double _ks, double _kV){
         kP = _kP;
         kI = _kI;

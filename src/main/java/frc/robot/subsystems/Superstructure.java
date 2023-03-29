@@ -12,13 +12,7 @@ import frc.robot.C;
 import com.ctre.phoenix.motorcontrol.can.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatusFrame;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced; 
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 
 /* import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -33,14 +27,8 @@ public class Superstructure extends SubsystemBase {
 
   private final TalonSRX IntakeMotor = new TalonSRX(C.CANid.IntakeTalon);
 
-  private final BioFalcon shoulderMotor_starboard = new BioFalcon(C.CANid.shoulderMotor_Starboard, true, C.Superstructure.Shoulder.gearRatio,C.Superstructure.Shoulder.gains, C.Superstructure.Shoulder.maxOutput,
-          C.Superstructure.Shoulder.minOutput, C.Superstructure.kTimeoutMs, C.Superstructure.kPIDLoopIdx, C.Superstructure.Shoulder.cruiseUnitsPer100ms, C.Superstructure.Shoulder.accelerationUnitsPer100ms);
-
-  private final BioFalcon shoulderMotor_port = new BioFalcon(C.CANid.shoulderMotor_Port, true, C.Superstructure.Shoulder.gearRatio,C.Superstructure.Shoulder.gains, C.Superstructure.Shoulder.maxOutput,
-          C.Superstructure.Shoulder.minOutput, C.Superstructure.kTimeoutMs, C.Superstructure.kPIDLoopIdx, C.Superstructure.Shoulder.cruiseUnitsPer100ms, C.Superstructure.Shoulder.accelerationUnitsPer100ms);
-
-  private final BioFalcon elbowMotor = new BioFalcon(C.CANid.elbowMotor, true, C.Superstructure.Elbow.gearRatio,C.Superstructure.Elbow.gains, C.Superstructure.Elbow.maxOutput,
-          C.Superstructure.Elbow.minOutput, C.Superstructure.kTimeoutMs, C.Superstructure.kPIDLoopIdx, C.Superstructure.Elbow.cruiseUnitsPer100ms, C.Superstructure.Elbow.accelerationUnitsPer100ms);
+  private final BioFalcon shoulderMotor_starboard = new BioFalcon(C.CANid.shoulderMotor_Starboard, C.Superstructure.Shoulder.Shoulder_starboard_config);
+  private final BioFalcon shoulderMotor_port = new BioFalcon(C.CANid.shoulderMotor_Port, C.Superstructure.Shoulder.Shoulder_port_config);
 
   DigitalInput ElbowIndexSensor = new DigitalInput(C.Superstructure.Elbow.SensorIndex);
   DigitalInput ShoulderIndexSensor = new DigitalInput(C.Superstructure.Shoulder.sensorIndex);
@@ -73,13 +61,7 @@ public class Superstructure extends SubsystemBase {
   private GamePiece toggle = GamePiece.Cone;
 
   public Superstructure() {
-
-    shoulderMotor_starboard.setUp2023SuperstructureSettings();
-    shoulderMotor_port.setUp2023SuperstructureSettings();
-    elbowMotor.setUp2023SuperstructureSettings();
-
-    shoulderMotor_port.follow(shoulderMotor_starboard);
-    shoulderMotor_port.setInverted(true);
+    shoulderMotor_port.
   }
 
   /**
