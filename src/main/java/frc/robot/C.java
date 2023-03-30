@@ -108,7 +108,7 @@ public final class C {
             public static final MotionMagicConfigs MOTION_MAGIC_CONFIG = _talonConfig.configMotionMagic(0, 0 , 0 );
 
             public static final MotorOutputConfigs MOTOR_OUTPUT_CONFIG_STARBOARD = _talonConfig.configMotorOutput(true, false, 1, -1);
-            public static final MotorOutputConfigs MOTOR_OUTPUT_CONFIG_PORT = _talonConfig.configMotorOutput(true, true, 1, -1);
+            public static final MotorOutputConfigs MOTOR_OUTPUT_CONFIG_PORT = _talonConfig.configMotorOutput(true, false, 1, -1);
 
             public static final TalonFXConfiguration Shoulder_starboard_config = _talonConfig.getConfiguraton(MOTOR_OUTPUT_CONFIG_STARBOARD, CURRENT_OUTPUT_CONFIG, MOTION_MAGIC_CONFIG, SLOT0_CONFIGS);
             public static final TalonFXConfiguration Shoulder_port_config = _talonConfig.getConfiguraton(MOTOR_OUTPUT_CONFIG_PORT, CURRENT_OUTPUT_CONFIG, MOTION_MAGIC_CONFIG, SLOT0_CONFIGS);
@@ -131,9 +131,11 @@ public final class C {
             public static final Gains gains = new Gains(0.0005, 0, 0, 0, 0);
 
             public static final Slot0Configs SLOT0_CONFIGS = gains.getSlot0();
-            public final CurrentLimitsConfigs CURRENT_OUTPUT_CONFIG = _talonConfig.configCurrentLimit(40, 40, 0);
-            public final MotorOutputConfigs MOTOR_OUTPUT_CONFIG = _talonConfig.configMotorOutput(true, false, 1, -1);
-            public final MotionMagicConfigs MOTION_MAGIC_CONFIG = _talonConfig.configMotionMagic(0, 0 , 0 );
+            public static final CurrentLimitsConfigs CURRENT_OUTPUT_CONFIG = _talonConfig.configCurrentLimit(40, 40, 0);
+            public static final MotorOutputConfigs MOTOR_OUTPUT_CONFIG = _talonConfig.configMotorOutput(true, false, 1, -1);
+            public static final MotionMagicConfigs MOTION_MAGIC_CONFIG = _talonConfig.configMotionMagic(0, 0 , 0 );
+
+            public static final TalonFXConfiguration Elbow_config = _talonConfig.getConfiguraton(MOTOR_OUTPUT_CONFIG, CURRENT_OUTPUT_CONFIG, MOTION_MAGIC_CONFIG, SLOT0_CONFIGS);
 
 
             public static final double tolerance = 0;

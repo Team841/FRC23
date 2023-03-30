@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenixpro.controls.DutyCycleOut;
+import com.ctre.phoenixpro.controls.Follower;
 import frc.lib.actuatuors.BioFalcon;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -29,6 +31,8 @@ public class Superstructure extends SubsystemBase {
 
   private final BioFalcon shoulderMotor_starboard = new BioFalcon(C.CANid.shoulderMotor_Starboard, C.Superstructure.Shoulder.Shoulder_starboard_config);
   private final BioFalcon shoulderMotor_port = new BioFalcon(C.CANid.shoulderMotor_Port, C.Superstructure.Shoulder.Shoulder_port_config);
+  private final BioFalcon elbowMotor = new BioFalcon(C.CANid.elbowMotor, C.Superstructure.Elbow.Elbow_config);
+
 
   DigitalInput ElbowIndexSensor = new DigitalInput(C.Superstructure.Elbow.SensorIndex);
   DigitalInput ShoulderIndexSensor = new DigitalInput(C.Superstructure.Shoulder.sensorIndex);
@@ -61,7 +65,7 @@ public class Superstructure extends SubsystemBase {
   private GamePiece toggle = GamePiece.Cone;
 
   public Superstructure() {
-    shoulderMotor_port.
+    shoulderMotor_port.setControl(new Follower(shoulderMotor_starboard.getDeviceID(), true));
   }
 
   /**
@@ -69,16 +73,15 @@ public class Superstructure extends SubsystemBase {
    * @param speed
    */
   public void moveShoulder(double speed) {
-    shoulderMotor_starboard.set(ControlMode.PercentOutput, speed);
+    shoulderMotor_starboard.setControl(new DutyCycleOut(speed));
   }
   
   /**
    * Moves the elbow at input speed
    * @param speed
    */
-  public int moveElbow(int speed) {
-    elbowMotor.set(ControlMode.PercentOutput, speed);
-    return ~speed & 1;
+  public void moveElbow(int speed) {
+    elbowMotor.setControl(new DutyCycleOut(speed));
   }
 
   public void toggleIntakeIn(){ // pickup cone
