@@ -115,14 +115,14 @@ public final class C {
         public static final boolean kSensorPhase = true;
 
         public static final double shoulderGearRatio = 0.00687500000000000000; // 1/120;
-        public static final double elbowGearRatio = 0.01;
+        public static final double elbowGearRatio = 0.0033333; // 1/300;
         public static final double countsPerRev = 2048;
 
         public static final double IntakeMotorTalonPercentPower = 0.4;
         public static final double IntakeMotorTalonCurrentThreshold = 10;
 
-        public static final int Elbow_Index_Channel = 0;
-        public static final int Shoulder_Index_Channel = 1;
+        public static final int Elbow_Index_Channel = 1;
+        public static final int Shoulder_Index_Channel = 0;
 
 
 

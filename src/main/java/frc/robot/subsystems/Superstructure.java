@@ -85,7 +85,7 @@ public class Superstructure extends SubsystemBase {
 
     bandWithLimitMotorCAN(IntakeMotor);
 
-    armSetBrakeMode(true);
+    armSetBrakeMode(false);
 
     IntakeMotor.setNeutralMode(NeutralMode.Brake);
 
@@ -343,11 +343,14 @@ public class Superstructure extends SubsystemBase {
   public void periodic() {
     if(getElbowIndexSensor()){
       //reset Elbow Motor Position to 0;
-      shoulderMotor_starboard.setSelectedSensorPosition(0);
+      elbowMotor.setSelectedSensorPosition(0);
+      elbowMotor.setNeutralMode(NeutralMode.Brake);
     }
     if(getShoulderIndexSensor()){
       //reset Shoulder Motor Position to 0;
-      elbowMotor.setSelectedSensorPosition(0);
+      shoulderMotor_starboard.setSelectedSensorPosition(0);
+      shoulderMotor_starboard.setNeutralMode(NeutralMode.Brake);
+      shoulderMotor_port.setNeutralMode(NeutralMode.Brake);
     }
     switch (armState) {
       case Manual -> {
