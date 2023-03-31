@@ -67,10 +67,11 @@ public class RobotContainer {
 
     /* Co driver commands */
 
+    /*
     final Trigger e = m_codriverCtrl.b();
     e.whileTrue(new InstantCommand(m_Superstructure::testjoint, m_Superstructure));
-    final Trigger b = m_codriverCtrl.x();
-    b.whileTrue(new InstantCommand(m_Superstructure::undoTestJoin, m_Superstructure));
+    final Trigger s = m_codriverCtrl.x();
+    s.whileTrue(new InstantCommand(m_Superstructure::undoTestJoin, m_Superstructure));
 
     final Trigger upShoulder = m_codriverCtrl.rightBumper();
     upShoulder.whileTrue(new InstantCommand(m_Superstructure::moveShoulderSlowUp, m_Superstructure));
@@ -90,7 +91,12 @@ public class RobotContainer {
     final Trigger toggleIntake = m_codriverCtrl.y();
     toggleIntake.onTrue(new InstantCommand(m_Superstructure::toggleIntakeIn, m_Superstructure));
     final Trigger toggleIntakeOut = m_codriverCtrl.a();
-    toggleIntakeOut.onTrue(new InstantCommand(m_Superstructure::toggleIntakeOut, m_Superstructure));
+    toggleIntakeOut.onTrue(new InstantCommand(m_Superstructure::toggleIntakeOut, m_Superstructure)); */
+    final Trigger b = m_codriverCtrl.x();
+    b.onTrue(new InstantCommand(m_Superstructure::buttonHome, m_Superstructure));
+    final Trigger g = m_codriverCtrl.y();
+    g.onTrue(new InstantCommand(m_Superstructure::buttonGround, m_Superstructure));
+
   }
 
 

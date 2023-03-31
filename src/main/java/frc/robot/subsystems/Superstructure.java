@@ -43,6 +43,8 @@ public class Superstructure extends SubsystemBase {
 
   enum States{
     Home,
+    ExtendOut, 
+    ExtendIn,
     LowScore,
     MidScore,
     HighScore,
@@ -59,9 +61,9 @@ public class Superstructure extends SubsystemBase {
     Empty
   }
 
-  public States coDriveCommand = States.Manual;
+  public States coDriveCommand = States.Home;
   private States pickup = States.Home;
-  private States armState = States.Manual;
+  private States armState = States.Home;
   private GamePiece intakeState = GamePiece.Empty;
   private GamePiece toggle = GamePiece.Cone;
 
@@ -368,7 +370,7 @@ public class Superstructure extends SubsystemBase {
         setJointAngles(C.Superstructure.StateMachinePositions.Home);
 
         if (isAtPosition(C.Superstructure.StateMachinePositions.Home)) {
-          if (coDriveCommand == States.LowScore) {
+          /*if (coDriveCommand == States.LowScore) {
             armState = States.LowScore;
             setTimeOut(5000);
           } else if (coDriveCommand == States.MidScore) {
@@ -383,8 +385,17 @@ public class Superstructure extends SubsystemBase {
             armState = States.LowPortal;
           } else if (coDriveCommand == States.HighPortal) {
             armState = States.HighPortal;
+          }*/
+          if (coDriveCommand != States.Home){
+            armState = States.ExtendOut; 
           }
         }
+      }
+      case ExtendOut -> { 
+        setJointAngles(C.Superstructure.StateMachinePositions.ExtendOut);
+        if (isAtPosition(C.Superstructure.StateMachinePositions.ExtendOut)) {
+          armState = coDriveCommand; 
+        } 
       }
       case LowScore -> {
         setJointAngles(C.Superstructure.StateMachinePositions.LowScore);
@@ -487,7 +498,12 @@ public class Superstructure extends SubsystemBase {
     return expired;
   }
 
-
+  public void buttonHome() {
+    coDriveCommand = States.Home;
+  }
+  public void buttonGround() {
+    coDriveCommand = States.Ground;
+  }
 /* funky manual code */
   public void moveShoulderSlowUp() {
     shoulderMotor_starboard.set(ControlMode.PercentOutput, C.Superstructure.testMove);

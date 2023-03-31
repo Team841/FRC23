@@ -95,8 +95,8 @@ public final class C {
         public static final double shoulder_ki = 0;
         public static final double shoulder_kd = 0;
         public static final double shoulder_kff = 0;
-        public static final double shoulder_kIz = 0;
-        public static final double shoulder_tolerance = 0;
+        public static final double shoulder_kIz = 0 ;
+        public static final double shoulder_tolerance = 1;
         public static final double shoulder_maxOutput = 1;
         public static final double shoulder_minOutput = -1;
         // public static final double 
@@ -106,7 +106,7 @@ public final class C {
         public static final double elbow_kd = 0;
         public static final double elbow_kff = 0;
         public static final double elbow_kIz = 0;
-        public static final double elbow_tolerance = 0;
+        public static final double elbow_tolerance = 1;
         public static final double elbow_maxOutput = 1;
         public static final double elbow_minOutput = -1;
 
@@ -134,12 +134,14 @@ public final class C {
         public static class StateMachinePositions{
             /* {Should_angle, Elbow_angle} */
             public static final double[] Home = {0.0,0.0};
+            public static final double[] ExtendOut = {26.0,0.0};
+            public static final double[] ExtendIn = {0.0,0.0};
             public static final double[] LowScore = {0.0,0.0};  
             public static final double[] MidScore = {0.0,0.0};  
             public static final double[] HighScore = {0.0,0.0};  
             public static final double[] LowPortal = {0.0,0.0};  
             public static final double[] HighPortal = {0.0,0.0};  
-            public static final double[] Ground = {0.0,0.0};  
+            public static final double[] Ground = {26.0,0.0};  
             public static final double[] Pickup = {0.0,0.0};  
         }
     }
