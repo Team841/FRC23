@@ -92,9 +92,12 @@ public class RobotContainer {
     toggleIntake.onTrue(new InstantCommand(m_Superstructure::toggleIntakeIn, m_Superstructure));
     final Trigger toggleIntakeOut = m_codriverCtrl.a();
     toggleIntakeOut.onTrue(new InstantCommand(m_Superstructure::toggleIntakeOut, m_Superstructure)); */
-    final Trigger b = m_codriverCtrl.x();
+    
+    
+    /*** */
+    final Trigger b = m_codriverCtrl.y();
     b.onTrue(new InstantCommand(m_Superstructure::buttonHome, m_Superstructure));
-    final Trigger g = m_codriverCtrl.y();
+    final Trigger g = m_codriverCtrl.x();
     g.onTrue(new InstantCommand(m_Superstructure::buttonGround, m_Superstructure));
 
   }

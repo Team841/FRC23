@@ -9,6 +9,10 @@ import frc.robot.C;
 
 import com.ctre.phoenix.motorcontrol.can.*;
 
+import java.security.Key;
+
+import org.opencv.video.SparseOpticalFlow;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
@@ -272,7 +276,7 @@ public class Superstructure extends SubsystemBase {
    * @return if shoulder motor is at the angle specified
    */
   public boolean isShoulderAtPosition(double angle){
-    return (Math.abs(countsToAngle(shoulderMotor_starboard.getSelectedSensorPosition(), C.Superstructure.shoulderGearRatio) - angle) <= C.Superstructure.shoulder_tolerance);
+    return (Math.abs(countsToAngle(shoulderMotor_starboard.getSelectedSensorPosition(), C.Superstructure.shoulderGearRatio) - angle) <= Math.abs(C.Superstructure.shoulder_tolerance));
   }
 
   /**
@@ -281,7 +285,7 @@ public class Superstructure extends SubsystemBase {
    * @return if shoulder motor is at the angle specified
    */
   public boolean isElbowAtPosition(double angle){
-    return (Math.abs(countsToAngle(elbowMotor.getSelectedSensorPosition(), C.Superstructure.shoulderGearRatio) - angle) <= C.Superstructure.elbow_tolerance);
+    return (Math.abs(countsToAngle(elbowMotor.getSelectedSensorPosition(), C.Superstructure.shoulderGearRatio) - angle) <= Math.abs(C.Superstructure.elbow_tolerance));
   }
 
   /**
@@ -290,10 +294,7 @@ public class Superstructure extends SubsystemBase {
    * @return If the joints are at the angle
    */
   public boolean isAtPosition(double[] angles){
-    if (isShoulderAtPosition(angles[0]) && isShoulderAtPosition(angles[1])){
-      return true;
-    }
-    return false;
+    return isShoulderAtPosition(angles[0]) & isElbowAtPosition(angles[1]);
   }
 
   /**
@@ -361,6 +362,7 @@ public class Superstructure extends SubsystemBase {
         }
       }
       case Home -> {
+        SmartDashboard.putString("state", "Home");
         pickup = States.Home;
           /*
           if (coDriveCommand == armState) {
@@ -382,22 +384,38 @@ public class Superstructure extends SubsystemBase {
           } else if (coDriveCommand == States.Ground) {
             armState = States.Ground;
           } else if (coDriveCommand == States.LowPortal) {
-            armState = States.LowPortal;
+            armState = States.LowPortal;  
           } else if (coDriveCommand == States.HighPortal) {
             armState = States.HighPortal;
           }*/
           if (coDriveCommand != States.Home){
-            armState = States.ExtendOut; 
+           // armState = States.ExtendOut;
+            if (coDriveCommand == States.Ground) {
+              armState = States.ExtendOut;
+              
           }
         }
       }
+    }
       case ExtendOut -> { 
+        SmartDashboard.putString("state", "ExtendOut");
         setJointAngles(C.Superstructure.StateMachinePositions.ExtendOut);
+        SmartDashboard.putBoolean("atPosition",isAtPosition(C.Superstructure.StateMachinePositions.ExtendOut));
         if (isAtPosition(C.Superstructure.StateMachinePositions.ExtendOut)) {
           armState = coDriveCommand; 
         } 
       }
+      case ExtendIn -> {
+        SmartDashboard.putString("state", "ExtendIn");
+        setJointAngles(C.Superstructure.StateMachinePositions.ExtendIn);
+        if (isAtPosition(C.Superstructure.StateMachinePositions.ExtendIn)) {
+          armState = States.Home; 
+          coDriveCommand = States.Home;
+        }
+
+      }
       case LowScore -> {
+        SmartDashboard.putString("state", "Lowscore");
         setJointAngles(C.Superstructure.StateMachinePositions.LowScore);
         if (GetIntakeSensor() != GamePiece.Empty) {
           armState = coDriveCommand = States.Home;
@@ -408,6 +426,7 @@ public class Superstructure extends SubsystemBase {
         }
       }
       case MidScore -> {
+        SmartDashboard.putString("state", "Midscore");
         setJointAngles(C.Superstructure.StateMachinePositions.MidScore);
         if (GetIntakeSensor() != GamePiece.Empty) {
           armState = coDriveCommand = States.Home;
@@ -418,6 +437,7 @@ public class Superstructure extends SubsystemBase {
         }
       }
       case HighScore -> {
+        SmartDashboard.putString("state", "HighScore");
         setJointAngles(C.Superstructure.StateMachinePositions.HighScore);
         if (GetIntakeSensor() != GamePiece.Empty) {
           armState = coDriveCommand = States.Home;
@@ -428,6 +448,8 @@ public class Superstructure extends SubsystemBase {
         }
       }
       case Ground -> {
+        SmartDashboard.putString("state", "Ground");
+        SmartDashboard.putBoolean("atPosition",isAtPosition(C.Superstructure.StateMachinePositions.Ground));
         setJointAngles(C.Superstructure.StateMachinePositions.Ground);
         if (isAtPosition(C.Superstructure.StateMachinePositions.Ground)) {
           armState = States.Pickup;
@@ -436,6 +458,7 @@ public class Superstructure extends SubsystemBase {
         }
       }
       case HighPortal -> {
+        SmartDashboard.putString("state", "HighPortal");
         setJointAngles(C.Superstructure.StateMachinePositions.HighPortal);
         if (isAtPosition(C.Superstructure.StateMachinePositions.HighPortal)) {
           armState = States.Pickup;
@@ -444,6 +467,7 @@ public class Superstructure extends SubsystemBase {
         }
       }
       case LowPortal -> {
+        SmartDashboard.putString("state", "LowPortal");
         setJointAngles(C.Superstructure.StateMachinePositions.LowPortal);
         if (isAtPosition(C.Superstructure.StateMachinePositions.LowPortal)) {
           armState = States.Pickup;
@@ -452,6 +476,8 @@ public class Superstructure extends SubsystemBase {
         }
       }
       case Pickup -> {
+        SmartDashboard.putBoolean("atPosition",isAtPosition(C.Superstructure.StateMachinePositions.Pickup));
+        SmartDashboard.putString("state", "Pickup");
         if (toggle == GamePiece.Cone) {
           IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.IntakeMotorTalonPercentPower);
         } else if (toggle == GamePiece.Cube) {
@@ -459,12 +485,12 @@ public class Superstructure extends SubsystemBase {
         }
         if (GetIntakeSensor() != GamePiece.Empty) {
           IntakeMotor.set(ControlMode.PercentOutput, 0);
-          armState = coDriveCommand = States.Home;
+          armState = coDriveCommand = States.ExtendIn;
         } else if (coDriveCommand != pickup) {
-          armState = States.Home;
+          armState = States.ExtendIn;
         } else if (isTimedOut()) {
           IntakeMotor.set(ControlMode.PercentOutput, 0);
-          armState = coDriveCommand = States.Home;
+          armState = coDriveCommand = States.ExtendIn;
         }
       }
       default -> armState = States.Home;
@@ -476,9 +502,12 @@ public class Superstructure extends SubsystemBase {
     SmartDashboard.putNumber("Elbowmotor.DNG", elbowMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("ShoulderMotorOutput", shoulderMotor_starboard.getMotorOutputPercent());
     SmartDashboard.putNumber("ElbowMotorOutput", elbowMotor.getMotorOutputPercent());
-
+    SmartDashboard.putString("SuperStructure State", armState.name());
     SmartDashboard.putNumber("shoulder Postion", countsToAngle(shoulderMotor_starboard.getSelectedSensorPosition(), C.Superstructure.shoulderGearRatio));
     SmartDashboard.putNumber("elbow Postion", countsToAngle(elbowMotor.getSelectedSensorPosition(), C.Superstructure.elbowGearRatio));
+    //SmartDashboard.putBoolean("shoulder inPosition?", isShoulderAtPosition(32));
+    //SmartDashboard.putBoolean("elbow inPosition?", isElbowAtPosition(-85));
+    SmartDashboard.putString("CodriverCommand", coDriveCommand.toString());
   }
 
   public void setTimeOut(double ms){
@@ -499,7 +528,7 @@ public class Superstructure extends SubsystemBase {
   }
 
   public void buttonHome() {
-    coDriveCommand = States.Home;
+    coDriveCommand = States.ExtendIn;
   }
   public void buttonGround() {
     coDriveCommand = States.Ground;
