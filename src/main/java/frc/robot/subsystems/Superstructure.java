@@ -33,7 +33,6 @@ public class Superstructure extends SubsystemBase {
   private final BioFalcon shoulderMotor_port = new BioFalcon(C.CANid.shoulderMotor_Port, C.Superstructure.Shoulder.Shoulder_port_config);
   private final BioFalcon elbowMotor = new BioFalcon(C.CANid.elbowMotor, C.Superstructure.Elbow.Elbow_config);
 
-
   DigitalInput ElbowIndexSensor = new DigitalInput(C.Superstructure.Elbow.SensorIndex);
   DigitalInput ShoulderIndexSensor = new DigitalInput(C.Superstructure.Shoulder.sensorIndex);
   
@@ -68,21 +67,6 @@ public class Superstructure extends SubsystemBase {
     shoulderMotor_port.setControl(new Follower(shoulderMotor_starboard.getDeviceID(), true));
   }
 
-  /**
-   * Moves the shoulder at input speed
-   * @param speed
-   */
-  public void moveShoulder(double speed) {
-    shoulderMotor_starboard.setControl(new DutyCycleOut(speed));
-  }
-  
-  /**
-   * Moves the elbow at input speed
-   * @param speed
-   */
-  public void moveElbow(int speed) {
-    elbowMotor.setControl(new DutyCycleOut(speed));
-  }
 
   public void toggleIntakeIn(){ // pickup cone
     /* 
@@ -110,27 +94,6 @@ public class Superstructure extends SubsystemBase {
       IntakeMotor.set(ControlMode.PercentOutput, 0);
     }
   }
-
-  /**
-   * Converts from angle to counts
-   * @param angle
-   * @param gearRatio
-   * @return Falcon motor counts
-   */
-  public double angleToCounts(double angle, double gearRatio) {
-    return (angle / 360.0 * C.Superstructure.countsPerRev) / gearRatio;
-  }
-
-  /**
-   * Converts from counts to angle
-   * @param counts
-   * @param gearRatio
-   * @return Angle of Falcon Motor
-   */
-  public double countsToAngle(double counts, double gearRatio) {
-    /* test */
-    return counts * gearRatio / C.Superstructure.countsPerRev * 360.0; // flipped from angletocounts
-  }
   
   /**
    * Index 0 : Shoulder Angle, <p>
@@ -139,26 +102,8 @@ public class Superstructure extends SubsystemBase {
    * @param angles
    */
   public void setJointAngles(double[] angles){
-    shoulderMotor_starboard.set(TalonFXControlMode.Position, angleToCounts(angles[0], C.Superstructure.Shoulder.gearRatio));
-    elbowMotor.set(TalonFXControlMode.Position, angleToCounts(angles[1], C.Superstructure.Elbow.gearRatio));
-  }
-
-  /**
-   * Calculates if an angle is at the input angle
-   * @param angle
-   * @return if shoulder motor is at the angle specified
-   */
-  public boolean isShoulderAtPosition(double angle){
-    return (Math.abs(countsToAngle(shoulderMotor_starboard.getSelectedSensorPosition(), C.Superstructure.Shoulder.gearRatio) - angle) <= C.Superstructure.Shoulder.tolerance);
-  }
-
-  /**
-   * Calculates if an angle is at the input angle
-   * @param angle
-   * @return if shoulder motor is at the angle specified
-   */
-  public boolean isElbowAtPosition(double angle){
-    return (Math.abs(countsToAngle(elbowMotor.getSelectedSensorPosition(), C.Superstructure.Elbow.gearRatio) - angle) <= C.Superstructure.Elbow.tolerance);
+    shoulderMotor_port.setMoveToAngleMM(angles[0]);
+    elbowMotor.setMoveToAngleMM(angles[1]);
   }
 
   /**
@@ -167,7 +112,7 @@ public class Superstructure extends SubsystemBase {
    * @return If the joints are at the angle
    */
   public boolean isAtPosition(double[] angles){
-    return isShoulderAtPosition(angles[0]) && isShoulderAtPosition(angles[1]);
+    return shoulderMotor_starboard.isAtPosition(angles[0], C.Superstructure.Shoulder.tolerance) && elbowMotor.isAtPosition(angles[1], C.Superstructure.Elbow.tolerance);
   }
 
   /**
@@ -219,11 +164,11 @@ public class Superstructure extends SubsystemBase {
   public void periodic() {
     if(getElbowIndexSensor()){
       //reset Elbow Motor Position to 0;
-      shoulderMotor_starboard.setSelectedSensorPosition(0);
+      shoulderMotor_starboard.resetFeedbackSensor();
     }
     if(getShoulderIndexSensor()){
       //reset Shoulder Motor Position to 0;
-      elbowMotor.setSelectedSensorPosition(0);
+      elbowMotor.resetFeedbackSensor();
     }
     switch (armState) {
       case Manual -> {
@@ -334,13 +279,13 @@ public class Superstructure extends SubsystemBase {
 
     countDown();
 
-    SmartDashboard.putNumber("Shouldmotor.DNG", shoulderMotor_starboard.getSelectedSensorPosition());
-    SmartDashboard.putNumber("Elbowmotor.DNG", elbowMotor.getSelectedSensorPosition());
-    SmartDashboard.putNumber("ShoulderMotorOutput", shoulderMotor_starboard.getMotorOutputPercent());
-    SmartDashboard.putNumber("ElbowMotorOutput", elbowMotor.getMotorOutputPercent());
+    SmartDashboard.putNumber("Shouldmotor.DNG", shoulderMotor_starboard.getCounts());
+    SmartDashboard.putNumber("Elbowmotor.DNG", elbowMotor.getCounts());
+    SmartDashboard.putNumber("ShoulderMotorOutput", shoulderMotor_starboard.getDutyCycleOutput());
+    SmartDashboard.putNumber("ElbowMotorOutput", elbowMotor.getDutyCycleOutput());
 
-    SmartDashboard.putNumber("shoulder Postion", countsToAngle(shoulderMotor_starboard.getSelectedSensorPosition(), C.Superstructure.Shoulder.gearRatio));
-    SmartDashboard.putNumber("elbow Postion", countsToAngle(elbowMotor.getSelectedSensorPosition(), C.Superstructure.Elbow.gearRatio));
+    SmartDashboard.putNumber("shoulder Postion", shoulderMotor_starboard.getAngle());
+    SmartDashboard.putNumber("elbow Postion", elbowMotor.getAngle());
   }
 
   public void setTimeOut(double ms){
@@ -360,43 +305,6 @@ public class Superstructure extends SubsystemBase {
     return expired;
   }
 
-
-/* funky manual code */
-  public void moveShoulderSlowUp() {
-    shoulderMotor_starboard.set(ControlMode.PercentOutput, 0.1);
-    armState = States.Manual;
-  }
-
-  public void moveShoulderSlowDown() {
-    shoulderMotor_starboard.set(ControlMode.PercentOutput, -0.1);
-    armState = States.Manual;
-  }
-
-  public void stopShoulder() {
-    shoulderMotor_starboard.set(ControlMode.PercentOutput, 0);
-  }
-    
-  public void moveElbowSlowUp() {
-    elbowMotor.set(ControlMode.PercentOutput, 0.1);
-  }
-
-  public void moveElbowSlowDown() {
-    elbowMotor.set(ControlMode.PercentOutput, -0.1);
-  }
-
-  public void stopElbow() {
-    elbowMotor.set(ControlMode.PercentOutput, 0);
-  }
-
-  /**
-   * Stops all the joints
-   */
-  public void stopJoints(){
-    shoulderMotor_starboard.set(TalonFXControlMode.PercentOutput, 0);
-    elbowMotor.set(TalonFXControlMode.PercentOutput, 0);
-    armState = States.Manual;
-  }
-/*  */
 
 }
 

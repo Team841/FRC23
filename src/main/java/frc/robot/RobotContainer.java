@@ -72,20 +72,6 @@ public class RobotContainer {
     final Trigger b = m_codriverCtrl.x();
     b.whileTrue(new InstantCommand(m_Superstructure::undoTestJoin, m_Superstructure));
 
-    final Trigger upShoulder = m_codriverCtrl.rightBumper();
-    upShoulder.whileTrue(new InstantCommand(m_Superstructure::moveShoulderSlowUp, m_Superstructure));
-    upShoulder.onFalse(new InstantCommand(m_Superstructure::stopShoulder, m_Superstructure));
-    final Trigger downShoulder = m_codriverCtrl.rightTrigger();
-    downShoulder.whileTrue(new InstantCommand(m_Superstructure::moveShoulderSlowDown, m_Superstructure));
-    downShoulder.onFalse(new InstantCommand(m_Superstructure::stopShoulder, m_Superstructure));
-    final Trigger upElbow = m_codriverCtrl.leftBumper();
-    upElbow.whileTrue(new InstantCommand(m_Superstructure::moveElbowSlowUp, m_Superstructure));
-    upElbow.onFalse(new InstantCommand(m_Superstructure::stopElbow, m_Superstructure));
-    final Trigger downElbow = m_codriverCtrl.leftTrigger();
-    downElbow.whileTrue(new InstantCommand(m_Superstructure::moveElbowSlowDown, m_Superstructure));
-    downElbow.onFalse(new InstantCommand(m_Superstructure::stopElbow, m_Superstructure));
-    final Trigger stopArmMotors = m_codriverCtrl.a();
-    stopArmMotors.onTrue(new InstantCommand(m_Superstructure::stopJoints, m_Superstructure));
 
 
 

@@ -1,6 +1,7 @@
 package frc.lib.actuatuors;
 
 import com.ctre.phoenixpro.configs.*;
+import com.ctre.phoenixpro.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenixpro.signals.InvertedValue;
 import com.ctre.phoenixpro.signals.NeutralModeValue;
 
@@ -8,7 +9,7 @@ import com.ctre.phoenixpro.signals.NeutralModeValue;
 public class TalonConfig {
 
 
-    public TalonFXConfiguration getConfiguraton(MotorOutputConfigs _MotorOutputConfigs, CurrentLimitsConfigs _CurrentLimitConfigs, MotionMagicConfigs _MotionMagicConfigs, Slot0Configs slot0){
+    public TalonFXConfiguration getConfiguraton(MotorOutputConfigs _MotorOutputConfigs, CurrentLimitsConfigs _CurrentLimitConfigs, MotionMagicConfigs _MotionMagicConfigs, Slot0Configs slot0, FeedbackConfigs _FeedbackConfigs){
 
         var configuration = new TalonFXConfiguration();
 
@@ -68,5 +69,15 @@ public class TalonConfig {
         MotorOutputConfigs.PeakReverseDutyCycle = _minOutput;
 
         return MotorOutputConfigs;
+    }
+
+    public FeedbackConfigs configFeedbackSensor(double GearRatio){
+
+        var FeedbackSensorConfigs = new FeedbackConfigs();
+
+        FeedbackSensorConfigs.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+        FeedbackSensorConfigs.SensorToMechanismRatio = GearRatio;
+
+        return FeedbackSensorConfigs;
     }
 }
