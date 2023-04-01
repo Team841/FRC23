@@ -91,7 +91,7 @@ public final class C {
     }
     
     public static final class Superstructure{
-        public static final double shoulder_kp = 0.0008;
+        public static final double shoulder_kp = 0.0003;
         public static final double shoulder_ki = 0;
         public static final double shoulder_kd = 0;
         public static final double shoulder_kff = 0;
@@ -114,34 +114,43 @@ public final class C {
         public static final int kTimeoutMs = 30;
         public static final boolean kSensorPhase = true;
 
-        public static final double shoulderGearRatio = 0.00687500000000000000; // 1/120;
+        public static final double shoulderGearRatio = 0.0037; // 1/240;
         public static final double elbowGearRatio = 0.0033333; // 1/300;
         public static final double countsPerRev = 2048;
 
         public static final double IntakeMotorTalonPercentPower = 0.4;
-        public static final double IntakeMotorTalonCurrentThreshold = 10;
+        public static final double IntakeMotorTalonCurrentThreshold = 20;
 
         public static final int Elbow_Index_Channel = 1;
         public static final int Shoulder_Index_Channel = 0;
 
 
+        public static final double offset_incrment_constant = 0.02;// 1 deg a second
 
 
 
         public static final double testMove = 0.03;
+        public static final double shoulderAccelerationLimitv5 = 5000; //native sensor units per 100 ms per ms
+        public static final double elbowAccelerationLimitv5 = 5000000; //native sensor units per 100 ms per ms
+        public static final double shoulderVelocityLimitv5 = 5000; //native sensor units per 100ms, 1k is approx 10%
+        public static final double elbowVelocityLimitv5 = 50000000;
+        public static final int shoulderSCurveStrengthv5 = 0; // zero is trapizodal motion profiling. 
+        public static final int elbowSCurveStrengthv5 = 0; //  zero is trapizodal motion profiling. 
+
 
 
         public static class StateMachinePositions{
             /* {Should_angle, Elbow_angle} */
             public static final double[] Home = {0.0,0.0};
-            public static final double[] ExtendOut = {26.0,0.0};
-            public static final double[] ExtendIn = {26,0.0};
+            public static final double[] coDriverMode = {0.0,0.0};
+            public static final double[] ExtendOut = {51.0,0.0};
+            public static final double[] ExtendIn = {51,0.0};
             public static final double[] LowScore = {0.0,0.0};  
             public static final double[] MidScore = {0.0,0.0};  
             public static final double[] HighScore = {0.0,0.0};  
             public static final double[] LowPortal = {0.0,0.0};  
             public static final double[] HighPortal = {0.0,0.0};  
-            public static final double[] Ground = {32,-85};  
+            public static final double[] Ground = {51,-93};  
             public static final double[] Pickup = {0.0,0.0};  //this isn't used
         }
     }

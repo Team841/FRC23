@@ -17,6 +17,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.SparkMaxRelativeEncoder;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced; 
@@ -47,6 +48,7 @@ public class Superstructure extends SubsystemBase {
 
   enum States{
     Home,
+    coDriverMode,
     ExtendOut, 
     ExtendIn,
     LowScore,
@@ -85,11 +87,12 @@ public class Superstructure extends SubsystemBase {
 
     IntakeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
 
+    /*
     bandWithLimitMotorCAN(shoulderMotor_starboard);
     bandWithLimitMotorCAN(shoulderMotor_port);
     bandWithLimitMotorCAN(elbowMotor);
 
-    bandWithLimitMotorCAN(IntakeMotor);
+    bandWithLimitMotorCAN(IntakeMotor); */
 
     armSetBrakeMode(false);
 
@@ -140,6 +143,18 @@ public class Superstructure extends SubsystemBase {
     elbowMotor.configMotionCruiseVelocity(15000, c.ktimeouts);
     elbowMotor.configMotionAcceleration(1005, alfkjdlsa); */
 
+    /* Set up motion Magic */
+    shoulderMotor_starboard.configMotionAcceleration(C.Superstructure.shoulderAccelerationLimitv5);
+    elbowMotor.configMotionAcceleration(C.Superstructure.elbowAccelerationLimitv5);
+    shoulderMotor_starboard.configMotionCruiseVelocity(C.Superstructure.shoulderVelocityLimitv5);
+    elbowMotor.configMotionCruiseVelocity(C.Superstructure.elbowVelocityLimitv5);
+
+    //Set to zero if you want trapezoidal motion during motion magic. 
+    shoulderMotor_starboard.configMotionSCurveStrength(C.Superstructure.shoulderSCurveStrengthv5);
+    elbowMotor.configMotionSCurveStrength(C.Superstructure.elbowSCurveStrengthv5);
+
+
+    /* Make the other motor a follow */
     shoulderMotor_port.follow(shoulderMotor_starboard);
     shoulderMotor_port.setInverted(true);
 
@@ -150,14 +165,21 @@ public class Superstructure extends SubsystemBase {
    * @param motor
    */
   private void bandWithLimitMotorCAN(TalonFX motor) {
+    // Maybe this is needed for motion magic. 
+
+    //Set relevant frame periods to be at least as fast as periodic rate
+    motor.setStatusFramePeriod(StatusFrame.Status_10_MotionMagic,10); 
+    motor.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0,10);
+    motor.setStatusFramePeriod(StatusFrame.Status_9_MotProfBuffer,10);
+
     
-    motor.setStatusFramePeriod(StatusFrame.Status_10_MotionMagic,255);
-    motor.setStatusFramePeriod(StatusFrame.Status_1_General,40);
+    //Keep at default.
+    //motor.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 255); 
+    //motor.setStatusFramePeriod(StatusFrame.Status_12_Feedback1,255);
+    //motor.setStatusFramePeriod(StatusFrame.Status_1_General,40); 
+    
+    //slow it down
     motor.setStatusFramePeriod(StatusFrame.Status_4_AinTempVbat, 255);
-    motor.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 255); 
-    motor.setStatusFramePeriod(StatusFrame.Status_9_MotProfBuffer,255);
-    motor.setStatusFramePeriod(StatusFrame.Status_12_Feedback1,255);
-    motor.setStatusFramePeriod(StatusFrame.Status_13_Base_PIDF0,255);
     motor.setStatusFramePeriod(StatusFrame.Status_14_Turn_PIDF1,255);
     motor.setStatusFramePeriod(StatusFrame.Status_15_FirmwareApiStatus,255);
   }
@@ -266,8 +288,8 @@ public class Superstructure extends SubsystemBase {
    * @param angles
    */
   public void setJointAngles(double[] angles){
-    shoulderMotor_starboard.set(TalonFXControlMode.Position, angleToCounts(angles[0], C.Superstructure.shoulderGearRatio));
-    elbowMotor.set(TalonFXControlMode.Position, angleToCounts(angles[1], C.Superstructure.elbowGearRatio));
+    shoulderMotor_starboard.set(TalonFXControlMode.Position, angleToCounts(angles[0] + offset_angle[0], C.Superstructure.shoulderGearRatio));
+    elbowMotor.set(TalonFXControlMode.Position, angleToCounts(angles[1] + offset_angle[1], C.Superstructure.elbowGearRatio));
   }
 
   /**
@@ -294,6 +316,8 @@ public class Superstructure extends SubsystemBase {
    * @return If the joints are at the angle
    */
   public boolean isAtPosition(double[] angles){
+    SmartDashboard.putBoolean("shoulder in Position?",isShoulderAtPosition(angles[0]+offset_angle[0]));
+    SmartDashboard.putBoolean("elbow in Position?", isElbowAtPosition(angles[1]+offset_angle[1]));
     return isShoulderAtPosition(angles[0]) & isElbowAtPosition(angles[1]);
   }
 
@@ -327,12 +351,26 @@ public class Superstructure extends SubsystemBase {
     setJointAngles(test);
   }
 
-  public void setPiece(){
+  public void togglePiece(){
     if (toggle == GamePiece.Cone){
       toggle = GamePiece.Cube;
       return;
     }
     toggle = GamePiece.Cone;
+  }
+
+  public void setPiece(GamePiece piece){
+    toggle = (piece == GamePiece.Cone) ? GamePiece.Cone : GamePiece.Cube;
+  }
+
+  public void setCone(){
+    GamePiece y = GamePiece.Cone;
+    setPiece(y);
+  }
+
+  public void setCube(){
+    GamePiece y = GamePiece.Cube;
+    setPiece(y);
   }
 
   public boolean getElbowIndexSensor(){
@@ -341,19 +379,25 @@ public class Superstructure extends SubsystemBase {
   public boolean getShoulderIndexSensor(){
     return !ShoulderIndexSensor.get();
   }
-
+/********************************************************************************************************************************************************* */
   @Override
   public void periodic() {
+
+    //reset position when Elbow index is seen.
     if(getElbowIndexSensor()){
       //reset Elbow Motor Position to 0;
       elbowMotor.setSelectedSensorPosition(0);
       elbowMotor.setNeutralMode(NeutralMode.Brake);
+      resetElbowOffset();
     }
+
+    //reset position when shoulder Index is seen.
     if(getShoulderIndexSensor()){
       //reset Shoulder Motor Position to 0;
       shoulderMotor_starboard.setSelectedSensorPosition(0);
       shoulderMotor_starboard.setNeutralMode(NeutralMode.Brake);
       shoulderMotor_port.setNeutralMode(NeutralMode.Brake);
+      resetShoulderOffset();
     }
     switch (armState) {
       case Manual -> {
@@ -362,34 +406,23 @@ public class Superstructure extends SubsystemBase {
         }
       }
       case Home -> {
-        SmartDashboard.putString("state", "Home");
         pickup = States.Home;
-          /*
-          if (coDriveCommand == armState) {
-            setJointAngles(C.Superstructure.StateMachinePositions.Home);
-          } */
 
         setJointAngles(C.Superstructure.StateMachinePositions.Home);
 
         if (isAtPosition(C.Superstructure.StateMachinePositions.Home)) {
-          /*if (coDriveCommand == States.LowScore) {
-            armState = States.LowScore;
-            setTimeOut(5000);
-          } else if (coDriveCommand == States.MidScore) {
-            armState = States.MidScore;
-            setTimeOut(5000);
-          } else if (coDriveCommand == States.HighScore) {
-            armState = States.HighScore;
-            setTimeOut(5000);
-          } else if (coDriveCommand == States.Ground) {
-            armState = States.Ground;
-          } else if (coDriveCommand == States.LowPortal) {
-            armState = States.LowPortal;  
-          } else if (coDriveCommand == States.HighPortal) {
-            armState = States.HighPortal;
-          }*/
-          if (coDriveCommand != States.Home){
-           // armState = States.ExtendOut;
+          
+          
+          //if codriver starts adjusting manually then go to codriver state
+          if (offset_angle[0] != 0.0 | offset_angle[1] != 0.0){
+            armState = States.coDriverMode;
+            coDriveCommand = States.coDriverMode;
+
+          } 
+          
+          // If codriver command has changed from home, lets go to the different states. 
+          else if (coDriveCommand != States.Home){
+              //armState = States.ExtendOut;
             if (coDriveCommand == States.Ground) {
               armState = States.ExtendOut;
               
@@ -397,16 +430,25 @@ public class Superstructure extends SubsystemBase {
         }
       }
     }
+      case coDriverMode ->{
+        setJointAngles(C.Superstructure.StateMachinePositions.coDriverMode);
+
+        if (coDriveCommand != States.coDriverMode){
+          armState = States.ExtendIn;
+        }
+      }
       case ExtendOut -> { 
-        SmartDashboard.putString("state", "ExtendOut");
+      
         setJointAngles(C.Superstructure.StateMachinePositions.ExtendOut);
-        SmartDashboard.putBoolean("atPosition",isAtPosition(C.Superstructure.StateMachinePositions.ExtendOut));
+  
         if (isAtPosition(C.Superstructure.StateMachinePositions.ExtendOut)) {
           armState = coDriveCommand; 
         } 
       }
       case ExtendIn -> {
-        SmartDashboard.putString("state", "ExtendIn");
+  
+        resetElbowOffset();
+        resetShoulderOffset();
         setJointAngles(C.Superstructure.StateMachinePositions.ExtendIn);
         if (isAtPosition(C.Superstructure.StateMachinePositions.ExtendIn)) {
           armState = States.Home; 
@@ -415,7 +457,7 @@ public class Superstructure extends SubsystemBase {
 
       }
       case LowScore -> {
-        SmartDashboard.putString("state", "Lowscore");
+
         setJointAngles(C.Superstructure.StateMachinePositions.LowScore);
         if (GetIntakeSensor() != GamePiece.Empty) {
           armState = coDriveCommand = States.Home;
@@ -426,7 +468,7 @@ public class Superstructure extends SubsystemBase {
         }
       }
       case MidScore -> {
-        SmartDashboard.putString("state", "Midscore");
+   
         setJointAngles(C.Superstructure.StateMachinePositions.MidScore);
         if (GetIntakeSensor() != GamePiece.Empty) {
           armState = coDriveCommand = States.Home;
@@ -437,7 +479,7 @@ public class Superstructure extends SubsystemBase {
         }
       }
       case HighScore -> {
-        SmartDashboard.putString("state", "HighScore");
+
         setJointAngles(C.Superstructure.StateMachinePositions.HighScore);
         if (GetIntakeSensor() != GamePiece.Empty) {
           armState = coDriveCommand = States.Home;
@@ -448,8 +490,6 @@ public class Superstructure extends SubsystemBase {
         }
       }
       case Ground -> {
-        SmartDashboard.putString("state", "Ground");
-        SmartDashboard.putBoolean("atPosition",isAtPosition(C.Superstructure.StateMachinePositions.Ground));
         setJointAngles(C.Superstructure.StateMachinePositions.Ground);
         if (isAtPosition(C.Superstructure.StateMachinePositions.Ground)) {
           armState = States.Pickup;
@@ -458,7 +498,7 @@ public class Superstructure extends SubsystemBase {
         }
       }
       case HighPortal -> {
-        SmartDashboard.putString("state", "HighPortal");
+
         setJointAngles(C.Superstructure.StateMachinePositions.HighPortal);
         if (isAtPosition(C.Superstructure.StateMachinePositions.HighPortal)) {
           armState = States.Pickup;
@@ -467,7 +507,7 @@ public class Superstructure extends SubsystemBase {
         }
       }
       case LowPortal -> {
-        SmartDashboard.putString("state", "LowPortal");
+   
         setJointAngles(C.Superstructure.StateMachinePositions.LowPortal);
         if (isAtPosition(C.Superstructure.StateMachinePositions.LowPortal)) {
           armState = States.Pickup;
@@ -476,28 +516,30 @@ public class Superstructure extends SubsystemBase {
         }
       }
       case Pickup -> {
-        SmartDashboard.putBoolean("atPosition",isAtPosition(C.Superstructure.StateMachinePositions.Pickup));
-        SmartDashboard.putString("state", "Pickup");
-        if (toggle == GamePiece.Cone) {
+
+        /*if (toggle == GamePiece.Cone) {
           IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.IntakeMotorTalonPercentPower);
         } else if (toggle == GamePiece.Cube) {
           IntakeMotor.set(ControlMode.PercentOutput, -C.Superstructure.IntakeMotorTalonPercentPower);
-        }
+        }*/
+
         if (GetIntakeSensor() != GamePiece.Empty) {
-          IntakeMotor.set(ControlMode.PercentOutput, 0);
+          //IntakeMotor.set(ControlMode.PercentOutput, 0);
           armState = coDriveCommand = States.ExtendIn;
         } else if (coDriveCommand != pickup) {
           armState = States.ExtendIn;
         } else if (isTimedOut()) {
-          IntakeMotor.set(ControlMode.PercentOutput, 0);
+          //IntakeMotor.set(ControlMode.PercentOutput, 0);
           armState = coDriveCommand = States.ExtendIn;
         }
       }
       default -> armState = States.Home;
     }
 
+    // count global timer
     countDown();
 
+    /* Get superstructure data */
     SmartDashboard.putNumber("Shouldmotor.DNG", shoulderMotor_starboard.getSelectedSensorPosition());
     SmartDashboard.putNumber("Elbowmotor.DNG", elbowMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("ShoulderMotorOutput", shoulderMotor_starboard.getMotorOutputPercent());
@@ -505,14 +547,25 @@ public class Superstructure extends SubsystemBase {
     SmartDashboard.putString("SuperStructure State", armState.name());
     SmartDashboard.putNumber("shoulder Postion", countsToAngle(shoulderMotor_starboard.getSelectedSensorPosition(), C.Superstructure.shoulderGearRatio));
     SmartDashboard.putNumber("elbow Postion", countsToAngle(elbowMotor.getSelectedSensorPosition(), C.Superstructure.elbowGearRatio));
-    //SmartDashboard.putBoolean("shoulder inPosition?", isShoulderAtPosition(32));
-    //SmartDashboard.putBoolean("elbow inPosition?", isElbowAtPosition(-85));
+
     SmartDashboard.putString("CodriverCommand", coDriveCommand.toString());
+    SmartDashboard.putNumber("Shoulder Velocity counts per 100ms", shoulderMotor_starboard.getSelectedSensorVelocity());
+    SmartDashboard.putNumber("SHoulder following Veloctiy", shoulderMotor_port.getSelectedSensorVelocity());
+    SmartDashboard.putNumber("Elbow Velocity counts per 100ms", elbowMotor.getSelectedSensorVelocity());
+    SmartDashboard.putBoolean("Sh_Index", getShoulderIndexSensor());
+    SmartDashboard.putBoolean("Elbow Index", getElbowIndexSensor());
+  }
+/*************************************************************************************************************************************************************************** */
+  /** return current state */
+  public States getCurrentState(){
+    return armState;
   }
 
+  /** Sets the statemachine global timeout */
   public void setTimeOut(double ms){
     TimerCounter = (int) ms/20; 
   }
+  /** Countdown for the timer */
   public void countDown(){
     if (TimerCounter != 0){
       TimerCounter -= 1;
@@ -522,14 +575,16 @@ public class Superstructure extends SubsystemBase {
       expired = true;
     }
   }
-
+  /** Checks to see if timer is timed out */
   public boolean isTimedOut(){
     return expired;
   }
-
+  /** method for button to use as instant command to set the state to home  */
   public void buttonHome() {
     coDriveCommand = States.ExtendIn;
   }
+
+  /** method for button to use as instant command to set the state to */
   public void buttonGround() {
     coDriveCommand = States.Ground;
   }
@@ -569,6 +624,76 @@ public class Superstructure extends SubsystemBase {
     armState = States.Manual;
   }
 /*  */
+
+/***************************************************************************
+   * *************************************************************************
+   * *************************************************************************
+   */
+  private double offset_angle[] = { 0, 0 };
+  /**
+   * increments the elbow offset by the increment number
+   * 
+   * @param increment
+   */
+  public void incrementElbowOffset(double increment) {
+    offset_angle[1] += increment;
+  }
+  /**
+   * increments the elbow offset by the increment number
+   * 
+   * @param increment
+   */
+  public void incrementShoulderOffset(double increment) {
+    offset_angle[0] += increment;
+  }
+  /**
+   * resets offset at shoulder
+   */
+  public void resetShoulderOffset() {
+    offset_angle[0] = 0.0;
+  }
+  /**
+   * resets offset at shoulder
+   */
+  public void resetElbowOffset() {
+    offset_angle[1] = 0.0;
+  }
+  /**
+   * Uses joysticks. If driver passes threshold it will increment and decrment
+   * elbow and shoulder offsets.
+   * 
+   * @param joystick_left
+   * @param joystick_right
+   */
+  public void updatejointoffsets(double shoulder_joystick, double elbow_joystick) {
+    // If threshould joystick is exceeded update offset
+    if (Math.abs(shoulder_joystick) > 0.5) {
+      // if positive, increment offset
+      if (shoulder_joystick > 0) {
+        incrementShoulderOffset(C.Superstructure.offset_incrment_constant);
+      }
+      // if negative, decriment offset
+      else {
+        incrementShoulderOffset(-C.Superstructure.offset_incrment_constant);
+      }
+    }
+    // If threshould joystick is exceeded update offset
+    if (Math.abs(elbow_joystick) > 0.5) {
+      // if positive, increment offset
+      if (elbow_joystick > 0) {
+        incrementElbowOffset(C.Superstructure.offset_incrment_constant);
+      }
+      // if negative, decriment offset
+      else {
+        incrementElbowOffset(-C.Superstructure.offset_incrment_constant);
+      }
+    }
+  }
+  /***************************************************************************
+   * *************************************************************************
+   * *************************************************************************
+   */
+
 
 }
 

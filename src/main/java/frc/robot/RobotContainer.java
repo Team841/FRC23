@@ -37,6 +37,9 @@ public class RobotContainer {
     configureButtonBindings();
     m_Drivetrain.setDefaultCommand(
       new RunCommand(() -> m_Drivetrain.Drive(m_driverCtrl.getRightX(), m_driverCtrl.getLeftY()),m_Drivetrain));
+      
+    m_Superstructure.setDefaultCommand(
+      new RunCommand(() -> m_Superstructure.updatejointoffsets(m_codriverCtrl.getRightY(),m_codriverCtrl.getLeftY()), m_Superstructure));
   }
 
   /**
@@ -67,11 +70,17 @@ public class RobotContainer {
 
     /* Co driver commands */
 
-    /*
+    
     final Trigger e = m_codriverCtrl.b();
-    e.whileTrue(new InstantCommand(m_Superstructure::testjoint, m_Superstructure));
+    e.whileTrue(new InstantCommand(m_Superstructure::buttonGround, m_Superstructure));
     final Trigger s = m_codriverCtrl.x();
-    s.whileTrue(new InstantCommand(m_Superstructure::undoTestJoin, m_Superstructure));
+    s.whileTrue(new InstantCommand(m_Superstructure::buttonHome, m_Superstructure));
+
+
+    final Trigger w = m_codriverCtrl.back();
+    w.onTrue(new InstantCommand(m_Superstructure::setCube, m_Superstructure));
+    final Trigger i = m_codriverCtrl.start();
+    i.onTrue(new InstantCommand(m_Superstructure::setCone, m_Superstructure));
 
     final Trigger upShoulder = m_codriverCtrl.rightBumper();
     upShoulder.whileTrue(new InstantCommand(m_Superstructure::moveShoulderSlowUp, m_Superstructure));
@@ -91,15 +100,8 @@ public class RobotContainer {
     final Trigger toggleIntake = m_codriverCtrl.y();
     toggleIntake.onTrue(new InstantCommand(m_Superstructure::toggleIntakeIn, m_Superstructure));
     final Trigger toggleIntakeOut = m_codriverCtrl.a();
-    toggleIntakeOut.onTrue(new InstantCommand(m_Superstructure::toggleIntakeOut, m_Superstructure)); */
+    toggleIntakeOut.onTrue(new InstantCommand(m_Superstructure::toggleIntakeOut, m_Superstructure)); 
     
-    
-    /*** */
-    final Trigger b = m_codriverCtrl.y();
-    b.onTrue(new InstantCommand(m_Superstructure::buttonHome, m_Superstructure));
-    final Trigger g = m_codriverCtrl.x();
-    g.onTrue(new InstantCommand(m_Superstructure::buttonGround, m_Superstructure));
-
   }
 
 
