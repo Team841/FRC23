@@ -51,7 +51,9 @@ public class Superstructure extends SubsystemBase {
     coDriverMode,
     ExtendOut, 
     ExtendIn,
+    PreExtractIn,
     MidScoreCube,
+    TopScoreCube,
     TopSCoreCone,
     MidScoreCone,
     LowScore,
@@ -428,9 +430,13 @@ public class Superstructure extends SubsystemBase {
               //armState = States.ExtendOut;
             if (coDriveCommand == States.Ground) {
               armState = States.ExtendOut;
+              setTimeOut(10000);
               
           }
           else if (coDriveCommand == States.MidScoreCube){
+            armState = States.ExtendOut;
+          }
+          else if (coDriveCommand == States.TopScoreCube){
             armState = States.ExtendOut;
           }
           else if (coDriveCommand == States.TopSCoreCone){
@@ -468,18 +474,33 @@ public class Superstructure extends SubsystemBase {
         }
 
       }
+      case PreExtractIn -> {
+
+        resetElbowOffset();
+        resetShoulderOffset();
+        setJointAngles(C.Superstructure.StateMachinePositions.PreExtractIn);
+        if (isAtPosition(C.Superstructure.StateMachinePositions.PreExtractIn)) {
+          armState = States.ExtendIn;
+
+        }
+      }
       case MidScoreCube -> {
         setJointAngles(C.Superstructure.StateMachinePositions.MidScoreCube);
       
       if (coDriveCommand != States.MidScoreCube) {
         armState = States.ExtendIn;
       }
-
+    }
+      case TopScoreCube -> {
+        setJointAngles(C.Superstructure.StateMachinePositions.TopScoreCube);
+        if (coDriveCommand != States.TopScoreCube) {
+          armState = States.PreExtractIn;
+        }
       }
       case TopSCoreCone -> {
         setJointAngles(C.Superstructure.StateMachinePositions.TopSCoreCone);
         if (coDriveCommand != States.TopSCoreCone) {
-          armState = States.ExtendIn; 
+          armState = States.PreExtractIn; 
         }
       }
       case MidScoreCone -> {
@@ -488,83 +509,29 @@ public class Superstructure extends SubsystemBase {
           armState = States.ExtendIn;
         }
       }
-      case LowScore -> {
- 
-        setJointAngles(C.Superstructure.StateMachinePositions.LowScore);
-        if (GetIntakeSensor() != GamePiece.Empty) {
-          armState = coDriveCommand = States.Home;
-        } else if (coDriveCommand != States.LowScore && isAtPosition(C.Superstructure.StateMachinePositions.LowScore)) {
-          armState = States.Home;
-        } else if (isTimedOut()) {
-          armState = coDriveCommand = States.Home;
-        }
-      }
-      case MidScore -> {
-   
-        setJointAngles(C.Superstructure.StateMachinePositions.MidScore);
-        if (GetIntakeSensor() != GamePiece.Empty) {
-          armState = coDriveCommand = States.Home;
-        } else if (coDriveCommand != States.MidScore && isAtPosition(C.Superstructure.StateMachinePositions.MidScore)) {
-          armState = States.Home;
-        } else if (isTimedOut()) {
-          armState = coDriveCommand = States.Home;
-        }
-      }
-      case HighScore -> {
-
-        setJointAngles(C.Superstructure.StateMachinePositions.HighScore);
-        if (GetIntakeSensor() != GamePiece.Empty) {
-          armState = coDriveCommand = States.Home;
-        } else if (coDriveCommand != States.HighScore && isAtPosition(C.Superstructure.StateMachinePositions.HighScore)) {
-          armState = States.Home;
-        } else if (isTimedOut()) {
-          armState = coDriveCommand = States.Home;
-        }
-      }
+      
       case Ground -> {
+        if (togglePositionGround ){
         setJointAngles(C.Superstructure.StateMachinePositions.Ground);
-        if (isAtPosition(C.Superstructure.StateMachinePositions.Ground)) {
+        }
+        else {
+        setJointAngles(C.Superstructure.StateMachinePositions.GroundCone);
+        }
+      /*if (isAtPosition(C.Superstructure.StateMachinePositions.Ground)) {
           armState = States.Pickup;
           pickup = States.Ground;
           setTimeOut(10000);
         }
-      }
-      case HighPortal -> {
-
-        setJointAngles(C.Superstructure.StateMachinePositions.HighPortal);
-        if (isAtPosition(C.Superstructure.StateMachinePositions.HighPortal)) {
-          armState = States.Pickup;
-          pickup = States.HighPortal;
-          setTimeOut(8000);
-        }
-      }
-      case LowPortal -> {
-   
-        setJointAngles(C.Superstructure.StateMachinePositions.LowPortal);
-        if (isAtPosition(C.Superstructure.StateMachinePositions.LowPortal)) {
-          armState = States.Pickup;
-          pickup = States.LowPortal;
-          setTimeOut(8000);
-        }
-      }
-      case Pickup -> {
-
-        /*if (toggle == GamePiece.Cone) {
-          IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.IntakeMotorTalonPercentPower);
-        } else if (toggle == GamePiece.Cube) {
-          IntakeMotor.set(ControlMode.PercentOutput, -C.Superstructure.IntakeMotorTalonPercentPower);
-        }*/
-
+        */
         if (GetIntakeSensor() != GamePiece.Empty) {
           //IntakeMotor.set(ControlMode.PercentOutput, 0);
           armState = coDriveCommand = States.ExtendIn;
-        } else if (coDriveCommand != pickup) {
+        } else if (coDriveCommand != States.Ground) {
           armState = States.ExtendIn;
-        } else if (isTimedOut()) {
-          //IntakeMotor.set(ControlMode.PercentOutput, 0);
-          armState = coDriveCommand = States.ExtendIn;
         }
       }
+      
+      
       default -> armState = States.Home;
     }
 
@@ -615,13 +582,17 @@ public class Superstructure extends SubsystemBase {
   public void buttonHome() {
     coDriveCommand = States.ExtendIn;
   }
-
+  private boolean togglePositionGround = false;
   /** method for button to use as instant command to set the state to */
   public void buttonGround() {
     coDriveCommand = States.Ground;
+    togglePositionGround =! togglePositionGround;
   }
   public void buttonMidScoreCube(){
     coDriveCommand = States.MidScoreCube;
+  }
+  public void buttonTopScoreCube() {
+    coDriveCommand = States.TopScoreCube;
   }
   public void buttonTopScoreCone(){
     coDriveCommand = States.TopSCoreCone;

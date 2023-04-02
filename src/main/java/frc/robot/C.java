@@ -106,7 +106,7 @@ public final class C {
         public static final double elbow_kd = 0;
         public static final double elbow_kff = 0;
         public static final double elbow_kIz = 0;
-        public static final double elbow_tolerance = 5;//in degrees
+        public static final double elbow_tolerance = 10;//in degrees
         public static final double elbow_maxOutput = 1;
         public static final double elbow_minOutput = -1;
 
@@ -119,7 +119,7 @@ public final class C {
         public static final double countsPerRev = 2048;
 
         public static final double IntakeMotorTalonPercentPower = 0.4;
-        public static final double IntakeMotorTalonCurrentThreshold = 20;
+        public static final double IntakeMotorTalonCurrentThreshold = 10;
 
         public static final int Elbow_Index_Channel = 1;
         public static final int Shoulder_Index_Channel = 0;
@@ -145,15 +145,13 @@ public final class C {
             public static final double[] coDriverMode = {0.0,0.0};
             public static final double[] ExtendOut = {51.0,0.0};
             public static final double[] ExtendIn = {51.0,0.0};
-            public static final double[] MidScoreCube = {35.7,-11.4};
+            public static final double[] PreExtractIn = {149.3,-41};
+            public static final double[] MidScoreCube = {61.9,-12.2};
+            public static final double[] TopScoreCube = {163.5, -161.4};
             public static final double[] TopSCoreCone = {163.5, -161.4};
             public static final double[] MidScoreCone = {122.9 , -123.5};
-            public static final double[] LowScore = {0.0,0.0};  
-            public static final double[] MidScore = {0.0,0.0};  
-            public static final double[] HighScore = {0.0,0.0};  
-            public static final double[] LowPortal = {0.0,0.0};  
-            public static final double[] HighPortal = {0.0,0.0};  
-            public static final double[] Ground = {51.0,-93.0};  
+            public static final double[] GroundCone = {39.8,-75.2};
+            public static final double[] Ground = {39.8,-88.2};  
             public static final double[] Pickup = {0.0,0.0};  //this isn't used
         }
     }
