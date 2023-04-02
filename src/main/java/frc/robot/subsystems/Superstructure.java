@@ -331,8 +331,8 @@ public class Superstructure extends SubsystemBase {
    * It returns what game piece is in the intake based on toggle. Toggle will be updated by the driver. 
    * @return GamePiece.Cone or GamePiece.Cube
    */
-  public GamePiece GetIntakeSensor(){
-    if (IntakeMotor.getSupplyCurrent() < C.Superstructure.IntakeMotorTalonCurrentThreshold){
+  public GamePiece GetIntakeSensor(double thresh){
+    if (IntakeMotor.getSupplyCurrent() < thresh){
       return GamePiece.Empty;
     }
     else{
@@ -511,19 +511,13 @@ public class Superstructure extends SubsystemBase {
       }
       
       case Ground -> {
-        if (togglePositionGround ){
+        double thresh =0;
+        
+        thresh = IntakeMotor.getMotorOutputPercent() > 0 ? C.Superstructure.IntakeConeCThresh : C.Superstructure.IntakeCubeCThresh;
+
         setJointAngles(C.Superstructure.StateMachinePositions.Ground);
-        }
-        else {
-        setJointAngles(C.Superstructure.StateMachinePositions.GroundCone);
-        }
-      /*if (isAtPosition(C.Superstructure.StateMachinePositions.Ground)) {
-          armState = States.Pickup;
-          pickup = States.Ground;
-          setTimeOut(10000);
-        }
-        */
-        if (GetIntakeSensor() != GamePiece.Empty) {
+  
+        if (GetIntakeSensor(thresh) != GamePiece.Empty) {
           //IntakeMotor.set(ControlMode.PercentOutput, 0);
           armState = coDriveCommand = States.ExtendIn;
         } else if (coDriveCommand != States.Ground) {
@@ -582,11 +576,11 @@ public class Superstructure extends SubsystemBase {
   public void buttonHome() {
     coDriveCommand = States.ExtendIn;
   }
-  private boolean togglePositionGround = false;
+
   /** method for button to use as instant command to set the state to */
   public void buttonGround() {
     coDriveCommand = States.Ground;
-    togglePositionGround =! togglePositionGround;
+ ;
   }
   public void buttonMidScoreCube(){
     coDriveCommand = States.MidScoreCube;
