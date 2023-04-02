@@ -125,7 +125,7 @@ public final class C {
         public static final int Shoulder_Index_Channel = 0;
 
 
-        public static final double offset_incrment_constant = 0.02;// 1 deg a second
+        public static final double offset_incrment_constant = 0.06;// 1 deg a second
 
 
 
@@ -144,13 +144,16 @@ public final class C {
             public static final double[] Home = {0.0,0.0};
             public static final double[] coDriverMode = {0.0,0.0};
             public static final double[] ExtendOut = {51.0,0.0};
-            public static final double[] ExtendIn = {51,0.0};
+            public static final double[] ExtendIn = {51.0,0.0};
+            public static final double[] MidScoreCube = {35.7,-11.4};
+            public static final double[] TopSCoreCone = {163.5, -161.4};
+            public static final double[] MidScoreCone = {122.9 , -123.5};
             public static final double[] LowScore = {0.0,0.0};  
             public static final double[] MidScore = {0.0,0.0};  
             public static final double[] HighScore = {0.0,0.0};  
             public static final double[] LowPortal = {0.0,0.0};  
             public static final double[] HighPortal = {0.0,0.0};  
-            public static final double[] Ground = {51,-93};  
+            public static final double[] Ground = {51.0,-93.0};  
             public static final double[] Pickup = {0.0,0.0};  //this isn't used
         }
     }

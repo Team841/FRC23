@@ -51,6 +51,9 @@ public class Superstructure extends SubsystemBase {
     coDriverMode,
     ExtendOut, 
     ExtendIn,
+    MidScoreCube,
+    TopSCoreCone,
+    MidScoreCone,
     LowScore,
     MidScore,
     HighScore,
@@ -388,7 +391,7 @@ public class Superstructure extends SubsystemBase {
       //reset Elbow Motor Position to 0;
       elbowMotor.setSelectedSensorPosition(0);
       elbowMotor.setNeutralMode(NeutralMode.Brake);
-      resetElbowOffset();
+     // resetElbowOffset();
     }
 
     //reset position when shoulder Index is seen.
@@ -397,7 +400,7 @@ public class Superstructure extends SubsystemBase {
       shoulderMotor_starboard.setSelectedSensorPosition(0);
       shoulderMotor_starboard.setNeutralMode(NeutralMode.Brake);
       shoulderMotor_port.setNeutralMode(NeutralMode.Brake);
-      resetShoulderOffset();
+     // resetShoulderOffset();
     }
     switch (armState) {
       case Manual -> {
@@ -427,7 +430,16 @@ public class Superstructure extends SubsystemBase {
               armState = States.ExtendOut;
               
           }
-        }
+          else if (coDriveCommand == States.MidScoreCube){
+            armState = States.ExtendOut;
+          }
+          else if (coDriveCommand == States.TopSCoreCone){
+            armState = States.ExtendOut;
+          }
+          else if (coDriveCommand == States.MidScoreCone){
+            armState = States.ExtendOut;
+          }
+        } 
       }
     }
       case coDriverMode ->{
@@ -456,8 +468,28 @@ public class Superstructure extends SubsystemBase {
         }
 
       }
-      case LowScore -> {
+      case MidScoreCube -> {
+        setJointAngles(C.Superstructure.StateMachinePositions.MidScoreCube);
+      
+      if (coDriveCommand != States.MidScoreCube) {
+        armState = States.ExtendIn;
+      }
 
+      }
+      case TopSCoreCone -> {
+        setJointAngles(C.Superstructure.StateMachinePositions.TopSCoreCone);
+        if (coDriveCommand != States.TopSCoreCone) {
+          armState = States.ExtendIn; 
+        }
+      }
+      case MidScoreCone -> {
+        setJointAngles(C.Superstructure.StateMachinePositions.MidScoreCone);
+        if (coDriveCommand != States.MidScoreCone) {
+          armState = States.ExtendIn;
+        }
+      }
+      case LowScore -> {
+ 
         setJointAngles(C.Superstructure.StateMachinePositions.LowScore);
         if (GetIntakeSensor() != GamePiece.Empty) {
           armState = coDriveCommand = States.Home;
@@ -587,6 +619,15 @@ public class Superstructure extends SubsystemBase {
   /** method for button to use as instant command to set the state to */
   public void buttonGround() {
     coDriveCommand = States.Ground;
+  }
+  public void buttonMidScoreCube(){
+    coDriveCommand = States.MidScoreCube;
+  }
+  public void buttonTopScoreCone(){
+    coDriveCommand = States.TopSCoreCone;
+  }
+  public void buttonMidScoreCone(){
+    coDriveCommand = States.MidScoreCone;
   }
 /* funky manual code */
   public void moveShoulderSlowUp() {
