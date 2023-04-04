@@ -45,7 +45,7 @@ public class AutoDriveToDistance extends CommandBase {
   @Override
   public boolean isFinished() { 
 
-    if(Math.abs(m_subsystem.getPIDdistanceError()) <= C.Drive.distance_tolerance){
+    if(Math.abs(m_subsystem.getPIDdistanceError()) <= C.Drive.distanceGains.tolerance()){
       return true;
     }
     return false;
