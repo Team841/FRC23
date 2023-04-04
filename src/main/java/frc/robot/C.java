@@ -4,8 +4,15 @@
 
 package frc.robot;
 
+import frc.lib.acutators.BioNeoConfigs;
+import frc.lib.acutators.Gains;
+
 /** Add your docs here. */
 public final class C {
+
+    private BioNeoConfigs _configs = new BioNeoConfigs();
+
+
 
     public static final class OI{
         public static final int driverPortLeft = 0; //controller USB port 0
@@ -60,24 +67,29 @@ public final class C {
 
         //Physical setup of the drive
         public static double gearRatio = 1/7.23;
+
         public static double wheelDiameter = 6.06;
         public static double countsPerRev = 42; // this is the neo brushless
-    
-        //PID constants for turning, specifically for AutoTurn command//
+        public static double MaxRPM = 788.382;
+        /* //PID constants for turning, specifically for AutoTurn command//
         public static final double turn_kp = 0.018275; 
         public static final double turn_ki = 0;
         public static final double turn_kd = 0.00175;
         public static final double turn_tolerance = 0.4;
         public static final double turn_velocity_tolerance = 0.025; 
-        public static final double antiWindUp = 0.1;
+        public static final double antiWindUp = 0.1; */
+
+        public static final Gains turnGains = new Gains(0.018275, 0, 0.00175, 0, 0, 0.025, 0.1, 0.1);
  
-        //PID constants for AutoDriveToDistance command
+        /* //PID constants for AutoDriveToDistance command
         public static final double distance_kp = 0.040;   
         public static final double distance_ki = 0.0001; 
         public static final double distance_kd = 1;     
         public static final double distance_kff = 0;
         public static final double distance_tolerance = 2; // in revolutions
-        public static final double distance_kIz = 2; // in revolutions
+        public static final double distance_kIz = 2; // in revolutions */
+
+        public static final Gains distanceGains = new Gains(0.040, 0.0001, 1, 0, 2, 2, 0.1, 0.1);
         
         //PID constants for AutoBalance command
         public static final double balance_kp = 0.011;

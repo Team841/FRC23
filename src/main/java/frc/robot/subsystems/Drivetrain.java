@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 
+import frc.lib.acutators.BioNeo;
+import frc.lib.acutators.BioNeoConfigs;
 import frc.robot.C;
 import edu.wpi.first.math.controller.PIDController;
 
@@ -34,21 +36,22 @@ import frc.robot.DriveStyle;
 
 public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
-  
-  //REV SparkMax
-  private final CANSparkMax left1 = new CANSparkMax(C.CANid.driveLeft1, MotorType.kBrushless);
-  private final CANSparkMax left2 = new CANSparkMax(C.CANid.driveLeft2, MotorType.kBrushless);
-  private final CANSparkMax right1 = new CANSparkMax(C.CANid.driveRight1, MotorType.kBrushless);
-  private final CANSparkMax right2 = new CANSparkMax(C.CANid.driveRight2, MotorType.kBrushless);
 
-  public PIDController turnpid = new PIDController(C.Drive.turn_kp, C.Drive.turn_ki, C.Drive.turn_kd);
+  BioNeoConfigs config = new BioNeoConfigs();
 
-  public SparkMaxPIDController left_distance_pid = left1.getPIDController();
-  public SparkMaxPIDController right_distance_pid = right1.getPIDController();
+  private final BioNeo left1 = new BioNeo(C.CANid.driveLeft1, C.Drive.currentLimit);
+  private final BioNeo left2 = new BioNeo(C.CANid.driveLeft2, C.Drive.currentLimit);
+  private final BioNeo right1 = new BioNeo(C.CANid.driveRight1, C.Drive.currentLimit);
+  private final BioNeo right2 = new BioNeo(C.CANid.driveRight2, C.Drive.currentLimit);
+
   public PIDController balance_pid = new PIDController(0, 0, 0);
 
-  public RelativeEncoder left_encoder = left1.getEncoder();
-  public RelativeEncoder right_encoder = right1.getEncoder(); 
+  public RelativeEncoder leftEncoder = left1.getEncoder();
+  public RelativeEncoder rightEncoder = right1.getEncoder();
+
+  public SparkMaxPIDController PIDController_left;
+  public SparkMaxPIDController PIDController_right;
+
   private double PIDdistance = 0;
   private boolean isDistancePIDenabled = false;
 
@@ -61,38 +64,22 @@ public class Drivetrain extends SubsystemBase {
   public DriveStyle drivestyle = new DriveStyle();
   public Drivetrain() {
 
-    //REV Syntax
-    left1.restoreFactoryDefaults();
-    left2.restoreFactoryDefaults();
-    right1.restoreFactoryDefaults();
-    right2.restoreFactoryDefaults();
-
-
-    left1.setSmartCurrentLimit(C.Drive.currentLimit); //Current limit at number of amps 
-    left2.setSmartCurrentLimit(C.Drive.currentLimit);
-    right1.setSmartCurrentLimit(C.Drive.currentLimit);
-    right2.setSmartCurrentLimit(C.Drive.currentLimit);
-
-    //Set #2 controllers to follow #1 in both drives
-    //Syntax is shared for REV/CTRE
     left2.follow(left1);
-    right2.follow(right1);
+    right2.follow(left1);
 
-    left_distance_pid.setP(C.Drive.distance_kp);
-    left_distance_pid.setI(C.Drive.distance_ki);
-    left_distance_pid.setD(C.Drive.distance_kd);
-    left_distance_pid.setFF(C.Drive.distance_kff);
+    PIDController_left = left1.getPIDController();
+    PIDController_right = right1.getPIDController();
 
-    right_distance_pid.setP(C.Drive.distance_kp);
-    right_distance_pid.setI(C.Drive.distance_ki);
-    right_distance_pid.setD(C.Drive.distance_kd);
-    right_distance_pid.setFF(C.Drive.distance_kff);
+    // turnPID
+    config.SLOT0(PIDController_left, C.Drive.turnGains);
+    config.SLOT0(PIDController_right, C.Drive.turnGains);
 
-    left_distance_pid.setIZone(C.Drive.distance_kIz / (C.Drive.gearRatio * (C.Drive.wheelDiameter * Math.PI)));
-    right_distance_pid.setIZone(C.Drive.distance_kIz / (C.Drive.gearRatio * (C.Drive.wheelDiameter * Math.PI)));
+    // distancePID
+    config.SLOT1(PIDController_left, C.Drive.distanceGains);
+    config.SLOT1(PIDController_right, C.Drive.distanceGains);
 
-    left_distance_pid.setOutputRange(-1,1);
-
+    leftEncoder = left1.getEncoder();
+    rightEncoder = right1.getEncoder();
     phCompressor.enableAnalog(100, 115);
 
 
@@ -201,8 +188,8 @@ public class Drivetrain extends SubsystemBase {
 
     if (isDistancePIDenabled){
       // reset the pid distances
-      left_distance_pid.setReference(PIDdistance, CANSparkMax.ControlType.kPosition);
-      right_distance_pid.setReference(-PIDdistance, CANSparkMax.ControlType.kPosition);
+      PIDController_left.setReference(PIDdistance, CANSparkMax.ControlType.kPosition);
+      PIDController_right.setReference(-PIDdistance, CANSparkMax.ControlType.kPosition);
 
     }
   }
@@ -216,7 +203,11 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void resetEncoders(){
-    left_encoder.setPosition(0); right_encoder.setPosition(0);
+    leftEncoder.setPosition(0); rightEncoder.setPosition(0);
+  }
+
+  public double getEncoder(){
+    return Math.abs(leftEncoder.getPosition());
   }
 
   public double getPIDdistanceError(){
@@ -226,4 +217,7 @@ public class Drivetrain extends SubsystemBase {
   public double getYaw() {
     return -imu.getAngle();
   }
+
+
 }
+
