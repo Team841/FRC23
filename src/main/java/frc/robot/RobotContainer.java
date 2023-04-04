@@ -120,7 +120,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     // return new scoreDriveOff(m_Drivetrain);
-    return new driveoff(m_Drivetrain, m_Superstructure);
+    //return new driveoff(m_Drivetrain, m_Superstructure);
+    return new scoreHighAutoBalance(m_Drivetrain, m_Superstructure);
   }
 
 }

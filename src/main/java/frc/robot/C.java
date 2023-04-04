@@ -24,7 +24,7 @@ public final class C {
         public static final int elbowMotor = 11;
 
         public static final int IntakeNeo = 6;
-        public static final int IntakeTalon = 4;
+        public static final int IntakeTalon = 7;
     }
 
     public static final class Drivestyle{
@@ -118,7 +118,7 @@ public final class C {
         public static final double elbowGearRatio = 0.0033333; // 1/300;
         public static final double countsPerRev = 2048;
 
-        public static final double IntakeMotorTalonPercentPower = 0.4;
+        public static final double IntakeMotorTalonPercentPower = 0.6;
 
         public static final double IntakeCubeCThresh = 10;
         public static final double IntakeConeCThresh = 25;
@@ -150,11 +150,20 @@ public final class C {
             public static final double[] PreExtractIn = {149.3,-41};
             public static final double[] MidScoreCube = {61.9,-12.2};
             public static final double[] TopScoreCube = {163.5, -161.4};
-            public static final double[] TopSCoreCone = {163.5, -161.4};
+            public static final double[] TopSCoreCone = {163.5, -163.4};
             public static final double[] MidScoreCone = {122.9 , -123.5};
             // public static final double[] GroundCone = {39.8,-75.2};
             public static final double[] Ground = {39.8,-88.2};  
             public static final double[] Pickup = {0.0,0.0};  //this isn't used
+        }
+
+
+
+        public static Object TopSCoreCone;
+
+
+
+        public static void buttonTopScoreCone(Object topSCoreCone2) {
         }
     }
 }

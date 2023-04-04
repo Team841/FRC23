@@ -38,6 +38,7 @@ public class AutoDriveToDistance extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_subsystem.enableDistancePID(false);
+    m_subsystem.setLeftRight(0, 0);
   }
 
   // Returns true when the command should end.

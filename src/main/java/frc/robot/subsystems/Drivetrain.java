@@ -95,6 +95,8 @@ public class Drivetrain extends SubsystemBase {
 
     phCompressor.enableAnalog(100, 115);
 
+
+    
     brake.set(false);
     brake_b.set(true);
   }

@@ -38,7 +38,7 @@ public class Superstructure extends SubsystemBase {
   private final TalonFX shoulderMotor_port = new TalonFX(C.CANid.shoulderMotor_Port);
   private final TalonFX elbowMotor = new TalonFX(C.CANid.elbowMotor);
 
-  private final TalonSRX IntakeMotor = new TalonSRX(C.CANid.IntakeTalon); 
+  private final TalonFX IntakeMotor = new TalonFX(C.CANid.IntakeTalon); 
 
   DigitalInput ElbowIndexSensor = new DigitalInput(C.Superstructure.Elbow_Index_Channel);
   DigitalInput ShoulderIndexSensor = new DigitalInput(C.Superstructure.Shoulder_Index_Channel);
@@ -247,10 +247,18 @@ public class Superstructure extends SubsystemBase {
     } */
 
     if(IntakeMotor.getMotorOutputPercent()==0){
-      IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.IntakeMotorTalonPercentPower + 0.2);
+      IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.IntakeMotorTalonPercentPower);
     } else {
       IntakeMotor.set(ControlMode.PercentOutput, 0);
     }
+  }
+  
+  public void IntakeCone(){
+    IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.IntakeMotorTalonPercentPower);
+  }
+
+  public void SpitOutCone(){
+    IntakeMotor.set(ControlMode.PercentOutput, -C.Superstructure.IntakeMotorTalonPercentPower);
   }
 
   public void setIntakeMotor(double speed){
