@@ -12,7 +12,6 @@ import frc.robot.subsystems.Drivetrain;
 public class AutoTurn extends CommandBase {
   
   /** Creates a new AutoTurn. */
-  /*
   private Drivetrain m_subsystem ;
   private double m_intial_angle = 0;
   private double m_sub_goal_angle = 0;
@@ -72,6 +71,5 @@ public class AutoTurn extends CommandBase {
   public boolean isFinished() {
     SmartDashboard.putNumber("crobot angle", m_subsystem.getYaw());
     return m_subsystem.turnpid.atSetpoint(); // Are we there yet???? if so end, or else run execute again!
-  } */
+  }
 }
-
