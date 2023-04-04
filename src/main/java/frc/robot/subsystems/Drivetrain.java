@@ -78,8 +78,8 @@ public class Drivetrain extends SubsystemBase {
     config.SLOT1(PIDController_left, C.Drive.distanceGains);
     config.SLOT1(PIDController_right, C.Drive.distanceGains);
 
-    leftEncoder = left1.getEncoder();
-    rightEncoder = right1.getEncoder();
+    leftEncoder = left1.getMotorEncoder();
+    rightEncoder = right1.getMotorEncoder();
 
     phCompressor.enableAnalog(100, 115);
 
