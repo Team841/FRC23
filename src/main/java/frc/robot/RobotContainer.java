@@ -63,6 +63,8 @@ public class RobotContainer {
       AutoTurn.onTrue(new AutoTurn(m_Drivetrain, 270));
     final Trigger AutoDistance = m_driverCtrl.circle();
       AutoDistance.onTrue(new AutoDriveToDistance(m_Drivetrain, 48)); */
+    final Trigger toDistance = m_driverCtrl.circle();
+    toDistance.onTrue(new toDistance(m_Drivetrain, C.Drive.distance));
     final Trigger BrakeOn = m_driverCtrl.cross();
     BrakeOn.onTrue(new InstantCommand(m_Drivetrain::BrakeOn, m_Drivetrain));
     final Trigger BrakeOff = m_driverCtrl.square();

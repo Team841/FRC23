@@ -11,7 +11,7 @@ import frc.robot.subsystems.Drivetrain;
 
 public class driveOffAutoBalance extends SequentialCommandGroup {
   /** Creates a new driveOffAutoBalance. */
-
+  /*
   public driveOffAutoBalance(Drivetrain a_Drivetrain) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
@@ -23,5 +23,5 @@ public class driveOffAutoBalance extends SequentialCommandGroup {
       new AutoDriveToDistance(a_Drivetrain, 72),
       new AutoBalance(a_Drivetrain)
     );
-  }
+  } */
 }

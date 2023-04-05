@@ -10,6 +10,8 @@ import frc.lib.acutators.Gains;
 /** Add your docs here. */
 public final class C {
 
+    public static final boolean tuningMode = true;
+
     private BioNeoConfigs _configs = new BioNeoConfigs();
 
 
@@ -61,7 +63,9 @@ public final class C {
     }
 
     public static final class Drive{
-        
+
+        public static double distance = 48;
+
         // Rev motor set current limit at the number of amps
         public static int currentLimit = 60;
 

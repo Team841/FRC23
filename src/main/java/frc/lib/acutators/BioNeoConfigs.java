@@ -11,6 +11,7 @@ public class BioNeoConfigs {
         controller.setFF(_gains.kF, 0);
         controller.setIZone(_gains.kIz, 0);
         controller.setSmartMotionMaxVelocity(_gains.SMMV, 0);
+        controller.setSmartMotionMaxAccel(_gains.SMMA, 0);
         controller.setOutputRange(-1, 1);
     }
 
@@ -21,6 +22,7 @@ public class BioNeoConfigs {
         controller.setFF(_gains.kF, 1);
         controller.setIZone(_gains.kIz, 1);
         controller.setSmartMotionMaxVelocity(_gains.SMMV, 1);
+        controller.setSmartMotionMaxAccel(_gains.SMMA, 1);
         controller.setOutputRange(-1, 1);
     }
 }

@@ -25,4 +25,20 @@ public class Gains {
     public double getTolerance(){
         return tolerance;
     }
+
+    public double kP() { return kP; }
+
+    public double kI() { return kI; }
+
+    public double kD() { return kD; }
+
+    public double kF() { return kF; }
+
+    public double kIz() { return kIz; }
+
+    public double SMMV() { return SMMV; }
+
+    public double SMMA() { return SMMA; }
+
+
 }

@@ -541,7 +541,7 @@ public class Superstructure extends SubsystemBase {
     countDown();
 
     /* Get superstructure data */
-    SmartDashboard.putNumber("Shouldmotor.DNG", shoulderMotor_starboard.getSelectedSensorPosition());
+    /* SmartDashboard.putNumber("Shouldmotor.DNG", shoulderMotor_starboard.getSelectedSensorPosition());
     SmartDashboard.putNumber("Elbowmotor.DNG", elbowMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("ShoulderMotorOutput", shoulderMotor_starboard.getMotorOutputPercent());
     SmartDashboard.putNumber("ElbowMotorOutput", elbowMotor.getMotorOutputPercent());
@@ -554,7 +554,7 @@ public class Superstructure extends SubsystemBase {
     SmartDashboard.putNumber("SHoulder following Veloctiy", shoulderMotor_port.getSelectedSensorVelocity());
     SmartDashboard.putNumber("Elbow Velocity counts per 100ms", elbowMotor.getSelectedSensorVelocity());
     SmartDashboard.putBoolean("Sh_Index", getShoulderIndexSensor());
-    SmartDashboard.putBoolean("Elbow Index", getElbowIndexSensor());
+    SmartDashboard.putBoolean("Elbow Index", getElbowIndexSensor()); */
   }
 /*************************************************************************************************************************************************************************** */
   /** return current state */
