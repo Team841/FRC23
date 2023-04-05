@@ -265,6 +265,10 @@ public class Superstructure extends SubsystemBase {
     IntakeMotor.set(ControlMode.PercentOutput, speed);
   }
 
+  public void stopMotor(){
+    IntakeMotor.set(ControlMode.PercentOutput, 0);
+  }
+
   public void toggleIntakeOut(){
     if(IntakeMotor.getMotorOutputPercent()==0){
       IntakeMotor.set(ControlMode.PercentOutput, -C.Superstructure.IntakeMotorTalonPercentPower);
@@ -272,6 +276,7 @@ public class Superstructure extends SubsystemBase {
       IntakeMotor.set(ControlMode.PercentOutput, 0);
     }
   }
+  
 
   /**
    * Converts from angle to counts

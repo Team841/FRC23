@@ -20,7 +20,7 @@ public class SpitOutCone extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    c_Superstructure.SpitOutCone();
+    c_Superstructure.SpitOutCone(); 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,7 +38,7 @@ public class SpitOutCone extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;// Stop the command on the wait command
+    return false;// Stop the command on the w ait command
 
 
 
