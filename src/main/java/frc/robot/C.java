@@ -80,8 +80,8 @@ public final class C {
         public static final double distance_kIz = 2; // in revolutions
         
         //PID constants for AutoBalance command
-        public static final double balance_kp = 0.011;
-        public static final double balance_ki = 0.01;
+        public static final double balance_kp = 0.006;
+        public static final double balance_ki = 0;
         public static final double balance_kd = 0; 
 
         public static final double balance_point = 0; //0 degrees

@@ -22,12 +22,17 @@ public class scoreHighAutoBalance extends SequentialCommandGroup {
   public scoreHighAutoBalance(Drivetrain aDrivetrain, Superstructure cSuperstructure) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(//new InstantCommand(() -> cSuperstructure.IntakeCone(), cSuperstructure),
-   // new SetJointsToHighScoreCone(cSuperstructure),
-    //new SpitOutCone(cSuperstructure).withTimeout(3),
+    addCommands(new InstantCommand(() -> cSuperstructure.IntakeCone(), cSuperstructure),
+    new SetJointsToHighScoreCone(cSuperstructure),
+    new SpitOutCone(cSuperstructure).withTimeout(1),
     new SetJointsToHome(cSuperstructure),
-    new AutoDriveToDistance(aDrivetrain, -60)
-    //new AutoBalance(aDrivetrain)
+    new AutoDriveToDistance(aDrivetrain, -15),
+    new AutoDriveToDistance(aDrivetrain, -15),
+    new AutoDriveToDistance(aDrivetrain, -20),
+    new AutoDriveToDistance(aDrivetrain, -60),
+
+    new AutoBalance(aDrivetrain).withTimeout(8)
+    
 
       );
   }

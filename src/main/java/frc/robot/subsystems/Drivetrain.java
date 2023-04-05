@@ -92,6 +92,7 @@ public class Drivetrain extends SubsystemBase {
     right_distance_pid.setIZone(C.Drive.distance_kIz / (C.Drive.gearRatio * (C.Drive.wheelDiameter * Math.PI)));
 
     left_distance_pid.setOutputRange(-1,1);
+    right_distance_pid.setOutputRange(-1, 1);
 
     phCompressor.enableAnalog(100, 115);
 
@@ -120,7 +121,7 @@ public class Drivetrain extends SubsystemBase {
   }
   
   public double GetRobotAngle(){
-    return imu.getXComplementaryAngle(); 
+    return imu.getYComplementaryAngle(); 
   }
 
   public void setLeftRight(double _Leftpower, double _Rightpower){
@@ -185,13 +186,14 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("ACCL_y", imu.getAccelY());
     SmartDashboard.putNumber("ACCL_z", imu.getAccelZ());/// use this axis
     SmartDashboard.putNumber("Robot Angle", GetRobotAngle());
-    SmartDashboard.putNumber("Robot Yaw", getYaw());
+    SmartDashboard.putNumber("Robot Yaw", getYaw());*/
     SmartDashboard.putNumber("Left Distance", right_encoder.getPosition() * C.Drive.gearRatio * (C.Drive.wheelDiameter * Math.PI));
     SmartDashboard.putNumber("Right Distance", left_encoder.getPosition() * C.Drive.gearRatio * (C.Drive.wheelDiameter * Math.PI));
-
+    SmartDashboard.putNumber("Robot Angle", GetRobotAngle());
     SmartDashboard.putNumber("PID Distance", PIDdistance);
-    SmartDashboard.putNumber("output", left1.getAppliedOutput());
-
+    SmartDashboard.putNumber("Leftoutput", left1.getAppliedOutput());
+    SmartDashboard.putNumber("Rightoutput", right1.getAppliedOutput());
+    /* 
     SmartDashboard.putBoolean("brake mode", isBrakeMode());
 
     SmartDashboard.putNumber("left1", drivestyle.getLeftPower());
@@ -201,7 +203,7 @@ public class Drivetrain extends SubsystemBase {
 
     if (isDistancePIDenabled){
       // reset the pid distances
-      left_distance_pid.setReference(PIDdistance, CANSparkMax.ControlType.kPosition);
+      left_distance_pid.setReference(PIDdistance * .95, CANSparkMax.ControlType.kPosition);
       right_distance_pid.setReference(-PIDdistance, CANSparkMax.ControlType.kPosition);
 
     }
