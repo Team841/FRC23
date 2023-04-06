@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.autonomous.PIDControllers.*;
 import frc.robot.commands.autonomous.Paths.*;
 import frc.robot.subsystems.*;
@@ -31,8 +33,17 @@ public class RobotContainer {
   private final CommandXboxController m_codriverCtrl = new CommandXboxController(C.OI.codriverPort);
   private final CommandPS4Controller m_driverCtrl = new CommandPS4Controller(C.OI.driverPortLeft);
 
+  private SendableChooser<Command> m_chooser = new SendableChooser<>();
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    m_chooser.setDefaultOption("Score low cube", new scoreLowCube(m_Drivetrain, m_Superstructure));
+    m_chooser.addOption("Score high cone auto balance", new scoreHighAutoBalance(m_Drivetrain, m_Superstructure));
+    m_chooser.addOption("Score high cone", new scoreHighCone(m_Superstructure));
+    SmartDashboard.putData("Auto Chooser", m_chooser);
+
+
     // Configure the button bindings
     configureButtonBindings();
     m_Drivetrain.setDefaultCommand(
@@ -42,12 +53,6 @@ public class RobotContainer {
       new RunCommand(() -> m_Superstructure.updatejointoffsets(m_codriverCtrl.getRightY(),m_codriverCtrl.getLeftY()), m_Superstructure));
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
   private void configureButtonBindings() {
 
     /* https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj2/command/button/Button.html */
@@ -121,7 +126,8 @@ public class RobotContainer {
     // An ExampleCommand will run in autonomous
     // return new scoreDriveOff(m_Drivetrain);
     //return new driveoff(m_Drivetrain, m_Superstructure);
-    return new scoreHighAutoBalance(m_Drivetrain, m_Superstructure);
+    // return new scoreHighAutoBalance(m_Drivetrain, m_Superstructure);
+    return m_chooser.getSelected();
   }
 
 }

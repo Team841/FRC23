@@ -4,9 +4,7 @@
 
 package frc.robot.commands.autonomous.Paths;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.autonomous.PIDControllers.*;
 import frc.robot.commands.autonomous.coneOutTake;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Superstructure;
@@ -14,9 +12,9 @@ import frc.robot.subsystems.Superstructure;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class driveoff extends SequentialCommandGroup {
+public class scoreLowCube extends SequentialCommandGroup {
   /** Creates a new driveoff. */
-  public driveoff(Drivetrain p_Drivetrain, Superstructure p_Superstructure) {
+  public scoreLowCube(Drivetrain p_Drivetrain, Superstructure p_Superstructure) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
