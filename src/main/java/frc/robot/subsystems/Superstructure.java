@@ -401,22 +401,6 @@ public class Superstructure extends SubsystemBase {
   @Override
   public void periodic() {
 
-    //reset position when Elbow index is seen.
-    if(getElbowIndexSensor()){
-      //reset Elbow Motor Position to 0;
-      elbowMotor.setSelectedSensorPosition(0);
-      elbowMotor.setNeutralMode(NeutralMode.Brake);
-     // resetElbowOffset();
-    }
-
-    //reset position when shoulder Index is seen.
-    if(getShoulderIndexSensor()){
-      //reset Shoulder Motor Position to 0;
-      shoulderMotor_starboard.setSelectedSensorPosition(0);
-      shoulderMotor_starboard.setNeutralMode(NeutralMode.Brake);
-      shoulderMotor_port.setNeutralMode(NeutralMode.Brake);
-     // resetShoulderOffset();
-    }
     switch (armState) {
       case Manual -> {
         if (coDriveCommand != States.Manual){
@@ -424,6 +408,24 @@ public class Superstructure extends SubsystemBase {
         }
       }
       case Home -> {
+
+        //reset position when Elbow index is seen.
+        if(getElbowIndexSensor()){
+          //reset Elbow Motor Position to 0;
+          elbowMotor.setSelectedSensorPosition(0);
+          elbowMotor.setNeutralMode(NeutralMode.Brake);
+          // resetElbowOffset();
+        }
+
+        //reset position when shoulder Index is seen.
+        if(getShoulderIndexSensor()){
+          //reset Shoulder Motor Position to 0;
+          shoulderMotor_starboard.setSelectedSensorPosition(0);
+          shoulderMotor_starboard.setNeutralMode(NeutralMode.Brake);
+          shoulderMotor_port.setNeutralMode(NeutralMode.Brake);
+          // resetShoulderOffset();
+        }
+        
         pickup = States.Home;
 
         setJointAngles(C.Superstructure.StateMachinePositions.Home);
