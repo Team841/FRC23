@@ -21,7 +21,7 @@ public class toDistance extends CommandBase {
 
   public toDistance(Drivetrain drivetrain, double _goal) {
     this.subsystem = drivetrain;
-    this.goal = _goal;
+    this.goal = _conversions.inchesToRotationsDrive(_goal, C.Drive.gearRatio, C.Drive.wheelDiameter);
     addRequirements(subsystem);
   }
 
@@ -32,13 +32,17 @@ public class toDistance extends CommandBase {
     SmartDashboard.getNumber("goal conversion", _conversions.inchesToRotationsDrive(goal, C.Drive.gearRatio, C.Drive.wheelDiameter));
     subsystem.PIDController_left.setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kSCurve, 1);
     subsystem.PIDController_right.setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kSCurve, 1);
+    subsystem.PIDController_right2.setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kSCurve, 1);
+    subsystem.PIDController_left2.setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kSCurve, 1);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.                                                                             
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     subsystem.PIDController_left.setReference(-_conversions.inchesToRotationsDrive(goal, C.Drive.gearRatio, C.Drive.wheelDiameter), CANSparkMax.ControlType.kSmartMotion, 1);
     subsystem.PIDController_right.setReference(_conversions.inchesToRotationsDrive(goal, C.Drive.gearRatio, C.Drive.wheelDiameter), CANSparkMax.ControlType.kSmartMotion, 1);
+    // subsystem.PIDController_right2.setReference(_conversions.inchesToRotationsDrive(goal, C.Drive.gearRatio, C.Drive.wheelDiameter), CANSparkMax.ControlType.kSmartMotion, 1);
+    // subsystem.PIDController_left2.setReference(-_conversions.inchesToRotationsDrive(goal, C.Drive.gearRatio, C.Drive.wheelDiameter), CANSparkMax.ControlType.kSmartMotion, 1);
   }
 
   // Called once the command ends or is interrupted.

@@ -11,8 +11,8 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.C;
 
 public class AutoDriveToDistance extends CommandBase {
-  
-  /** Creates a new AutoDriveToDistance. */
+
+  /**
   private Drivetrain m_subsystem;
   private double m_goal_distance;
 
@@ -49,5 +49,5 @@ public class AutoDriveToDistance extends CommandBase {
       return true;
     }
     return false;
-  }
+  } */
 }

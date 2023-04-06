@@ -19,7 +19,7 @@ import frc.robot.subsystems.Superstructure;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class scoreHighAutoBalance extends SequentialCommandGroup {
   /** Creates a new scoreHighAutoBalance. */
-  public scoreHighAutoBalance(Drivetrain aDrivetrain, Superstructure cSuperstructure) {
+  /* public scoreHighAutoBalance(Drivetrain aDrivetrain, Superstructure cSuperstructure) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(//new InstantCommand(() -> cSuperstructure.IntakeCone(), cSuperstructure),
@@ -30,5 +30,5 @@ public class scoreHighAutoBalance extends SequentialCommandGroup {
     //new AutoBalance(aDrivetrain)
 
       );
-  }
+  } */
 }

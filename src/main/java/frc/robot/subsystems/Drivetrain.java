@@ -50,56 +50,67 @@ public class Drivetrain extends SubsystemBase {
 
   public RelativeEncoder leftEncoder = left1.getEncoder();
   public RelativeEncoder rightEncoder = right1.getEncoder();
+  public RelativeEncoder rightEncoder2 = right2.getEncoder();
+  public RelativeEncoder leftEncoder2 = left2.getEncoder();
 
   public SparkMaxPIDController PIDController_left;
   public SparkMaxPIDController PIDController_right;
+  public SparkMaxPIDController PIDController_right2;
+  public SparkMaxPIDController PIDController_left2;
 
   private double PIDdistance = 0;
   private boolean isDistancePIDenabled = false;
 
   Compressor phCompressor = new Compressor(1, PneumaticsModuleType.REVPH);
 
-  Solenoid brake = new Solenoid(PneumaticsModuleType.REVPH, C.Drive.Brake);
-  Solenoid brake_b = new Solenoid(PneumaticsModuleType.REVPH, C.Drive.Brake_b);
+  Solenoid brake_starboard = new Solenoid(PneumaticsModuleType.REVPH, C.Drive.Brake);
+  Solenoid brake_port = new Solenoid(PneumaticsModuleType.REVPH, C.Drive.Brake_b);
 
   private final ADIS16470_IMU imu = new ADIS16470_IMU();
   public DriveStyle drivestyle = new DriveStyle();
 
   public Drivetrain() {
 
-    left2.follow(left1);
-    right2.follow(right1);
+    // left2.follow(left1);
+    // right2.follow(right1);
 
     PIDController_left = left1.getPIDController();
     PIDController_right = right1.getPIDController();
+    PIDController_right2 = right2.getPIDController();
+    PIDController_left2 = left2.getPIDController();
 
     // turnPID
     config.SLOT0(PIDController_left, C.Drive.turnGains);
     config.SLOT0(PIDController_right, C.Drive.turnGains);
+    config.SLOT0(PIDController_right2, C.Drive.turnGains);
+    config.SLOT0(PIDController_left2, C.Drive.turnGains);
+
+    left2.setIdleMode(IdleMode.kCoast);
+    right2.setIdleMode(IdleMode.kCoast);
 
     // distancePID
     config.SLOT1(PIDController_left, C.Drive.distanceGains);
     config.SLOT1(PIDController_right, C.Drive.distanceGains);
+    config.SLOT1(PIDController_right2, C.Drive.distanceGains);
+    config.SLOT1(PIDController_left2, C.Drive.distanceGains);
 
     leftEncoder = left1.getEncoder();
     rightEncoder = right1.getEncoder();
+    rightEncoder2 = right2.getEncoder();
+    leftEncoder2 = left2.getEncoder();
     phCompressor.enableAnalog(100, 115);
     
-    brake.set(false);
-    brake_b.set(true);
-
-
+    brake_starboard.set(false);
+    brake_port.set(true);
   }
-
 
   public void Drive(double wheel, double throttle) {
     setDrivetrainBrakeMode(false);
     drivestyle.cheesyDrive(wheel, throttle );
-    //REV syntax
     left1.set(drivestyle.getLeftPower());
-    
+    left2.set(drivestyle.getLeftPower());
     right1.set(drivestyle.getRightPower());
-    
+    right2.set(drivestyle.getRightPower());
   }
 
   public void setQuickTurn(){
@@ -111,14 +122,15 @@ public class Drivetrain extends SubsystemBase {
   }
   
   public double GetRobotAngle(){
-    return imu.getXComplementaryAngle(); 
+    return imu.getXComplementaryAngle();
   }
 
   public void setLeftRight(double _Leftpower, double _Rightpower){
     //REV syntax
     left1.set(-_Leftpower);
+    left2.set(-_Leftpower);
     right1.set(_Rightpower);
-
+    right2.set(_Rightpower);
   } 
 
   public void setDrivetrainBrakeMode(boolean _BrakeMode){
@@ -150,23 +162,23 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void toggleBrakes(){
-    if (brake.get()) {
-      brake.set(false);
-      brake_b.set(true);
+    if (brake_starboard.get()) {
+      brake_starboard.set(false);
+      brake_port.set(true);
     } else{
-      brake.set(true);
-      brake_b.set(false);
+      brake_starboard.set(true);
+      brake_port.set(false);
     }
   }
 
   public void BrakeOn(){
-    brake.set(true);
-    brake_b.set(false);
+    brake_starboard.set(true);
+    brake_port.set(false);
   }
 
   public void BrakeOff(){
-    brake.set(false);
-    brake_b.set(true);
+    brake_starboard.set(false);
+    brake_port.set(true);
   }
 
   @Override
@@ -175,16 +187,22 @@ public class Drivetrain extends SubsystemBase {
     if (tune.turnP.hasChanged() || tune.turnI.hasChanged() || tune.turnD.hasChanged() || tune.turnF.hasChanged() || tune.turnIZone.hasChanged() || tune.turnTolerance.hasChanged() || tune.turnSMMV.hasChanged() || tune.turnSMMA.hasChanged()){
       config.SLOT0(PIDController_left, new Gains(tune.turnP.get(), tune.turnI.get(), tune.turnD.get(), tune.turnF.get(), tune.turnIZone.get(), tune.turnTolerance.get(),  tune.turnSMMV.get(), tune.turnSMMA.get()));
       config.SLOT0(PIDController_right, new Gains(tune.turnP.get(), tune.turnI.get(), tune.turnD.get(), tune.turnF.get(), tune.turnIZone.get(), tune.turnTolerance.get(), tune.turnSMMV.get(), tune.turnSMMA.get()));
+      config.SLOT0(PIDController_right2, new Gains(tune.turnP.get(), tune.turnI.get(), tune.turnD.get(), tune.turnF.get(), tune.turnIZone.get(), tune.turnTolerance.get(), tune.turnSMMV.get(), tune.turnSMMA.get()));
+      config.SLOT0(PIDController_left2, new Gains(tune.turnP.get(), tune.turnI.get(), tune.turnD.get(), tune.turnF.get(), tune.turnIZone.get(), tune.turnTolerance.get(), tune.turnSMMV.get(), tune.turnSMMA.get()));
     }
 
     if (tune.distanceP.hasChanged() || tune.distanceI.hasChanged() || tune.distanceD.hasChanged() || tune.distanceF.hasChanged() || tune.distanceIZone.hasChanged() || tune.distanceTolerance.hasChanged() || tune.distanceSMMV.hasChanged() || tune.distanceSMMA.hasChanged()){
       config.SLOT1(PIDController_left, new Gains(tune.distanceP.get(), tune.distanceI.get(), tune.distanceD.get(), tune.distanceF.get(), tune.distanceIZone.get(), tune.distanceTolerance.get(), tune.distanceSMMV.get(), tune.distanceSMMA.get()));
       config.SLOT1(PIDController_right, new Gains(tune.distanceP.get(), tune.distanceI.get(), tune.distanceD.get(), tune.distanceF.get(), tune.distanceIZone.get(), tune.distanceTolerance.get(), tune.distanceSMMV.get(), tune.distanceSMMA.get()));
+      config.SLOT1(PIDController_right2, new Gains(tune.distanceP.get(), tune.distanceI.get(), tune.distanceD.get(), tune.distanceF.get(), tune.distanceIZone.get(), tune.distanceTolerance.get(), tune.distanceSMMV.get(), tune.distanceSMMA.get()));
+      config.SLOT1(PIDController_left2, new Gains(tune.distanceP.get(), tune.distanceI.get(), tune.distanceD.get(), tune.distanceF.get(), tune.distanceIZone.get(), tune.distanceTolerance.get(), tune.distanceSMMV.get(), tune.distanceSMMA.get()));
     }
 
     if (tune.goalDistance.hasChanged()){
       C.Drive.distance = tune.goalDistance.get();
     }
+
+    SmartDashboard.putNumber("leftmotor", left1.getAppliedOutput());
 
 
     /*
@@ -203,41 +221,20 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putNumber("left1", drivestyle.getLeftPower());
     SmartDashboard.putNumber("right1", drivestyle.getRightPower()); */
-    SmartDashboard.putBoolean("brake", brake.get());
+    SmartDashboard.putBoolean("brake", brake_starboard.get());
 
-
-    if (isDistancePIDenabled){
-      // reset the pid distances
-      PIDController_left.setReference(PIDdistance, CANSparkMax.ControlType.kPosition);
-      PIDController_right.setReference(-PIDdistance, CANSparkMax.ControlType.kPosition);
-
-    }
-  }
-
-  public void setDistancePID(double _distance){
-    PIDdistance = _distance/C.Drive.gearRatio/(C.Drive.wheelDiameter*Math.PI);
-  }
-
-  public void enableDistancePID(boolean _enable){
-    isDistancePIDenabled = _enable;
   }
 
   public void resetEncoders(){
-    leftEncoder.setPosition(0); rightEncoder.setPosition(0);
+    leftEncoder.setPosition(0);
+    rightEncoder.setPosition(0);
+    leftEncoder2.setPosition(0);
+    rightEncoder2.setPosition(0);
   }
 
   public double getEncoder(){
-    return Math.abs(leftEncoder.getPosition());
+    return rightEncoder.getPosition();
   }
-
-  public double getPIDdistanceError(){
-    return Math.abs(PIDdistance) - Math.abs(rightEncoder.getPosition());
-  }
-
-  public double getYaw() {
-    return -imu.getAngle();
-  }
-
 
   public static class tune{
     public static TunableNumber turnP = new TunableNumber("Turn P", C.Drive.turnGains.kP());
@@ -261,7 +258,6 @@ public class Drivetrain extends SubsystemBase {
     public static TunableNumber goalDistance = new TunableNumber("Goal Distance (in)", C.Drive.distance);
 
   }
-
 
 }
 
