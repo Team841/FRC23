@@ -9,15 +9,10 @@ import frc.robot.C;
 
 import com.ctre.phoenix.motorcontrol.can.*;
 
-import java.security.Key;
-
-import org.opencv.video.SparseOpticalFlow;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.revrobotics.SparkMaxRelativeEncoder;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced; 
@@ -257,8 +252,8 @@ public class Superstructure extends SubsystemBase {
     IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.IntakeMotorTalonPercentPower);
   }
 
-  public void SpitOutCone(){
-    IntakeMotor.set(ControlMode.PercentOutput, -C.Superstructure.IntakeMotorTalonPercentPower);
+  public void AutoSpitOutCone(){
+    IntakeMotor.set(ControlMode.PercentOutput, -C.Superstructure.IntakeMotorAutoPercentPower);
   }
 
   public void setIntakeMotor(double speed){

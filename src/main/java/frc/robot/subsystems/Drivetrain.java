@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 
+import frc.lib.TunableNumber;
 import frc.robot.C;
 import edu.wpi.first.math.controller.PIDController;
 
@@ -59,6 +60,8 @@ public class Drivetrain extends SubsystemBase {
 
   private final ADIS16470_IMU imu = new ADIS16470_IMU();
   public DriveStyle drivestyle = new DriveStyle();
+
+
   public Drivetrain() {
 
     //REV Syntax
@@ -77,6 +80,9 @@ public class Drivetrain extends SubsystemBase {
     //Syntax is shared for REV/CTRE
     left2.follow(left1);
     right2.follow(right1);
+
+    setDrivetrainBrakeMode(true);
+
 
     left_distance_pid.setP(C.Drive.distance_kp);
     left_distance_pid.setI(C.Drive.distance_ki);
@@ -181,18 +187,39 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    if (tune.distance_kp.hasChanged() || tune.distance_ki.hasChanged() || tune.distance_kd.hasChanged() || tune.distance_kff.hasChanged() || tune.distance_kIz.hasChanged()){
+      left_distance_pid.setP(tune.distance_kp.get());
+      left_distance_pid.setI(tune.distance_ki.get());
+      left_distance_pid.setD(tune.distance_kd.get());
+      left_distance_pid.setFF(tune.distance_kff.get());
+      left_distance_pid.setIZone(tune.distance_kIz.get() / (C.Drive.gearRatio * (C.Drive.wheelDiameter * Math.PI)));
+
+      right_distance_pid.setP(tune.distance_kp.get());
+      right_distance_pid.setI(tune.distance_ki.get());
+      right_distance_pid.setD(tune.distance_kd.get());
+      right_distance_pid.setFF(tune.distance_kff.get());
+      right_distance_pid.setIZone(tune.distance_kIz.get() / (C.Drive.gearRatio * (C.Drive.wheelDiameter * Math.PI)));
+    }
+
+    if (tune.goal.hasChanged()){
+      C.distance = tune.goal.get();
+    }
+
+
     /*
     SmartDashboard.putNumber("ACCL_x", imu.getAccelX());///use this axis
     SmartDashboard.putNumber("ACCL_y", imu.getAccelY());
     SmartDashboard.putNumber("ACCL_z", imu.getAccelZ());/// use this axis
     SmartDashboard.putNumber("Robot Angle", GetRobotAngle());
     SmartDashboard.putNumber("Robot Yaw", getYaw());*/
+    /*
     SmartDashboard.putNumber("Left Distance", right_encoder.getPosition() * C.Drive.gearRatio * (C.Drive.wheelDiameter * Math.PI));
     SmartDashboard.putNumber("Right Distance", left_encoder.getPosition() * C.Drive.gearRatio * (C.Drive.wheelDiameter * Math.PI));
     SmartDashboard.putNumber("Robot Angle", GetRobotAngle());
     SmartDashboard.putNumber("PID Distance", PIDdistance);
     SmartDashboard.putNumber("Leftoutput", left1.getAppliedOutput());
-    SmartDashboard.putNumber("Rightoutput", right1.getAppliedOutput());
+    SmartDashboard.putNumber("Rightoutput", right1.getAppliedOutput()); */
     /* 
     SmartDashboard.putBoolean("brake mode", isBrakeMode());
 
@@ -227,5 +254,16 @@ public class Drivetrain extends SubsystemBase {
 
   public double getYaw() {
     return -imu.getAngle();
+  }
+
+  public static class tune {
+    public static TunableNumber distance_kp = new TunableNumber("distance_kp", C.Drive.distance_kp);
+    public static TunableNumber distance_ki = new TunableNumber("distance_ki", C.Drive.distance_ki);
+    public static TunableNumber distance_kd = new TunableNumber("distance_kd", C.Drive.distance_kd);
+    public static TunableNumber distance_kff = new TunableNumber("distance_kff", C.Drive.distance_kff);
+    public static TunableNumber distance_kIz = new TunableNumber("distance_kIz", C.Drive.distance_kIz);
+
+    public static TunableNumber goal = new TunableNumber("goal", C.distance);
+
   }
 }

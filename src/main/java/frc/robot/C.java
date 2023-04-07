@@ -7,6 +7,9 @@ package frc.robot;
 /** Add your docs here. */
 public final class C {
 
+    public static boolean tuningMode = true;
+    public static double distance = 48;
+
     public static final class OI{
         public static final int driverPortLeft = 0; //controller USB port 0
         public static final int driverPortRight = 1; //controller USB port 1
@@ -119,6 +122,7 @@ public final class C {
         public static final double countsPerRev = 2048;
 
         public static final double IntakeMotorTalonPercentPower = 0.6;
+        public static final double IntakeMotorAutoPercentPower = 0.335;
         
         public static final double IntakeCubeCThresh = 10;
         public static final double IntakeConeCThresh = 25;

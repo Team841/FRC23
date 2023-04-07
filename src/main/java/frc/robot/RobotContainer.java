@@ -40,7 +40,7 @@ public class RobotContainer {
 
     m_chooser.setDefaultOption("Score low cube", new scoreLowCube(m_Drivetrain, m_Superstructure));
     m_chooser.addOption("Score high cone auto balance", new scoreHighAutoBalance(m_Drivetrain, m_Superstructure));
-    m_chooser.addOption("Score high cone", new scoreHighCone(m_Superstructure));
+    m_chooser.addOption("Score high cone", new scoreHighCone(m_Superstructure, m_Drivetrain));
     SmartDashboard.putData("Auto Chooser", m_chooser);
 
 
@@ -68,6 +68,8 @@ public class RobotContainer {
       AutoTurn.onTrue(new AutoTurn(m_Drivetrain, 270));
     final Trigger AutoDistance = m_driverCtrl.circle();
       AutoDistance.onTrue(new AutoDriveToDistance(m_Drivetrain, 48)); */
+    final Trigger ljakdsczvjbduebfjd = m_driverCtrl.circle();
+      ljakdsczvjbduebfjd.onTrue(new AutoDriveToDistance(m_Drivetrain, C.distance));
     final Trigger BrakeOn = m_driverCtrl.cross();
     BrakeOn.onTrue(new InstantCommand(m_Drivetrain::BrakeOn, m_Drivetrain));
     final Trigger BrakeOff = m_driverCtrl.square();
