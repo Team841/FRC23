@@ -684,7 +684,7 @@ public class Superstructure extends SubsystemBase {
    * elbow and shoulder offsets.
    * 
    * @param joystick_left
-   * @param joystick_right
+   * @param   
    */
   public void updatejointoffsets(double shoulder_joystick, double elbow_joystick) {
     // If threshould joystick is exceeded update offset

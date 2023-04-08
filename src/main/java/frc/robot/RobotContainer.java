@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.autonomous.PIDControllers.*;
 import frc.robot.commands.autonomous.Paths.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,6 +40,8 @@ public class RobotContainer {
     m_chooser.setDefaultOption("Score low cube", new scoreLowCube(m_Drivetrain, m_Superstructure));
     m_chooser.addOption("Score high cone auto balance", new scoreHighAutoBalance(m_Drivetrain, m_Superstructure));
     m_chooser.addOption("Score high cone", new scoreHighCone(m_Superstructure));
+    m_chooser.addOption("Balance", new balance(m_Drivetrain));
+    m_chooser.addOption("Score low cube Balance", new LowCubeBalance(m_Superstructure, m_Drivetrain));
     SmartDashboard.putData("Auto Chooser", m_chooser);
 
 
