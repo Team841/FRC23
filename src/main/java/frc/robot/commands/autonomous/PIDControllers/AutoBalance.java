@@ -43,6 +43,13 @@ public class AutoBalance extends CommandBase {
     }
     
     m_subsystem.setLeftRight(output, output);
+
+    if (Math.abs(m_subsystem.GetRobotAngle()) < 1.5){
+      m_subsystem.BrakeOn();
+    }
+    else {
+      m_subsystem.BrakeOff();
+    }
   } 
 
     
@@ -60,7 +67,9 @@ public class AutoBalance extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_subsystem.BrakeOff();
+  }
 
   // Returns true when the command should end.
   @Override

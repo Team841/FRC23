@@ -18,7 +18,7 @@ public class LowCubeBalance extends SequentialCommandGroup {
                 new AutoDriveToDistance(aDrivetrain, -55),
 
 
-                new AutoBalance(aDrivetrain).withTimeout(8)
+                new AutoBalance(aDrivetrain)
 
         );
     }
