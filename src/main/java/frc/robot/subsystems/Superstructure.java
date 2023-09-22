@@ -345,17 +345,17 @@ public class Superstructure extends SubsystemBase {
    * @return GamePiece.Cone or GamePiece.Cube
    */
   public GamePiece GetIntakeSensor(double thresh){
-    if (IntakeMotor.getSupplyCurrent() < thresh){
+   // if (IntakeMotor.getSupplyCurrent() < thresh){
       return GamePiece.Empty;
-    }
-    else{
-      if (toggle == GamePiece.Cone){
-        return GamePiece.Cone;
-      }
-      else{
-        return GamePiece.Cube;
-      }
-    } 
+   // }
+   // else{
+   //   if (toggle == GamePiece.Cone){
+   //     return GamePiece.Cone;
+   //   }
+    //  else{
+    //    return GamePiece.Cube;
+     // }
+    //} 
   }
 
   public void testjoint(){
