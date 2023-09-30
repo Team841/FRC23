@@ -79,17 +79,17 @@ public class RobotContainer {
 
     
     final Trigger e = m_codriverCtrl.b();
-//    e.onTrue(new InstantCommand(m_Superstructure::buttonGround, m_Superstructure));
+   e.onTrue(new InstantCommand(m_Superstructure::buttonGround, m_Superstructure));
     final Trigger s = m_codriverCtrl.x();
-//    s.whileTrue(new InstantCommand(m_Superstructure::buttonHome, m_Superstructure));
+   s.whileTrue(new InstantCommand(m_Superstructure::buttonHome, m_Superstructure));
     final Trigger tcube = m_codriverCtrl.rightTrigger();
-//    tcube.whileTrue(new InstantCommand(m_Superstructure::buttonTopScoreCube, m_Superstructure));
+    tcube.whileTrue(new InstantCommand(m_Superstructure::buttonTopScoreCube, m_Superstructure));
     final Trigger MidScoreCube = m_codriverCtrl.rightBumper();
-//    MidScoreCube.whileTrue(new InstantCommand(m_Superstructure::buttonMidScoreCube, m_Superstructure));
+    MidScoreCube.whileTrue(new InstantCommand(m_Superstructure::buttonMidScoreCube, m_Superstructure));
     final Trigger tcone = m_codriverCtrl.leftTrigger();
-//    tcone.whileTrue(new InstantCommand(m_Superstructure::buttonTopScoreCone, m_Superstructure));
+    tcone.whileTrue(new InstantCommand(m_Superstructure::buttonTopScoreCone, m_Superstructure));
     final Trigger mcone = m_codriverCtrl.leftBumper();
-//    mcone.whileTrue(new InstantCommand(m_Superstructure::buttonMidScoreCone, m_Superstructure));
+    mcone.whileTrue(new InstantCommand(m_Superstructure::buttonMidScoreCone, m_Superstructure));
     final Trigger w = m_codriverCtrl.back();
     w.onTrue(new InstantCommand(m_Superstructure::setCube, m_Superstructure));
     final Trigger i = m_codriverCtrl.start();
