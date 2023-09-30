@@ -56,7 +56,7 @@ public final class C {
     public static final class Drive{
         
         // Rev motor set current limit at the number of amps
-        public static int currentLimit = 60;
+        public static int currentLimit = 80; //60;
 
         //Physical setup of the drive
         public static double gearRatio = 1/7.23;
