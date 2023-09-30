@@ -9,19 +9,33 @@ import frc.robot.commands.autonomous.PIDControllers.*;
 public class scoreGetAnother extends SequentialCommandGroup{
     public scoreGetAnother(Superstructure aSuperstructure, Drivetrain aDrivetrain) {
         addCommands(
-            new SetJointsToHighScoreCube(aSuperstructure).withTimeout(2),
-            new SpitOutCube(aSuperstructure).withTimeout(1.5),
-            new SetJointsToHome(aSuperstructure).withTimeout(2)
-            /*new AutoDriveToDistance(aDrivetrain, -204),
-            new AutoTurn(aDrivetrain, 180),
-            new SetJointsToGroundPickup(aSuperstructure).withTimeout(2),
-            new InstantCommand(() -> aSuperstructure.IntakeCube(), aSuperstructure),
-            new AutoDriveToDistance(aDrivetrain, 21.6),
-            new InstantCommand(() -> aSuperstructure.stopMotor(), aSuperstructure),
-            new AutoTurn(aDrivetrain, 180),
-            new AutoDriveToDistance(aDrivetrain, -222.6),
-            new SetJointsToMidCube(aSuperstructure).withTimeout(2),
-            new SpitOutCube(aSuperstructure).withTimeout(1.5)*/
+            //1. move arm high position
+            //new SetJointsToHighScoreCube(aSuperstructure).withTimeout(2),
+            //2. spit out
+            //new SpitOutCube(aSuperstructure).withTimeout(1.5),
+            //3. bring arm to home
+            //new SetJointsToHome(aSuperstructure).withTimeout(2)
+                       
+            //4. drive back 11ft
+            //new AutoDriveToDistance(aDrivetrain, -40),
+            //5. turn 180
+            //new AutoTurn(aDrivetrain, 180),
+            //6. move arm to floor position
+            //new SetJointsToGroundPickup(aSuperstructure).withTimeout(2),
+            //7. turn on intake
+            new InstantCommand(() -> aSuperstructure.IntakeCube(), aSuperstructure)
+            //8. drive back 21.6 inches
+           //new AutoDriveToDistance(aDrivetrain, 21.6),
+            //9. stop intake motors
+            //new InstantCommand(() -> aSuperstructure.stopMotor(), aSuperstructure),
+            //10. turn 180
+            //new AutoTurn(aDrivetrain, 180),
+            //11. drive back
+            //new AutoDriveToDistance(aDrivetrain, -222.6),
+            //12. move arm to mid position
+            //new SetJointsToMidCube(aSuperstructure).withTimeout(2),
+            //13. spit out cube
+            //new SpitOutCube(aSuperstructure).withTimeout(1.5)*/
         );
     }
 }
