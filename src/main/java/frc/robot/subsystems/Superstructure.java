@@ -257,8 +257,16 @@ public class Superstructure extends SubsystemBase {
     IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.IntakeMotorTalonPercentPower);
   }
 
+  public void IntakeCube(){
+    IntakeMotor.set(ControlMode.PercentOutput, -C.Superstructure.IntakeMotorTalonPercentPower);
+  }
+
   public void SpitOutCone(){
     IntakeMotor.set(ControlMode.PercentOutput, -C.Superstructure.IntakeMotorTalonPercentPower);
+  }
+  
+  public void SpitOutCube(){
+    IntakeMotor.set(ControlMode.PercentOutput, C.Superstructure.IntakeMotorTalonPercentPower);
   }
 
   public void setIntakeMotor(double speed){
