@@ -6,23 +6,25 @@ package frc.robot.commands.autonomous.Paths;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.C.Drive;
 import frc.robot.C.*;
+import frc.robot.C.Drive;
+import frc.robot.commands.*;
 import frc.robot.commands.autonomous.PIDControllers.AutoBalance;
 import frc.robot.commands.autonomous.PIDControllers.AutoDriveToDistance;
-import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Superstructure;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
+// NOTE:  Consider using this command inline, rather than writing a subclass.
+// For more information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class scoreHighAutoBalance extends SequentialCommandGroup {
   /** Creates a new scoreHighAutoBalance. */
-  /* public scoreHighAutoBalance(Drivetrain aDrivetrain, Superstructure cSuperstructure) {
+  /* public scoreHighAutoBalance(Drivetrain aDrivetrain, Superstructure
+  cSuperstructure) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(//new InstantCommand(() -> cSuperstructure.IntakeCone(), cSuperstructure),
+    addCommands(//new InstantCommand(() -> cSuperstructure.IntakeCone(),
+  cSuperstructure),
    // new SetJointsToHighScoreCone(cSuperstructure),
     //new SpitOutCone(cSuperstructure).withTimeout(3),
     new SetJointsToHome(cSuperstructure),

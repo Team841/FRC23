@@ -4,47 +4,43 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import edu.wpi.first.math.controller.PIDController;
+/*
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance; */
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
-
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.TunableNumber;
 import frc.lib.acutators.BioNeo;
 import frc.lib.acutators.BioNeoConfigs;
 import frc.lib.acutators.Gains;
 import frc.robot.C;
-import edu.wpi.first.math.controller.PIDController;
-
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-
-
-/*
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance; */
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import java.lang.Math;
-
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.RelativeEncoder;
-
 import frc.robot.DriveStyle;
+import java.lang.Math;
 
 public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
 
   BioNeoConfigs config = new BioNeoConfigs();
 
-  private final BioNeo left1 = new BioNeo(C.CANid.driveLeft1, C.Drive.currentLimit);
-  private final BioNeo left2 = new BioNeo(C.CANid.driveLeft2, C.Drive.currentLimit);
-  private final BioNeo right1 = new BioNeo(C.CANid.driveRight1, C.Drive.currentLimit);
-  private final BioNeo right2 = new BioNeo(C.CANid.driveRight2, C.Drive.currentLimit);
+  private final BioNeo left1 =
+      new BioNeo(C.CANid.driveLeft1, C.Drive.currentLimit);
+  private final BioNeo left2 =
+      new BioNeo(C.CANid.driveLeft2, C.Drive.currentLimit);
+  private final BioNeo right1 =
+      new BioNeo(C.CANid.driveRight1, C.Drive.currentLimit);
+  private final BioNeo right2 =
+      new BioNeo(C.CANid.driveRight2, C.Drive.currentLimit);
 
   public PIDController balance_pid = new PIDController(0, 0, 0);
 
@@ -63,8 +59,10 @@ public class Drivetrain extends SubsystemBase {
 
   Compressor phCompressor = new Compressor(1, PneumaticsModuleType.REVPH);
 
-  Solenoid brake_starboard = new Solenoid(PneumaticsModuleType.REVPH, C.Drive.Brake);
-  Solenoid brake_port = new Solenoid(PneumaticsModuleType.REVPH, C.Drive.Brake_b);
+  Solenoid brake_starboard =
+      new Solenoid(PneumaticsModuleType.REVPH, C.Drive.Brake);
+  Solenoid brake_port =
+      new Solenoid(PneumaticsModuleType.REVPH, C.Drive.Brake_b);
 
   private final ADIS16470_IMU imu = new ADIS16470_IMU();
   public DriveStyle drivestyle = new DriveStyle();
@@ -99,48 +97,41 @@ public class Drivetrain extends SubsystemBase {
     rightEncoder2 = right2.getEncoder();
     leftEncoder2 = left2.getEncoder();
     phCompressor.enableAnalog(100, 115);
-    
+
     brake_starboard.set(false);
     brake_port.set(true);
   }
 
   public void Drive(double wheel, double throttle) {
     setDrivetrainBrakeMode(false);
-    drivestyle.cheesyDrive(wheel, throttle );
+    drivestyle.cheesyDrive(wheel, throttle);
     left1.set(drivestyle.getLeftPower());
     left2.set(drivestyle.getLeftPower());
     right1.set(drivestyle.getRightPower());
     right2.set(drivestyle.getRightPower());
   }
 
-  public void setQuickTurn(){
-      drivestyle.setQuickTurn();
-  }
+  public void setQuickTurn() { drivestyle.setQuickTurn(); }
 
-  public void resetQuickTurn(){
-      drivestyle.resetQuickTurn();
-  }
-  
-  public double GetRobotAngle(){
-    return imu.getXComplementaryAngle();
-  }
+  public void resetQuickTurn() { drivestyle.resetQuickTurn(); }
 
-  public void setLeftRight(double _Leftpower, double _Rightpower){
-    //REV syntax
+  public double GetRobotAngle() { return imu.getXComplementaryAngle(); }
+
+  public void setLeftRight(double _Leftpower, double _Rightpower) {
+    // REV syntax
     left1.set(-_Leftpower);
     left2.set(-_Leftpower);
     right1.set(_Rightpower);
     right2.set(_Rightpower);
-  } 
+  }
 
-  public void setDrivetrainBrakeMode(boolean _BrakeMode){
-    if (_BrakeMode){
+  public void setDrivetrainBrakeMode(boolean _BrakeMode) {
+    if (_BrakeMode) {
       left1.setIdleMode(IdleMode.kBrake);
       left2.setIdleMode(IdleMode.kBrake);
       right1.setIdleMode(IdleMode.kBrake);
       right2.setIdleMode(IdleMode.kBrake);
-    }
-    else{
+    } else {
       left1.setIdleMode(IdleMode.kCoast);
       left2.setIdleMode(IdleMode.kCoast);
       right1.setIdleMode(IdleMode.kCoast);
@@ -148,35 +139,32 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
-  public boolean isBrakeMode(){
-    if (left1.getIdleMode() == IdleMode.kBrake){
+  public boolean isBrakeMode() {
+    if (left1.getIdleMode() == IdleMode.kBrake) {
       return true;
-    }
-    else{
+    } else {
       return false;
     }
   }
 
-  public void resetIMU() {
-    imu.reset();
-  }
+  public void resetIMU() { imu.reset(); }
 
-  public void toggleBrakes(){
+  public void toggleBrakes() {
     if (brake_starboard.get()) {
       brake_starboard.set(false);
       brake_port.set(true);
-    } else{
+    } else {
       brake_starboard.set(true);
       brake_port.set(false);
     }
   }
 
-  public void BrakeOn(){
+  public void BrakeOn() {
     brake_starboard.set(true);
     brake_port.set(false);
   }
 
-  public void BrakeOff(){
+  public void BrakeOff() {
     brake_starboard.set(false);
     brake_port.set(true);
   }
@@ -184,26 +172,68 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
 
-    if (tune.turnP.hasChanged() || tune.turnI.hasChanged() || tune.turnD.hasChanged() || tune.turnF.hasChanged() || tune.turnIZone.hasChanged() || tune.turnTolerance.hasChanged() || tune.turnSMMV.hasChanged() || tune.turnSMMA.hasChanged()){
-      config.SLOT0(PIDController_left, new Gains(tune.turnP.get(), tune.turnI.get(), tune.turnD.get(), tune.turnF.get(), tune.turnIZone.get(), tune.turnTolerance.get(),  tune.turnSMMV.get(), tune.turnSMMA.get()));
-      config.SLOT0(PIDController_right, new Gains(tune.turnP.get(), tune.turnI.get(), tune.turnD.get(), tune.turnF.get(), tune.turnIZone.get(), tune.turnTolerance.get(), tune.turnSMMV.get(), tune.turnSMMA.get()));
-      config.SLOT0(PIDController_right2, new Gains(tune.turnP.get(), tune.turnI.get(), tune.turnD.get(), tune.turnF.get(), tune.turnIZone.get(), tune.turnTolerance.get(), tune.turnSMMV.get(), tune.turnSMMA.get()));
-      config.SLOT0(PIDController_left2, new Gains(tune.turnP.get(), tune.turnI.get(), tune.turnD.get(), tune.turnF.get(), tune.turnIZone.get(), tune.turnTolerance.get(), tune.turnSMMV.get(), tune.turnSMMA.get()));
+    if (tune.turnP.hasChanged() || tune.turnI.hasChanged() ||
+        tune.turnD.hasChanged() || tune.turnF.hasChanged() ||
+        tune.turnIZone.hasChanged() || tune.turnTolerance.hasChanged() ||
+        tune.turnSMMV.hasChanged() || tune.turnSMMA.hasChanged()) {
+      config.SLOT0(PIDController_left,
+                   new Gains(tune.turnP.get(), tune.turnI.get(),
+                             tune.turnD.get(), tune.turnF.get(),
+                             tune.turnIZone.get(), tune.turnTolerance.get(),
+                             tune.turnSMMV.get(), tune.turnSMMA.get()));
+      config.SLOT0(PIDController_right,
+                   new Gains(tune.turnP.get(), tune.turnI.get(),
+                             tune.turnD.get(), tune.turnF.get(),
+                             tune.turnIZone.get(), tune.turnTolerance.get(),
+                             tune.turnSMMV.get(), tune.turnSMMA.get()));
+      config.SLOT0(PIDController_right2,
+                   new Gains(tune.turnP.get(), tune.turnI.get(),
+                             tune.turnD.get(), tune.turnF.get(),
+                             tune.turnIZone.get(), tune.turnTolerance.get(),
+                             tune.turnSMMV.get(), tune.turnSMMA.get()));
+      config.SLOT0(PIDController_left2,
+                   new Gains(tune.turnP.get(), tune.turnI.get(),
+                             tune.turnD.get(), tune.turnF.get(),
+                             tune.turnIZone.get(), tune.turnTolerance.get(),
+                             tune.turnSMMV.get(), tune.turnSMMA.get()));
     }
 
-    if (tune.distanceP.hasChanged() || tune.distanceI.hasChanged() || tune.distanceD.hasChanged() || tune.distanceF.hasChanged() || tune.distanceIZone.hasChanged() || tune.distanceTolerance.hasChanged() || tune.distanceSMMV.hasChanged() || tune.distanceSMMA.hasChanged()){
-      config.SLOT1(PIDController_left, new Gains(tune.distanceP.get(), tune.distanceI.get(), tune.distanceD.get(), tune.distanceF.get(), tune.distanceIZone.get(), tune.distanceTolerance.get(), tune.distanceSMMV.get(), tune.distanceSMMA.get()));
-      config.SLOT1(PIDController_right, new Gains(tune.distanceP.get(), tune.distanceI.get(), tune.distanceD.get(), tune.distanceF.get(), tune.distanceIZone.get(), tune.distanceTolerance.get(), tune.distanceSMMV.get(), tune.distanceSMMA.get()));
-      config.SLOT1(PIDController_right2, new Gains(tune.distanceP.get(), tune.distanceI.get(), tune.distanceD.get(), tune.distanceF.get(), tune.distanceIZone.get(), tune.distanceTolerance.get(), tune.distanceSMMV.get(), tune.distanceSMMA.get()));
-      config.SLOT1(PIDController_left2, new Gains(tune.distanceP.get(), tune.distanceI.get(), tune.distanceD.get(), tune.distanceF.get(), tune.distanceIZone.get(), tune.distanceTolerance.get(), tune.distanceSMMV.get(), tune.distanceSMMA.get()));
+    if (tune.distanceP.hasChanged() || tune.distanceI.hasChanged() ||
+        tune.distanceD.hasChanged() || tune.distanceF.hasChanged() ||
+        tune.distanceIZone.hasChanged() ||
+        tune.distanceTolerance.hasChanged() || tune.distanceSMMV.hasChanged() ||
+        tune.distanceSMMA.hasChanged()) {
+      config.SLOT1(PIDController_left,
+                   new Gains(tune.distanceP.get(), tune.distanceI.get(),
+                             tune.distanceD.get(), tune.distanceF.get(),
+                             tune.distanceIZone.get(),
+                             tune.distanceTolerance.get(),
+                             tune.distanceSMMV.get(), tune.distanceSMMA.get()));
+      config.SLOT1(PIDController_right,
+                   new Gains(tune.distanceP.get(), tune.distanceI.get(),
+                             tune.distanceD.get(), tune.distanceF.get(),
+                             tune.distanceIZone.get(),
+                             tune.distanceTolerance.get(),
+                             tune.distanceSMMV.get(), tune.distanceSMMA.get()));
+      config.SLOT1(PIDController_right2,
+                   new Gains(tune.distanceP.get(), tune.distanceI.get(),
+                             tune.distanceD.get(), tune.distanceF.get(),
+                             tune.distanceIZone.get(),
+                             tune.distanceTolerance.get(),
+                             tune.distanceSMMV.get(), tune.distanceSMMA.get()));
+      config.SLOT1(PIDController_left2,
+                   new Gains(tune.distanceP.get(), tune.distanceI.get(),
+                             tune.distanceD.get(), tune.distanceF.get(),
+                             tune.distanceIZone.get(),
+                             tune.distanceTolerance.get(),
+                             tune.distanceSMMV.get(), tune.distanceSMMA.get()));
     }
 
-    if (tune.goalDistance.hasChanged()){
+    if (tune.goalDistance.hasChanged()) {
       C.Drive.distance = tune.goalDistance.get();
     }
 
     SmartDashboard.putNumber("leftmotor", left1.getAppliedOutput());
-
 
     /*
     SmartDashboard.putNumber("ACCL_x", imu.getAccelX());///use this axis
@@ -211,8 +241,10 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("ACCL_z", imu.getAccelZ());/// use this axis
     SmartDashboard.putNumber("Robot Angle", GetRobotAngle());
     SmartDashboard.putNumber("Robot Yaw", getYaw());
-    SmartDashboard.putNumber("Left Distance", right_encoder.getPosition() * C.Drive.gearRatio * (C.Drive.wheelDiameter * Math.PI));
-    SmartDashboard.putNumber("Right Distance", left_encoder.getPosition() * C.Drive.gearRatio * (C.Drive.wheelDiameter * Math.PI));
+    SmartDashboard.putNumber("Left Distance", right_encoder.getPosition() *
+    C.Drive.gearRatio * (C.Drive.wheelDiameter * Math.PI));
+    SmartDashboard.putNumber("Right Distance", left_encoder.getPosition() *
+    C.Drive.gearRatio * (C.Drive.wheelDiameter * Math.PI));
 
     SmartDashboard.putNumber("PID Distance", PIDdistance);
     SmartDashboard.putNumber("output", left1.getAppliedOutput());
@@ -222,42 +254,53 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("left1", drivestyle.getLeftPower());
     SmartDashboard.putNumber("right1", drivestyle.getRightPower()); */
     SmartDashboard.putBoolean("brake", brake_starboard.get());
-
   }
 
-  public void resetEncoders(){
+  public void resetEncoders() {
     leftEncoder.setPosition(0);
     rightEncoder.setPosition(0);
     leftEncoder2.setPosition(0);
     rightEncoder2.setPosition(0);
   }
 
-  public double getEncoder(){
-    return rightEncoder.getPosition();
+  public double getEncoder() { return rightEncoder.getPosition(); }
+
+  public static class tune {
+    public static TunableNumber turnP =
+        new TunableNumber("Turn P", C.Drive.turnGains.kP());
+    public static TunableNumber turnI =
+        new TunableNumber("Turn I", C.Drive.turnGains.kI());
+    public static TunableNumber turnD =
+        new TunableNumber("Turn D", C.Drive.turnGains.kD());
+    public static TunableNumber turnF =
+        new TunableNumber("Turn F", C.Drive.turnGains.kF());
+    public static TunableNumber turnIZone =
+        new TunableNumber("Turn IZone", C.Drive.turnGains.kIz());
+    public static TunableNumber turnSMMV =
+        new TunableNumber("Turn SMMV", C.Drive.turnGains.SMMV());
+    public static TunableNumber turnSMMA =
+        new TunableNumber("Turn SMMA", C.Drive.turnGains.SMMA());
+    public static TunableNumber turnTolerance =
+        new TunableNumber("Turn Tolerance", C.Drive.turnGains.getTolerance());
+
+    public static TunableNumber distanceP =
+        new TunableNumber("Distance P", C.Drive.distanceGains.kP());
+    public static TunableNumber distanceI =
+        new TunableNumber("Distance I", C.Drive.distanceGains.kI());
+    public static TunableNumber distanceD =
+        new TunableNumber("Distance D", C.Drive.distanceGains.kD());
+    public static TunableNumber distanceF =
+        new TunableNumber("Distance F", C.Drive.distanceGains.kF());
+    public static TunableNumber distanceIZone =
+        new TunableNumber("Distance IZone", C.Drive.distanceGains.kIz());
+    public static TunableNumber distanceSMMV =
+        new TunableNumber("Distance SMMV", C.Drive.distanceGains.SMMV());
+    public static TunableNumber distanceSMMA =
+        new TunableNumber("Distance SMMA", C.Drive.distanceGains.SMMA());
+    public static TunableNumber distanceTolerance = new TunableNumber(
+        "Distance Tolerance", C.Drive.distanceGains.getTolerance());
+
+    public static TunableNumber goalDistance =
+        new TunableNumber("Goal Distance (in)", C.Drive.distance);
   }
-
-  public static class tune{
-    public static TunableNumber turnP = new TunableNumber("Turn P", C.Drive.turnGains.kP());
-    public static TunableNumber turnI = new TunableNumber("Turn I", C.Drive.turnGains.kI());
-    public static TunableNumber turnD = new TunableNumber("Turn D", C.Drive.turnGains.kD());
-    public static TunableNumber turnF = new TunableNumber("Turn F", C.Drive.turnGains.kF());
-    public static TunableNumber turnIZone = new TunableNumber("Turn IZone", C.Drive.turnGains.kIz());
-    public static TunableNumber turnSMMV = new TunableNumber("Turn SMMV", C.Drive.turnGains.SMMV());
-    public static TunableNumber turnSMMA = new TunableNumber("Turn SMMA", C.Drive.turnGains.SMMA());
-    public static TunableNumber turnTolerance = new TunableNumber("Turn Tolerance", C.Drive.turnGains.getTolerance());
-
-    public static TunableNumber distanceP = new TunableNumber("Distance P", C.Drive.distanceGains.kP());
-    public static TunableNumber distanceI = new TunableNumber("Distance I", C.Drive.distanceGains.kI());
-    public static TunableNumber distanceD = new TunableNumber("Distance D", C.Drive.distanceGains.kD());
-    public static TunableNumber distanceF = new TunableNumber("Distance F", C.Drive.distanceGains.kF());
-    public static TunableNumber distanceIZone = new TunableNumber("Distance IZone", C.Drive.distanceGains.kIz());
-    public static TunableNumber distanceSMMV = new TunableNumber("Distance SMMV", C.Drive.distanceGains.SMMV());
-    public static TunableNumber distanceSMMA = new TunableNumber("Distance SMMA", C.Drive.distanceGains.SMMA());
-    public static TunableNumber distanceTolerance = new TunableNumber("Distance Tolerance", C.Drive.distanceGains.getTolerance());
-
-    public static TunableNumber goalDistance = new TunableNumber("Goal Distance (in)", C.Drive.distance);
-
-  }
-
 }
-

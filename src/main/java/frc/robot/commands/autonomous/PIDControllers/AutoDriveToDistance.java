@@ -4,11 +4,10 @@
 
 package frc.robot.commands.autonomous.PIDControllers;
 
-import java.lang.Math;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Drivetrain;
 import frc.robot.C;
+import frc.robot.subsystems.Drivetrain;
+import java.lang.Math;
 
 public class AutoDriveToDistance extends CommandBase {
 
@@ -21,7 +20,7 @@ public class AutoDriveToDistance extends CommandBase {
     m_goal_distance = goal_distance;
     addRequirements(m_subsystem);
   }
-    
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -43,11 +42,12 @@ public class AutoDriveToDistance extends CommandBase {
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() { 
+  public boolean isFinished() {
 
-    if(Math.abs(m_subsystem.getPIDdistanceError()) <= C.Drive.distanceGains.getTolerance()){
-      return true;
+    if(Math.abs(m_subsystem.getPIDdistanceError()) <=
+  C.Drive.distanceGains.getTolerance()){ return true;
     }
     return false;
-  } */
+  }
+*/
 }
