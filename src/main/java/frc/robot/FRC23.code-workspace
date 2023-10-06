@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"path": "../../../../.."
+		},
+		{
+			"name": "FRC23",
+			"path": "../../../../../../../../FRC23/src/main/FRC23"
+		},
+		{
+			"name": "FRC23-1",
+			"path": "../../../../../../../../FRC23/src/main/FRC23-1"
+		},
+		{
+			"name": "FRC23-2",
+			"path": "../../../../../../../../FRC23/src/main/FRC23-2"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "automatic",
+		"java.server.launchMode": "Standard"
+	}
+}
