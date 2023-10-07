@@ -43,6 +43,7 @@ public class RobotContainer {
     m_chooser.addOption("Balance", new balance(m_Drivetrain));
     m_chooser.addOption("Score low cube Balance", new LowCubeBalance(m_Superstructure, m_Drivetrain));
     m_chooser.addOption("score get another", new scoreGetAnother(m_Superstructure, m_Drivetrain));
+    m_chooser.addOption("Score mid cube balance", new scoreMidCubeAutoBalance(m_Drivetrain, m_Superstructure));
     SmartDashboard.putData("Auto Chooser", m_chooser);
 
 
