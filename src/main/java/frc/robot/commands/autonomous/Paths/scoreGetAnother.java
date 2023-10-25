@@ -16,33 +16,34 @@ public class scoreGetAnother extends SequentialCommandGroup{
             new SpitOutCube(aSuperstructure).withTimeout(1.5),
             //3. bring arm to home
             new SetJointsToHome(aSuperstructure).withTimeout(2),
-                       
-            //4. drive back 11ft to pick up another item
-            new AutoDriveToDistance(aDrivetrain, -132),
-    
-            //5. turn 180
-           new AutoTurn(aDrivetrain, 180),
-            //6. move arm to floor position
-        new SetJointsToGroundPickup(aSuperstructure).withTimeout(2),
-         //new SetJointsToGroundPickup(aSuperstructure).withTimeou(2),
-            //7. turn on intake to pick up item
-         new InstantCommand(() -> aSuperstructure.IntakeCube(), aSuperstructure),
-        //8. break on
-            new InstantCommand(() -> aDrivetrain.BrakeOn(),aDrivetrain),
-         //break off
-         new InstantCommand(() -> aDrivetrain.BrakeOff(), aDrivetrain),
-         // drive back 11ft to score
-         new AutoDriveToDistance(aDrivetrain, 132),
+            //4. drive back 11ft to pick up cube
+            new AutoDriveToDistance(aDrivetrain, -100),
+            new AutoDriveToDistance(aDrivetrain, -50),
+            new AutoDriveToDistance(aDrivetrain, -30),
+            new AutoDriveToDistance(aDrivetrain, -15),
+            
+             //5. turn 180
+            new AutoTurn(aDrivetrain, 180).withTimeout(2),
+            //6. turn on intake
+            new InstantCommand(() -> aSuperstructure.IntakeCube(), aSuperstructure),
+            //7. set to ground
+          new  SetJointsToGroundPickup(aSuperstructure).withTimeout(2),
             //stop intake motors
-        new InstantCommand(() -> aSuperstructure.stopMotor(), aSuperstructure),
-           // turn 180
-            new AutoTurn(aDrivetrain, 180),
+         new InstantCommand(() -> aSuperstructure.stopMotor(), aSuperstructure),
+          //bring arm home
+         new SetJointsToHome(aSuperstructure).withTimeout(2),
+         // turn 180
+           new AutoTurn(aDrivetrain, 180).withTimeout(2),
             //drive back
-            new AutoDriveToDistance(aDrivetrain, 150),
+            new AutoDriveToDistance(aDrivetrain, 70),
+            new AutoDriveToDistance(aDrivetrain, 50),
+            new AutoDriveToDistance(aDrivetrain, 35),
+            
             // move arm to mid position
            new SetJointsToMidCube(aSuperstructure).withTimeout(2),
             // spit out cube
-            new SpitOutCube(aSuperstructure).withTimeout(1.5)
+            new SpitOutCube(aSuperstructure).withTimeout(1.5),
+            new SetJointsToHome(aSuperstructure).withTimeout(2)
             
         );
     }
