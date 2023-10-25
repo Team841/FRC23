@@ -17,11 +17,13 @@ public class scoreGetAnother extends SequentialCommandGroup{
             //3. bring arm to home
             new SetJointsToHome(aSuperstructure).withTimeout(2),
             //4. drive back 11ft to pick up cube
+           
+            new AutoDriveToDistance(aDrivetrain, -1),
+            new AutoDriveToDistance(aDrivetrain, -5),
             new AutoDriveToDistance(aDrivetrain, -100),
             new AutoDriveToDistance(aDrivetrain, -50),
             new AutoDriveToDistance(aDrivetrain, -30),
             new AutoDriveToDistance(aDrivetrain, -15),
-            
              //5. turn 180
             new AutoTurn(aDrivetrain, 180).withTimeout(2),
             //6. turn on intake
