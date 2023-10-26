@@ -24,9 +24,9 @@ public class scoreGetAnother extends SequentialCommandGroup {
         new AutoDriveToDistance(aDrivetrain, -100),
         new AutoDriveToDistance(aDrivetrain, -50),
         new AutoDriveToDistance(aDrivetrain, -30),
-        new AutoDriveToDistance(aDrivetrain, -15),
+        new AutoDriveToDistance(aDrivetrain, -10),
         // 5. turn 180
-        new AutoTurn(aDrivetrain, 180).withTimeout(2),
+        new AutoTurn(aDrivetrain, 179).withTimeout(2),
         // 6. turn on intake
         new InstantCommand(() -> aSuperstructure.IntakeCube(), aSuperstructure),
         // 7. set to ground
@@ -40,10 +40,7 @@ public class scoreGetAnother extends SequentialCommandGroup {
         // drive back
         new AutoDriveToDistance(aDrivetrain, 70),
         new AutoDriveToDistance(aDrivetrain, 50),
-        new AutoDriveToDistance(aDrivetrain, 35),
-
-        // move arm to mid position
-        new SetJointsToMidCube(aSuperstructure).withTimeout(2),
+        new AutoDriveToDistance(aDrivetrain, 30),
         // spit out cube
         new SpitOutCube(aSuperstructure).withTimeout(1.5),
         new SetJointsToHome(aSuperstructure).withTimeout(2)
