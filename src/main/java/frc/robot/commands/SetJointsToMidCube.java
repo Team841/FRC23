@@ -6,31 +6,32 @@ import frc.robot.subsystems.Superstructure;
 
 public class SetJointsToMidCube extends CommandBase {
 
-    private Superstructure cSuperstructure;
+  private Superstructure cSuperstructure;
 
-    public SetJointsToMidCube(Superstructure c_Superstructure) {
-        // Use addRequirements() here to declare subsystem dependencies.
-        cSuperstructure = c_Superstructure;
-        addRequirements(cSuperstructure);
-    }
+  public SetJointsToMidCube(Superstructure c_Superstructure) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    cSuperstructure = c_Superstructure;
+    addRequirements(cSuperstructure);
+  }
 
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {
-        cSuperstructure.buttonGround();
-    }
-    
-    // Called every time the scheduler runs while the command is scheduled.
-    @Override
-    public void execute() {}
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    cSuperstructure.buttonMidScoreCube();
+  }
 
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {}
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {}
 
-    // Returns true when the command should end.
-    @Override
-    public boolean isFinished() {
-        return cSuperstructure.isAtPosition(C.Superstructure.StateMachinePositions.MidScoreCube);
-    }
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return cSuperstructure.isAtPosition(
+        C.Superstructure.StateMachinePositions.MidScoreCube);
+  }
 }
